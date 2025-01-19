@@ -58,13 +58,8 @@ window.onload = function () {
     })}).addTo(map);
   }
 
-  if (args.bbox) {
-    var bbox = args.bbox.split(',');
-    map.fitBounds([L.latLng(bbox[1], bbox[0]),
-                   L.latLng(bbox[3], bbox[2])]);
-  } else {
-    map.fitWorld();
-  }
+  var bbox = (args.bbox || '-180,-90,180,90').split(',');
+  map.fitBounds([[bbox[1], bbox[0]], [bbox[3], bbox[2]]]);
 
   map.addControl(new L.Control.OSMReportAProblem());
 };
