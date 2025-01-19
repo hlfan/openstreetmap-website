@@ -36,17 +36,16 @@ window.onload = function () {
   map.attributionControl.setPrefix('');
   map.removeControl(map.attributionControl);
 
-  if (args.layer === "cyclosm") {
-    new L.OSM.CyclOSM().addTo(map);
-  } else if (args.layer === "cyclemap" || args.layer === "cycle map") {
-    new L.OSM.CycleMap(thunderforestOptions).addTo(map);
-  } else if (args.layer === "transportmap") {
-    new L.OSM.TransportMap(thunderforestOptions).addTo(map);
-  } else if (args.layer === "hot") {
-    new L.OSM.HOT().addTo(map);
-  } else {
-    new L.OSM.Mapnik(mapnikOptions).addTo(map);
-  }
+  var baseLayers = {
+    cyclosm: ["CyclOSM"],
+    cyclemap: ["CycleMap", thunderforestOptions],
+    transportmap: ["TransportMap", thunderforestOptions],
+    hot: ["HOT"],
+    mapnik: ["Mapnik", mapnikOptions]
+  };
+  baseLayers["cycle map"] = baseLayers.cyclemap;
+  var [layer, options] = baseLayers[args.layer] || baseLayers.mapnik;
+  new L.OSM[layer](options || {}).addTo(map);
 
   if (args.marker) {
     L.marker(args.marker.split(','), {icon: L.icon({
