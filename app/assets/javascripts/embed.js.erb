@@ -36,10 +36,11 @@ window.onload = function () {
   map.attributionControl.setPrefix('');
   map.removeControl(map.attributionControl);
 
+  var isDarkTheme = args.theme === "dark" || args.theme !== "light" && window.matchMedia("(prefers-color-scheme: dark)").matches;
   var baseLayers = {
     cyclosm: ["CyclOSM"],
     cyclemap: ["CycleMap", thunderforestOptions],
-    transportmap: ["TransportMap", thunderforestOptions],
+    transportmap: [isDarkTheme ? "TransportDarkMap" : "TransportMap", thunderforestOptions],
     hot: ["HOT"],
     mapnik: ["Mapnik", mapnikOptions]
   };
