@@ -15,10 +15,9 @@ window.onload = function () {
   var query = (window.location.search || '?').slice(1),
       args  = {};
 
-  var pairs = query.split('&');
-  for (var i = 0; i < pairs.length; i++) {
-    var parts = pairs[i].split('=');
-    args[parts[0]] = decodeURIComponent(parts[1] || '');
+  for (var pair of query.split('&')) {
+    var [key, val] = pair.split('=');
+    args[key] = decodeURIComponent(val || '');
   }
 
   var mapnikOptions = {
