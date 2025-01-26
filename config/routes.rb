@@ -62,11 +62,11 @@ OpenStreetMap::Application.routes.draw do
     put "relation/:id" => "relations#update", :id => /\d+/
     delete "relation/:id" => "relations#delete", :id => /\d+/
     get "relations" => "relations#index"
-
-    get "map" => "map#index"
   end
 
   namespace :api, :path => "api/0.6" do
+    resource :map, :only => :show
+
     resources :tracepoints, :path => "trackpoints", :only => :index
 
     resources :users, :only => :index
@@ -322,10 +322,11 @@ OpenStreetMap::Application.routes.draw do
 
   # messages
   resources :messages, :path_names => { :new => "new/:display_name" }, :id => /\d+/, :only => [:new, :create, :show, :destroy] do
-    post :mark
-    patch :unmute
-
-    resource :reply, :module => :messages, :path_names => { :new => "new" }, :only => :new
+    scope :module => :messages do
+      resource :reply, :path_names => { :new => "new" }, :only => :new
+      resource :read_mark, :only => [:create, :destroy]
+      resource :mute, :only => :destroy
+    end
   end
   namespace :messages, :path => "/messages" do
     resource :inbox, :only => :show
