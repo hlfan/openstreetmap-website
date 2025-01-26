@@ -60,7 +60,7 @@ OSM = {
 
   params: function (search) {
     var query = search || window.location.search;
-    return Object.fromEntries(new URLSearchParams(query).entries());
+    return Object.fromEntries(new URLSearchParams(query));
   },
 
   mapParams: function (search) {
