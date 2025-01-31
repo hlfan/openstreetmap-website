@@ -132,7 +132,7 @@ OSM.Directions = function (map) {
     $("#sidebar_content").html($(".directions_form .loader_copy").html());
     map.setSidebarOverlaid(false);
 
-    routeRequest = chosenEngine.getRoute([o, d], function (err, route) {
+    routeRequest = chosenEngine.getRoute(points, function (err, route) {
       routeRequest = null;
 
       if (err) {
