@@ -34,7 +34,7 @@ OSM.DirectionsEndpoint = function Endpoint(map, input, iconUrl, dragCallback, ch
   };
 
   function markerDragListener(e) {
-    const latlng = OSM.cropLocation(e.target.getLatLng(), map.getZoom());
+    const latlng = L.latLng(OSM.cropLocation(e.target.getLatLng(), map.getZoom()));
 
     setLatLng(latlng);
     setInputValueFromLatLng(latlng);
@@ -80,7 +80,7 @@ OSM.DirectionsEndpoint = function Endpoint(map, input, iconUrl, dragCallback, ch
         return;
       }
 
-      setLatLng(json[0]);
+      setLatLng(L.latLng(json[0]));
 
       input.val(json[0].display_name);
 
@@ -88,8 +88,7 @@ OSM.DirectionsEndpoint = function Endpoint(map, input, iconUrl, dragCallback, ch
     });
   }
 
-  function setLatLng(latlng) {
-    const ll = L.latLng(latlng);
+  function setLatLng(ll) {
     input
       .attr("data-lat", ll.lat)
       .attr("data-lon", ll.lng);
@@ -107,8 +106,7 @@ OSM.DirectionsEndpoint = function Endpoint(map, input, iconUrl, dragCallback, ch
   }
 
   function setInputValueFromLatLng(latlng) {
-    const ll = L.latLng(latlng);
-    input.val(ll.lat + ", " + ll.lng);
+    input.val(latlng.lat + ", " + latlng.lng);
   }
 
   return endpoint;
