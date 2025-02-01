@@ -123,7 +123,7 @@ OSM.Directions = function (map) {
 
     OSM.router.replace("/directions?" + Qs.stringify({
       engine: chosenEngine.id,
-      route: points.map(p => OSM.cropLocation(p,map.getZoom()).join()).join(";")
+      route: points.map(p => OSM.cropLocation(p, map.getZoom()).join()).join(";")
     }));
 
     // copy loading item to sidebar and display it. we copy it, rather than
@@ -281,7 +281,7 @@ OSM.Directions = function (map) {
       var pt = L.DomEvent.getMousePosition(oe, map.getContainer()); // co-ordinates of the mouse pointer at present
       pt.y += 20;
       var ll = map.containerPointToLatLng(pt);
-      const llWithPrecision = OSM.cropLocation(ll,map.getZoom());
+      const llWithPrecision = OSM.cropLocation(ll, map.getZoom());
       endpoints[type === "from" ? 0 : 1].setValue(llWithPrecision.join(", "), llWithPrecision);
     });
 
