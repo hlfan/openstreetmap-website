@@ -272,18 +272,18 @@ OSM.Query = function (map) {
   function queryOverpass(lat, lng) {
     var latlng = L.latLng(lat, lng).wrap(),
         bounds = map.getBounds().wrap(),
-        precision = OSM.zoomPrecision(map.getZoom()),
-        bbox = bounds.getSouth().toFixed(precision) + "," +
-               bounds.getWest().toFixed(precision) + "," +
-               bounds.getNorth().toFixed(precision) + "," +
-               bounds.getEast().toFixed(precision),
-        radius = 10 * Math.pow(1.5, 19 - map.getZoom()),
-        around = "around:" + radius + "," + lat + "," + lng,
-        nodes = "node(" + around + ")",
-        ways = "way(" + around + ")",
-        relations = "relation(" + around + ")",
-        nearby = "(" + nodes + ";" + ways + ";);out tags geom(" + bbox + ");" + relations + ";out geom(" + bbox + ");",
-        isin = "is_in(" + lat + "," + lng + ")->.a;way(pivot.a);out tags bb;out ids geom(" + bbox + ");relation(pivot.a);out tags bb;";
+        zoom = map.getZoom(),
+        bbox = [bounds.getSouthWest(), bounds.getNorthEast()]
+          .map(c => OSM.cropLocation(c, zoom))
+          .join(),
+        geombbox = "geom(" + bbox + ");",
+        radius = 10 * Math.pow(1.5, 19 - zoom),
+        around = "(around:" + radius + "," + lat + "," + lng + ")",
+        nodes = "node" + around,
+        ways = "way" + around,
+        relations = "relation" + around,
+        nearby = "(" + nodes + ";" + ways + ";);out tags " + geombbox + relations + ";out " + geombbox,
+        isin = "is_in(" + lat + "," + lng + ")->.a;way(pivot.a);out tags bb;out ids " + geombbox + "relation(pivot.a);out tags bb;";
 
     $("#sidebar_content .query-intro")
       .hide();
