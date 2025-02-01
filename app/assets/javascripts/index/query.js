@@ -299,12 +299,9 @@ OSM.Query = function (map) {
   }
 
   function clickHandler(e) {
-    var precision = OSM.zoomPrecision(map.getZoom()),
-        latlng = e.latlng.wrap(),
-        lat = latlng.lat.toFixed(precision),
-        lng = latlng.lng.toFixed(precision);
+    const [lat, lon] = OSM.cropLocation(e.latlng);
 
-    OSM.router.route("/query?lat=" + lat + "&lon=" + lng);
+    OSM.router.route("/query?" + Qs.stringify({ lat, lon }));
   }
 
   function enableQueryMode() {

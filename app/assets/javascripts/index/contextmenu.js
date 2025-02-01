@@ -5,6 +5,7 @@ OSM.initializeContextMenu = function (map) {
     text: I18n.t("javascripts.context.directions_from"),
     callback: function directionsFromHere(e) {
       const latlng = OSM.cropLocation(e.latlng, map.getZoom());
+
       OSM.router.route("/directions?" + Qs.stringify({
         from: latlng.join(","),
         to: getDirectionsEndpointCoordinatesFromInput($("#route_to"))
@@ -16,6 +17,7 @@ OSM.initializeContextMenu = function (map) {
     text: I18n.t("javascripts.context.directions_to"),
     callback: function directionsToHere(e) {
       const latlng = OSM.cropLocation(e.latlng, map.getZoom());
+
       OSM.router.route("/directions?" + Qs.stringify({
         from: getDirectionsEndpointCoordinatesFromInput($("#route_from")),
         to: latlng.join(",")
