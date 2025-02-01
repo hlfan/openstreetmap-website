@@ -4,7 +4,7 @@ OSM.initializeContextMenu = function (map) {
   map.contextmenu.addItem({
     text: I18n.t("javascripts.context.directions_from"),
     callback: function directionsFromHere(e) {
-      const latlng = OSM.cropLocation(e.latlng);
+      const latlng = OSM.cropLocation(e.latlng, map.getZoom());
 
       OSM.router.route("/directions?" + Qs.stringify({
         from: latlng.join(","),
@@ -16,7 +16,7 @@ OSM.initializeContextMenu = function (map) {
   map.contextmenu.addItem({
     text: I18n.t("javascripts.context.directions_to"),
     callback: function directionsToHere(e) {
-      const latlng = OSM.cropLocation(e.latlng);
+      const latlng = OSM.cropLocation(e.latlng, map.getZoom());
 
       OSM.router.route("/directions?" + Qs.stringify({
         from: getDirectionsEndpointCoordinatesFromInput($("#route_from")),
@@ -28,7 +28,7 @@ OSM.initializeContextMenu = function (map) {
   map.contextmenu.addItem({
     text: I18n.t("javascripts.context.add_note"),
     callback: function addNoteHere(e) {
-      const [lat, lon] = OSM.cropLocation(e.latlng);
+      const [lat, lon] = OSM.cropLocation(e.latlng, map.getZoom());
 
       OSM.router.route("/note/new?" + Qs.stringify({ lat, lon }));
     }
@@ -37,7 +37,7 @@ OSM.initializeContextMenu = function (map) {
   map.contextmenu.addItem({
     text: I18n.t("javascripts.context.show_address"),
     callback: function describeLocation(e) {
-      const [lat, lon] = OSM.cropLocation(e.latlng).map(encodeURIComponent);
+      const [lat, lon] = OSM.cropLocation(e.latlng, map.getZoom()).map(encodeURIComponent);
 
       OSM.router.route("/search?" + Qs.stringify({ lat, lon }));
     }
@@ -46,7 +46,7 @@ OSM.initializeContextMenu = function (map) {
   map.contextmenu.addItem({
     text: I18n.t("javascripts.context.query_features"),
     callback: function queryFeatures(e) {
-      const [lat, lon] = OSM.cropLocation(e.latlng);
+      const [lat, lon] = OSM.cropLocation(e.latlng, map.getZoom());
 
       OSM.router.route("/query?" + Qs.stringify({ lat, lon }));
     }
