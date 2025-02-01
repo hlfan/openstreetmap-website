@@ -115,19 +115,18 @@ L.OSM.Map = L.Map.extend({
   },
 
   updateLayers: function (layerParam) {
-    var layers = layerParam || "M";
+    const oldBaseLayer = this.getMapBaseLayer();
+    let newBaseLayer;
 
-    for (let i = this.baseLayers.length - 1; i >= 0; i--) {
-      if (layers.indexOf(this.baseLayers[i].options.code) === -1) {
-        this.removeLayer(this.baseLayers[i]);
+    for (const layer of this.baseLayers) {
+      if (!newBaseLayer || layerParam.includes(layer.options.code)) {
+        newBaseLayer = layer;
       }
     }
 
-    for (let i = this.baseLayers.length - 1; i >= 0; i--) {
-      if (layers.indexOf(this.baseLayers[i].options.code) >= 0 || i === 0) {
-        this.addLayer(this.baseLayers[i]);
-        return;
-      }
+    if (newBaseLayer !== oldBaseLayer) {
+      if (oldBaseLayer) this.removeLayer(oldBaseLayer);
+      if (newBaseLayer) this.addLayer(newBaseLayer);
     }
   },
 
@@ -153,13 +152,10 @@ L.OSM.Map = L.Map.extend({
   },
 
   getUrl: function (marker) {
-    var precision = OSM.zoomPrecision(this.getZoom()),
-        params = {};
+    const params = {};
 
     if (marker && this.hasLayer(marker)) {
-      var latLng = marker.getLatLng().wrap();
-      params.mlat = latLng.lat.toFixed(precision);
-      params.mlon = latLng.lng.toFixed(precision);
+      [params.mlat, params.mlon] = OSM.cropLocation(marker.getLatLng(), this.getZoom());
     }
 
     var url = window.location.protocol + "//" + OSM.SERVER_URL + "/",
@@ -237,21 +233,14 @@ L.OSM.Map = L.Map.extend({
   },
 
   getGeoUri: function (marker) {
-    var precision = OSM.zoomPrecision(this.getZoom()),
-        latLng,
-        params = {};
+    let latLng = this.getCenter();
+    const zoom = this.getZoom();
 
     if (marker && this.hasLayer(marker)) {
-      latLng = marker.getLatLng().wrap();
-    } else {
-      latLng = this.getCenter();
+      latLng = marker.getLatLng();
     }
 
-    params.lat = latLng.lat.toFixed(precision);
-    params.lon = latLng.lng.toFixed(precision);
-    params.zoom = this.getZoom();
-
-    return "geo:" + params.lat + "," + params.lon + "?z=" + params.zoom;
+    return `geo:${OSM.cropLocation(latLng, zoom).join(",")}?z=${zoom}`;
   },
 
   addObject: function (object, callback) {
