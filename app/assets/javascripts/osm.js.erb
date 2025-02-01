@@ -190,7 +190,6 @@ OSM = {
       layers = args.layers || "";
     }
 
-    center = center.wrap();
     layers = layers.replace("M", "");
 
     let hash = "#map=" + [zoom, ...OSM.cropLocation(center, zoom)].join("/");
@@ -208,15 +207,16 @@ OSM = {
     return Math.ceil(Math.log10(pixels / degrees));
   },
 
-  cropLocation: function (latLng, zoom = map.getZoom()){
+  cropLocation: function (latLng, zoom = map.getZoom()) {
     const precision = OSM.zoomPrecision(zoom),
           wrapped = latLng.wrap();
-    return [wrapped.lat, wrapped.lng].map(c=>c.toFixed(precision));
+    return [wrapped.lat, wrapped.lng].map(c => c.toFixed(precision));
   },
 
   locationCookie: function (map) {
-    const center = OSM.cropLocation(map.getCenter()).reverse();
-    return [...center, map.getZoom(), map.getLayersCode()].join("|");
+    const zoom = map.getZoom(),
+          center = OSM.cropLocation(map.getCenter(), zoom).reverse();
+    return [...center, zoom, map.getLayersCode()].join("|");
   },
 
   distance: function (latlng1, latlng2) {
