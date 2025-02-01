@@ -299,7 +299,7 @@ OSM.Query = function (map) {
   }
 
   function clickHandler(e) {
-    const [lat, lon] = OSM.cropLocation(e.latlng);
+    const [lat, lon] = OSM.cropLocation(e.latlng, map.getZoom());
 
     OSM.router.route("/query?" + Qs.stringify({ lat, lon }));
   }
