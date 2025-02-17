@@ -39,17 +39,14 @@ OSM.Directions = function (map) {
   const expiry = new Date();
   expiry.setYear(expiry.getFullYear() + 10);
 
-  const engines = OSM.Directions.engines;
+  const modeIconPaths = {
+    car: "M2.52 3.515A2.5 2.5 0 0 1 4.82 2h6.362c1 0 1.904.596 2.298 1.515l.792 1.848c.075.175.21.319.38.404.5.25.855.715.965 1.262l.335 1.679q.05.242.049.49v.413c0 .814-.39 1.543-1 1.997V13.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1.338c-1.292.048-2.745.088-4 .088s-2.708-.04-4-.088V13.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-1.892c-.61-.454-1-1.183-1-1.997v-.413a2.5 2.5 0 0 1 .049-.49l.335-1.68c.11-.546.465-1.012.964-1.261a.8.8 0 0 0 .381-.404l.792-1.848ZM3 10a1 1 0 1 0 0-2 1 1 0 0 0 0 2m10 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2M6 8a1 1 0 0 0 0 2h4a1 1 0 1 0 0-2zM2.906 5.189a.51.51 0 0 0 .497.731c.91-.073 3.35-.17 4.597-.17s3.688.097 4.597.17a.51.51 0 0 0 .497-.731l-.956-1.913A.5.5 0 0 0 11.691 3H4.309a.5.5 0 0 0-.447.276L2.906 5.19Z",
+    bicycle: "M4 4.5a.5.5 0 0 1 .5-.5H6a.5.5 0 0 1 0 1v.5h4.14l.386-1.158A.5.5 0 0 1 11 4h1a.5.5 0 0 1 0 1h-.64l-.311.935.807 1.29a3 3 0 1 1-.848.53l-.508-.812-2.076 3.322A.5.5 0 0 1 8 10.5H5.959a3 3 0 1 1-1.815-3.274L5 5.856V5h-.5a.5.5 0 0 1-.5-.5m1.5 2.443-.508.814c.5.444.85 1.054.967 1.743h1.139zM8 9.057 9.598 6.5H6.402zM4.937 9.5a2 2 0 0 0-.487-.877l-.548.877zM3.603 8.092A2 2 0 1 0 4.937 10.5H3a.5.5 0 0 1-.424-.765zm7.947.53a2 2 0 1 0 .848-.53l1.026 1.643a.5.5 0 1 1-.848.53z",
+    foot: "M9.5 1.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0M6.44 3.752A.75.75 0 017 3.5h1.445c.742 0 1.32.643 1.243 1.38l-.43 4.083a1.8 1.8 0 01-.088.395l-.318.906.213.242a.8.8 0 01.114.175l2 4.25a.75.75 0 11-1.357.638l-1.956-4.154-1.68-1.921A.75.75 0 016 8.96l.138-2.613-.435.489-.464 2.786a.75.75 0 11-1.48-.246l.5-3a.75.75 0 01.18-.375l2-2.25zm-.19 7.993v-1.418l1.204 1.375.261.524a.8.8 0 01-.12.231l-2.5 3.25a.75.75 0 11-1.19-.914zm4.22-4.215-.494-.494.205-1.843.006-.067 1.124 1.124h1.44a.75.75 0 010 1.5H11a.75.75 0 01-.531-.22Z"
+  };
 
-  engines.sort(function (a, b) {
-    return a.localeId().localeCompare(b.localeId());
-  });
-
+  const modeGroup = $(".routing_modes");
   const select = $("select.routing_engines");
-
-  engines.forEach(function (engine, i) {
-    select.append("<option value='" + i + "'>" + engine.localeId() + "</option>");
-  });
 
   $(".directions_form .reverse_directions").on("click", function () {
     const coordFrom = endpoints[0].latlng,
@@ -95,10 +92,35 @@ OSM.Directions = function (map) {
   }
 
   function setEngine(id) {
-    const index = engines.findIndex(engine => engine.id() === id);
-    if (index < 0) return;
-    chosenEngine = engines[index];
-    select.val(index);
+    const engines = OSM.Directions.engines;
+    const desired = engines.find(engine => engine.id() === id);
+    if (!desired || (chosenEngine && chosenEngine.id() === id)) return;
+    chosenEngine = desired;
+
+    const modes = engines
+      .filter(engine => engine.provider === chosenEngine.provider)
+      .map(engine => engine.mode)
+      .sort((a, b) => I18n.t("javascripts.directions.modes." + a).localeCompare(I18n.t("javascripts.directions.modes." + b)));
+    modeGroup.html("");
+    for (const mode of new Set(modes)) {
+      modeGroup.append(`<input type="radio" class="btn-check" name="modes" id="${mode}" autocomplete="off">`);
+      modeGroup.append(`<label class="btn btn-outline-secondary px-2" for="${mode}" title="${
+        I18n.t("javascripts.directions.modes." + mode)
+      }"><svg class="d-block" width="16" height="16" fill="currentColor"><path d="${modeIconPaths[mode]}"></path></svg></label>`);
+    }
+    $(".routing_modes input#" + chosenEngine.mode).prop("checked", true);
+
+    const providers = engines
+      .filter(engine => engine.mode === chosenEngine.mode)
+      .map(engine => engine.provider)
+      .sort((a, b) => I18n.t("javascripts.directions.providers." + a).localeCompare(I18n.t("javascripts.directions.providers." + b)));
+    select.html("");
+    for (const provider of new Set(providers)) {
+      select.append(`<option value="${provider}">${
+        I18n.t("javascripts.directions.providers." + provider)
+      }</option>`);
+    }
+    select.val(chosenEngine.provider);
   }
 
   function getRoute(fitRoute, reportErrors) {
@@ -215,8 +237,14 @@ OSM.Directions = function (map) {
   setEngine("fossgis_osrm_car");
   setEngine(Cookies.get("_osm_directions_engine"));
 
+  modeGroup.on("change", "input[name='modes']", function (e) {
+    setEngine(chosenEngine.provider + "_" + e.target.id);
+    Cookies.set("_osm_directions_engine", chosenEngine.id(), { secure: true, expires: expiry, path: "/", samesite: "lax" });
+    getRoute(true, true);
+  });
+
   select.on("change", function (e) {
-    chosenEngine = engines[e.target.selectedIndex];
+    setEngine(e.target.selectedOptions[0].value + "_" + chosenEngine.mode);
     Cookies.set("_osm_directions_engine", chosenEngine.id(), { secure: true, expires: expiry, path: "/", samesite: "lax" });
     getRoute(true, true);
   });
@@ -298,11 +326,6 @@ OSM.Directions.engines = [];
 OSM.Directions.addEngine = function (engine, supportsHTTPS) {
   if (document.location.protocol === "http:" || supportsHTTPS) {
     engine.id = () => engine.provider + "_" + engine.mode;
-    engine.localeId = () => `${
-      I18n.t("javascripts.directions.modes." + engine.mode)
-    } (${
-      I18n.t("javascripts.directions.providers." + engine.provider)
-    })`;
     OSM.Directions.engines.push(engine);
   }
 };
