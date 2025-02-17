@@ -42,15 +42,13 @@ OSM.Directions = function (map) {
   const engines = OSM.Directions.engines;
 
   engines.sort(function (a, b) {
-    const localised_a = I18n.t("javascripts.directions.engines." + a.id),
-          localised_b = I18n.t("javascripts.directions.engines." + b.id);
-    return localised_a.localeCompare(localised_b);
+    return a.localeId().localeCompare(b.localeId());
   });
 
   const select = $("select.routing_engines");
 
   engines.forEach(function (engine, i) {
-    select.append("<option value='" + i + "'>" + I18n.t("javascripts.directions.engines." + engine.id) + "</option>");
+    select.append("<option value='" + i + "'>" + engine.localeId() + "</option>");
   });
 
   $(".directions_form .reverse_directions").on("click", function () {
@@ -96,13 +94,9 @@ OSM.Directions = function (map) {
     return h + ":" + (m < 10 ? "0" : "") + m;
   }
 
-  function findEngine(id) {
-    return engines.findIndex(function (engine) {
-      return engine.id === id;
-    });
-  }
-
-  function setEngine(index) {
+  function setEngine(id) {
+    const index = engines.findIndex(engine => engine.id() === id);
+    if (index < 0) return;
     chosenEngine = engines[index];
     select.val(index);
   }
@@ -117,7 +111,7 @@ OSM.Directions = function (map) {
     $("header").addClass("closed");
 
     OSM.router.replace("/directions?" + new URLSearchParams({
-      engine: chosenEngine.id,
+      engine: chosenEngine.id(),
       route: points.map(p => OSM.cropLocation(p, map.getZoom()).join()).join(";")
     }));
 
@@ -218,15 +212,12 @@ OSM.Directions = function (map) {
     }
   }
 
-  let chosenEngineIndex = findEngine("fossgis_osrm_car");
-  if (Cookies.get("_osm_directions_engine")) {
-    chosenEngineIndex = findEngine(Cookies.get("_osm_directions_engine"));
-  }
-  setEngine(chosenEngineIndex);
+  setEngine("fossgis_osrm_car");
+  setEngine(Cookies.get("_osm_directions_engine"));
 
   select.on("change", function (e) {
     chosenEngine = engines[e.target.selectedIndex];
-    Cookies.set("_osm_directions_engine", chosenEngine.id, { secure: true, expires: expiry, path: "/", samesite: "lax" });
+    Cookies.set("_osm_directions_engine", chosenEngine.id(), { secure: true, expires: expiry, path: "/", samesite: "lax" });
     getRoute(true, true);
   });
 
@@ -274,13 +265,7 @@ OSM.Directions = function (map) {
     const params = new URLSearchParams(location.search),
           route = (params.get("route") || "").split(";");
 
-    if (params.has("engine")) {
-      const engineIndex = findEngine(params.get("engine"));
-
-      if (engineIndex >= 0) {
-        setEngine(engineIndex);
-      }
-    }
+    if (params.has("engine")) setEngine(params.get("engine"));
 
     endpoints[0].setValue(params.get("from") || route[0] || "");
     endpoints[1].setValue(params.get("to") || route[1] || "");
@@ -312,6 +297,8 @@ OSM.Directions.engines = [];
 
 OSM.Directions.addEngine = function (engine, supportsHTTPS) {
   if (document.location.protocol === "http:" || supportsHTTPS) {
+    engine.id = () => engine.provider + "_" + engine.mode;
+    engine.localeId = () => I18n.t("javascripts.directions.engines." + engine.id());
     OSM.Directions.engines.push(engine);
   }
 };
