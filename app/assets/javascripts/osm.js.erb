@@ -80,6 +80,11 @@ OSM = {
 
     const hash = OSM.parseHash(location.hash);
 
+    const geoURI = Object.fromEntries(new URLSearchParams(
+      params.geouri?.replaceAll(/[?;]/g, "&")?.replace(":", "=")
+    ));
+    geoURI.center = geoURI.geo?.split(",");
+
     const loc = Cookies.get("_osm_location")?.split("|");
 
     function bboxToLatLngBounds({ minlon, minlat, maxlon, maxlat }) {
@@ -100,6 +105,11 @@ OSM = {
       mapParams.lon = params.mlon;
       mapParams.lat = params.mlat;
       mapParams.zoom = params.zoom || 12;
+    } else if (geoURI.geo && geoURI.u) {
+      mapParams.bounds = L.latLng(geoURI.center).toBounds(geoURI.u * 4);
+    } else if (geoURI.geo) {
+      [mapParams.lat, mapParams.lon] = geoURI.center;
+      mapParams.zoom = geoURI.z || Math.round(geoURI.geo.replaceAll(/,?[-\d]+\./g, "").length / 0.6) - 2;
     } else if (loc) {
       [mapParams.lon, mapParams.lat, mapParams.zoom] = loc;
     } else if (OSM.home) {
