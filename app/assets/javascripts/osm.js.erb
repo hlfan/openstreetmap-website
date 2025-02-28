@@ -80,10 +80,12 @@ OSM = {
 
     const hash = OSM.parseHash(location.hash);
 
-    const geoURI = Object.fromEntries(new URLSearchParams(
-      params.geouri?.replaceAll(/[?;]/g, "&")?.replace(":", "=")
-    ));
-    geoURI.center = geoURI.geo?.split(",");
+    const geoURI = URL.canParse(
+      params.geouri?.replaceAll(/[?;]/g, "&")?.replace("&", "?")
+    ) ? new URL(
+        params.geouri?.replaceAll(/[?;]/g, "&")?.replace("&", "?")
+      ) : {};
+    geoURI.center = geoURI.pathname?.split(",");
 
     const loc = Cookies.get("_osm_location")?.split("|");
 
@@ -105,11 +107,11 @@ OSM = {
       mapParams.lon = params.mlon;
       mapParams.lat = params.mlat;
       mapParams.zoom = params.zoom || 12;
-    } else if (geoURI.geo && geoURI.u) {
-      mapParams.bounds = L.latLng(geoURI.center).toBounds(geoURI.u * 4);
-    } else if (geoURI.geo) {
+    } else if (geoURI.pathname && geoURI.searchParams.has("u")) {
+      mapParams.bounds = L.latLng(geoURI.center).toBounds(geoURI.searchParams.get("u") * 4);
+    } else if (geoURI.pathname) {
       [mapParams.lat, mapParams.lon] = geoURI.center;
-      mapParams.zoom = geoURI.z || Math.round(geoURI.geo.replaceAll(/,?[-\d]+\./g, "").length / 0.6) - 2;
+      mapParams.zoom = geoURI.searchParams.get("z") || Math.round(geoURI.pathname.replaceAll(/,?[-\d]+\./g, "").length / 0.6) - 2;
     } else if (loc) {
       [mapParams.lon, mapParams.lat, mapParams.zoom] = loc;
     } else if (OSM.home) {
