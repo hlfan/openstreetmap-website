@@ -82,11 +82,11 @@ OSM = {
     const hash = OSM.parseHash(location.hash);
 
     geoURI._regex = /;([\w-]+)=([\w-.!~*'()[\]:&+$%]+)/g;
-    geoURI._coordstring = params.geouri.slice(4).replaceAll(geoURI._regex, (_, key, val = "") => {
+    geoURI._coordstring = params.geouri?.slice(4)?.replaceAll(geoURI._regex, (_, key, val = "") => {
       geoURI[key] = decodeURIComponent(val);
       return "";
     });
-    geoURI._coords = geoURI._coordstring.split(",");
+    geoURI._coords = geoURI._coordstring?.split(",");
 
     const loc = Cookies.get("_osm_location")?.split("|");
 
