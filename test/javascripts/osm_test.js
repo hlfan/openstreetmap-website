@@ -94,7 +94,7 @@ describe("OSM", function () {
       expect(params).to.have.property("lon", -3.6845);
       expect(params).to.have.property("zoom", 11);
 
-      params = OSM.mapParams("?geouri=geo%3A57.6247%2C-3.6845%3Fz%3D16");
+      params = OSM.mapParams("?geouri=geo%3A57.6247%2C-3.6845%3Bz%3D16");
       expect(params).to.have.property("lat", 57.6247);
       expect(params).to.have.property("lon", -3.6845);
       expect(params).to.have.property("zoom", 16);
