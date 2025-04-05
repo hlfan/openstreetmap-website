@@ -673,15 +673,15 @@ tr.turn {
   inset: 0;
 
   &.new-user-main {
-    background-image: image-url("illustrations/sign-up.svg");
+    background-image: image-url("illustrations/sign-up-face.svg"), image-url("illustrations/earth.svg"), image-url("illustrations/sign-up-arm.svg");
   }
 
   &.confirm-main {
-    background-image: image-url("illustrations/confirm.svg");
+    background-image: image-url("illustrations/confirm.svg"), image-url("illustrations/earth.svg");
   }
 
   &.new-user-terms {
-    background-image: image-url("illustrations/terms.svg");
+    background-image: image-url("illustrations/terms.svg"), image-url("illustrations/earth.svg");
   }
 }
 
