@@ -85,6 +85,7 @@
   code: "S"
   layerId: "shortbread"
   nameId: "shortbread"
+  canEmbed: true
   maxZoom: 23
   credit:
     id: "make_a_donation"
@@ -96,6 +97,7 @@
   layerId: "openmaptiles_osm"
   nameId: "openmaptiles_osm"
   apiKeyId: "maptiler_key"
+  canEmbed: true
   maxZoom: 23
   credit:
     id: "openmaptiles_credit"
