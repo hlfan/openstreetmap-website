@@ -36,14 +36,14 @@ require "rails/test_help"
 require "webmock/minitest"
 require "minitest/focus" unless ENV["CI"]
 
-WebMock.disable_net_connect!(:allow_localhost => true, :allow => %w[selenium rails-app])
+WebMock.disable_net_connect!(:allow_localhost => true, :allow => %w[selenium-default selenium-de selenium-nolang rails-app])
 
 module ActiveSupport
   class TestCase
     include FactoryBot::Syntax::Methods
     include ActiveJob::TestHelper
 
-    if ENV.key?("SELENIUM_HOST")
+    if ENV.key?("CAPYBARA_SERVER_PORT")
       # Running in the devcontainer. Can't figure out how
       # to run things in parallel at the moment, so for now
       # we are not doing it.
