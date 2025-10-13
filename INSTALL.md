@@ -8,7 +8,10 @@ You can setup development enviroment by:
 
 ### Containerized Installation
 
-We also offer a containerized environment with Docker which may avoid installation difficulties. See [DOCKER.md](DOCKER.md) for complete instructions.
+We also offer containerized environments with Docker which may avoid installation difficulties:
+
+- To use Docker manually, see [DOCKER](DOCKER.md).
+- Do use Docker via [Development Containers](https://containers.dev) (devcontainers), see [DEVCONTAINER.md](DEVCONTAINER.md).
 
 ### Manual Installation
 
@@ -19,7 +22,7 @@ Install dependencies directly on your machine (traditional approach, covered in 
 **Platform Support:** These instructions are based on Ubuntu 24.04 LTS, though the OSMF servers are currently running Debian 12. The instructions also work, with only minor amendments, for all other current Ubuntu releases, Fedora and macOS.
 
 > [!WARNING]
-> **Windows Note:** We don't recommend using this approach for development and deployment on Windows. Some Ruby gems may not be supported. If you are using Windows, we recommend containerized setup using [Docker](DOCKER.md).
+> **Windows Note:** We don't recommend using this approach for development and deployment on Windows. Some Ruby gems may not be supported. If you are using Windows, we recommend a containerized setup as mentioned above.
 
 ## Manual Installation Guide
 
