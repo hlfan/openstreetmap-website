@@ -2,17 +2,20 @@
 
 You can set up a development environment for this project using [Development Containers](https://containers.dev/), aka. devcontainers.
 
-There are different ways of working with devcontainers, some are automated and integrated in IDE applications, while others are more manual and require CLI tools. This guide will use [Visual Studio Code](https://code.visualstudio.com) as an example.
+There are different ways of working with devcontainers, some are automated and integrated in IDE applications, while others are more manual and require CLI tools. This guide will use [Visual Studio Code](https://code.visualstudio.com) and assumes that it's installed already.
 
 ## Install Git and Docker
 
 You will need Git to work with the code repository, and Docker to run the devcontainer. Depending on your Operating System, the process will be different. See [DOCKER.md](DOCKER.md) for installation instructions.
 
 **TODO: instructions to install Git.**
+**TODO: clone the repo.**
+**TODO: do we need to explain that the user needs permission to run Docker? On Debian/Ubuntu, by getting added to the `docker` group.**
+
 
 ## Install Dev Containers extension
 
-Start by opening the project with VS Code. Within it, you will need to install the extension _Dev Containers_, which can be done from the _Extensions_ section, reachable via the sidebar icons.
+Start by opening the project with VS Code. Within it, you will need to install the extension _Dev Containers_, which can be done from the _Extensions_ section, reachable via the sidebar icons. Or VS Code may show a popup recommending this extension, with a button to install it directly.
 
 ![VS Code: panel to install extensions](./docs/assets/vscode-devcontainers-extension.png)
 
@@ -26,7 +29,7 @@ The first time you do this, it will go into a bit of a process. It will create t
 
 ![VS Code: notification that VS Code is connecting to the Dev Container](./docs/assets/vscode-connecting-to-devcontainer.png)
 
-Eventually this will present you with a development environment ready to go. In subsequent occassions this should be much faster.
+Eventually this will present you with a development environment ready to go. In subsequent occasions this should be much faster.
 
 ## Done!
 
