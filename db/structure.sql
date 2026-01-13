@@ -31,6 +31,20 @@ COMMENT ON EXTENSION btree_gist IS 'support for indexing common datatypes in GiS
 
 
 --
+-- Name: postgis; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION postgis; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION postgis IS 'PostGIS geometry and geography spatial types and functions';
+
+
+--
 -- Name: format_enum; Type: TYPE; Schema: public; Owner: -
 --
 
@@ -3687,6 +3701,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('21'),
 ('20260223105922'),
 ('20260218183352'),
+('20260113142804'),
 ('20251218105716'),
 ('20251121134648'),
 ('20250704143751'),

@@ -123,6 +123,10 @@ jobs:
         cache: yarn
     - name: Install node modules
       run: bundle exec bin/yarn install
+    - name: Install packages
+      run: |
+        sudo apt-get -yqq update
+        sudo apt-get -yqq install postgresql-postgis
     - name: Setup database
       run: |
         sudo systemctl start postgresql
@@ -157,6 +161,10 @@ jobs:
         cache: yarn
     - name: Install node modules
       run: bundle exec bin/yarn install
+    - name: Install packages
+      run: |
+        sudo apt-get -yqq update
+        sudo apt-get -yqq install postgresql-postgis
     - name: Setup database
       run: |
         sudo systemctl start postgresql

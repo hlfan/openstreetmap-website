@@ -36,7 +36,7 @@ jobs:
     - name: Install packages
       run: |
         sudo apt-get -yqq update
-        sudo apt-get -yqq install memcached libvips-dev xvfb mesa-utils libgl1-mesa-dri
+        sudo apt-get -yqq install memcached libvips-dev xvfb mesa-utils libgl1-mesa-dri postgresql-postgis
     - name: Create database
       run: |
         sudo systemctl start postgresql
