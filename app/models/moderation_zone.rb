@@ -32,4 +32,13 @@ class ModerationZone < ApplicationRecord
   validates :name, :presence => true
   validates :reason, :presence => true
   validates :zone, :presence => true
+
+  def self.falls_within_any?(lon:, lat:)
+    factory = RGeo::Cartesian.simple_factory(:srid => 4326)
+    point = factory.point(lon, lat)
+
+    where(
+      arel_table[:zone].st_contains(point)
+    ).exists?
+  end
 end
