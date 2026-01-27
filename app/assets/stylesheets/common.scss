@@ -103,6 +103,9 @@ header {
 nav.primary {
   #edit_tab .btn-outline-primary {
     @include button-outline-variant($green, $color-hover: $white, $active-color: $white);
+    header:has(~ #content > script[src*="/edit/"]) &#editanchor {
+      @extend .show;
+    }
   }
 
   .disabled {
