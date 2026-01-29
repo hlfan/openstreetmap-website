@@ -1,7 +1,5 @@
 (function () {
-  const convertIDUrlToMapLibreUrls = function (url) {
-    const tileUrl = url.replace("{zoom}", "{z}");
-
+  const convertIDUrlToMapLibreUrls = function (tileUrl) {
     // {switch:a,b,c} for DNS server multiplexing
     const switchRegex = /\{switch:([^}]+)}/;
     const match = tileUrl.match(switchRegex);
