@@ -39,7 +39,7 @@
   canEmbed: true
   canDownloadImage: true
   maxZoom: 21
-  tileUrl: "https://{switch:a,b,c}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png?apikey={apikey}"
+  tileUrl: "https://{switch:a,b,c}.tile.thunderforest.com/cycle/{z}/{x}/{y}{r}.png?apikey={apikey}"
   credit:
     id: "thunderforest_credit"
     children:
@@ -57,8 +57,8 @@
   canEmbed: true
   canDownloadImage: true
   maxZoom: 21
-  tileUrl: "https://{switch:a,b,c}.tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey={apikey}"
-  tileUrlDark: "https://{switch:a,b,c}.tile.thunderforest.com/transport-dark/{z}/{x}/{y}.png?apikey={apikey}"
+  tileUrl: "https://{switch:a,b,c}.tile.thunderforest.com/transport/{z}/{x}/{y}{r}.png?apikey={apikey}"
+  tileUrlDark: "https://{switch:a,b,c}.tile.thunderforest.com/transport-dark/{z}/{x}/{y}{r}.png?apikey={apikey}"
   credit:
     id: "thunderforest_credit"
     children:
