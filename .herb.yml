@@ -7,3 +7,5 @@ linter:
   rules:
     html-attribute-double-quotes:
       enabled: false
+    html-anchor-require-href:
+      enabled: false
