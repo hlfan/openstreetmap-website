@@ -1,0 +1,9 @@
+version: 0.8.9
+
+files:
+  exclude:
+    - "node_modules/**"
+linter:
+  rules:
+    html-attribute-double-quotes:
+      enabled: false
