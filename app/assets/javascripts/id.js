@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     let hashChangedAutomatically = false;
-    id.map().on("move.embed", parent.$.throttle(250, function () {
+    id.map().on("hash-update.embed", function () {
       if (id.inIntro()) return;
       const zoom = ~~id.map().zoom(),
             center = id.map().center(),
@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
         hashChangedAutomatically = true;
         parent.location.replace(parent.location.href.replace(/(#.*|$)/, hash));
       }
-    }));
+    });
 
     function goToLocation(data) {
       // 0ms timeout to avoid iframe JS context weirdness.
