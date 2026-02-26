@@ -207,7 +207,7 @@ be-Tarask:
         one: '%{count} год таму'
         other: '%{count} гады таму'
   editor:
-    default: Прадвызначаны (цяпер %{name})
+    default: Перадвызначаны (цяпер %{name})
     id:
       name: iD
       description: iD (рэдактар у браўзэры)
@@ -279,7 +279,7 @@ be-Tarask:
       find_out_why: Знайсьці чаму
       email_not_revealed: Ваш email не будзе раскрыты, калі стане публічным.
       not_reversible: Гэту дзею нельга скасаваць, і ўсе новыя карыстальнікі цяпер
-        публічныя (прадвызначана).
+        публічныя (перадвызначана).
       make_edits_public_button: Зрабіць усе мае рэдагаваньні публічнымі
     update:
       success_confirm_needed: Інфармацыя карыстальніка была абноўленая пасьпяхова.
@@ -2740,11 +2740,11 @@ be-Tarask:
         title: OpenStreetMap Wiki
         description: Праглядзець дэталёвую дакумэнтацыю OpenStreetMap на вікі.
     potlatch:
-      removed: Прадвызначаны рэдактар OpenStreetMap — Potlatch. Паколькі Adobe Flash
-        Player быў адкліканы, Potlatch больш не даступны ў браўзэры.
+      removed: Перадвызначаны рэдактар OpenStreetMap — Potlatch. Паколькі Adobe Flash
+        Player быў адкліканы, Potlatch болей не даступны ў браўзэры.
       desktop_application_html: Можна надалей ўжываць Potlatch на %{download_link}
       download: сьцягнуць праґраму для Mac і Windows
-      id_editor_html: Як варыянт, можна пазначыць прадвызначаным iD рэдактар, які
+      id_editor_html: Як варыянт, можна пазначыць перадвызначаным iD рэдактар, які
         будзе замест Potlatch у браўзэры. %{change_preferences_link}.
       change_preferences: Зьмяніць налады тут
     any_questions:

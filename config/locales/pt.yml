@@ -1963,6 +1963,7 @@ pt:
   layouts:
     logo:
       alt_text: Logotipo do OpenStreetMap
+    layer_info: Informações da camada
     start_mapping: Começar a Mapear
     intro_header: Bem-vindo(a) ao OpenStreetMap!
     intro_text: O OpenStreetMap é um mapa do mundo, criado por pessoas como você e

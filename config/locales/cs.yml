@@ -4,6 +4,7 @@
 # Author: AlesFiala2002
 # Author: Bilbo
 # Author: Bilykralik16
+# Author: Cevioch
 # Author: Chmee2
 # Author: Cvanca
 # Author: Decamexd
@@ -1687,10 +1688,15 @@ cs:
       border_types:
         arrondissement: Hranice arrondissementu
         borough: Hranice městské části
+        cercle: Hranice kruhu
         city: Hranice města
+        comarca: Hranice komarky
         county: Hranice okresu
+        departement: Hranice oddělení
+        department: Hranice oddělení
         district: Hranice okresu
         distrito: Hranice okresu
+        freguesia: Hranice freguesie
         local_authority: Hranice místní samosprávy
         municipality: Hranice obce
         municipi: Hranice obce
@@ -1812,6 +1818,8 @@ cs:
           %{datetime_updated}'
         user_html: Uživatel %{title} vytvořil dne %{datetime_created}
     reporters:
+      index:
+        title: Problém %{issue_id} Reportéři
       reporters:
         more_reporters: a %{count} dalších
   issue_comments:

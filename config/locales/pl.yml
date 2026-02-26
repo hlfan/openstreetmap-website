@@ -9,6 +9,7 @@
 # Author: Anwar2
 # Author: BdgwksxD
 # Author: BeginaFelicysym
+# Author: Cevioch
 # Author: Chrumps
 # Author: Cysioland
 # Author: Czupirek
@@ -909,6 +910,9 @@ pl:
       title: Nie odnaleziono pliku
       description: Nie udało się znaleźć pliku / katalogu / operacji API o tej nazwie
         na serwerze OpenStreetMap (HTTP 404).
+  export:
+    show:
+      title: OpenStreetMap Wbudowany
   follows:
     show:
       follow:
@@ -1774,6 +1778,7 @@ pl:
       download: Pobierz trasę jako GeoJSON
       filename: trasa
       directions_courtesy_html: Wyznaczanie trasy dzięki uprzejmości %{link}
+      check_demo_html: Więcej szczegółów z %{link}
   issues:
     index:
       title: Sprawy
@@ -2033,6 +2038,7 @@ pl:
       about: Informacje
       communities: Społeczności
       copyright: Prawa autorskie
+      donate: Dotacja
       edit: Edycja
       edit_with: Edytuj w %{editor}
       export: Eksport
@@ -3476,7 +3482,9 @@ pl:
       activate_user: Aktywuj tego użytkownika
       confirm_user: Zatwierdź tego użytkownika
       unconfirm_user: Cofnij zatwierdzenie tego użytkownika
+      suspend_user: Zawieś tego użytkownika
       unsuspend_user: Cofnij zawieszenie tego użytkownika
+      undelete_user: Przywróć tego użytkownika
       confirm: Potwierdź
       report: zgłoś tego użytkownika
       edit_profile_details: Edytuj szczegóły profilu
@@ -3546,6 +3554,7 @@ pl:
           many: Znaleziono %{count} użytkowników
           other: Znaleziono %{count} użytkowników
         confirm: Zatwierdź zaznaczonych użytkowników
+        suspend: Zawieś wybranych użytkowników
         empty: Nie znaleziono pasujących użytkowników
       user:
         summary_html: '%{name} utworzony z adresu %{ip_address} dnia %{date}'
@@ -3860,6 +3869,7 @@ pl:
         zoom_out: Oddal
       geolocate_control:
         find_my_location: Wyświetl moje aktualne położenie
+        location_not_available: Lokalizacja niedostępna
         metersPopup:
           one: Jesteś w promieniu 1 metra od tego punktu
           few: Jesteś w promieniu %{count} metrów od tego punktu

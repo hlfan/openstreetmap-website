@@ -3885,7 +3885,7 @@ tr:
         no_contributions: '%{date} tarihinde hiç katkı yapmadı'
         contributions:
           one: '%{date} tarihinde %{count} katkı yaptı'
-          other: '%{date} tarihinde %{count} katkı yaptı.'
+          other: '%{date} tarihinde %{count} katkı yaptı'
     remote_edit:
       failed:
         title: Değişiklik başarısız oldu

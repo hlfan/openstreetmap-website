@@ -4,6 +4,7 @@
 # Author: Alex73
 # Author: Andoti
 # Author: Artsiom91
+# Author: Cevioch
 # Author: Chadyka
 # Author: Goshaproject
 # Author: Gravitystorm
@@ -30,6 +31,9 @@
 be:
   html:
     dir: ltr
+  date:
+    formats:
+      heatmap: '%B %-d'
   time:
     formats:
       friendly: '%e %B %Y у %H:%M'
@@ -368,6 +372,13 @@ be:
           rest_of_world: Астатні свет
       update:
         terms accepted: Дзякуй за прыняцце новых умоў ўдзелу!
+    pd_declarations:
+      create:
+        successfully_declared: Вы паспяхова заявілі, што лічыце свае змены агульнадаступнымі.
+        already_declared: Вы таксама заявілі, што лічыце, што змены павінны знаходзіцца
+          ў агульнай уласнасці.
+        did_not_confirm: Вы таксама заявілі, што лічыце, што змены павінны знаходзіцца
+          ў агульнай уласнасці.
   browse:
     deleted_ago_by_html: Выдалена %{time_ago} карыстальнікам %{user}
     edited_ago_by_html: Адрэдагавана %{time_ago} карыстальнікам %{user}
@@ -447,6 +458,7 @@ be:
     start_rjs:
       feature_warning: Ідзе загрузка %{num_features} функцый, што можа запаволіць
         ваш браўзер. Вы ўпэўнены, што жадаеце праглядзець гэтыя даныя?
+      feature_error: 'Функцыі не змаглі загрузіцца: %{message}'
       load_data: Загрузіць даныя
       loading: Загрузка...
     tag_details:
@@ -460,6 +472,13 @@ be:
       telephone_link: Патэлефанаваць %{phone_number}
       colour_preview: Прагляд колеру %{colour_value}
       email_link: Электронная пошта %{email}
+    versions_navigation:
+      node: Пункт
+      way: Лінія
+      relation: Дачыненне
+      history: Гісторыя
+      version: 'Версія #%{version}'
+      versions_label: Версіі
   feature_queries:
     show:
       title: Пошук аб’ектаў
@@ -474,9 +493,16 @@ be:
         title_html: 'Гісторыя лініі: %{name}'
       relation:
         title_html: 'Гісторыя дачынення: %{name}'
+      older_versions: Іншыя версіі
+      newer_versions: Новыя версіі
     actions:
       view_redacted_data: Прагляд адрэдагаваных даных
       view_redaction_message: Прагляд паведамлення аб рэдагаванні
+  nodes:
+    not_found_message:
+      sorry: Прабачце, %{id} з нумарам не знойдзены.
+    timeout:
+      sorry: Прабачце, атрыманне даных для з ідэнтыфікатарам %{id} заняла зашмат часу.
   old_nodes:
     not_found_message:
       sorry: На жаль, пункт №%{id} версіі %{version} не знойдзены.

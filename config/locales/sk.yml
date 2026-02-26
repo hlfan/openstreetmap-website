@@ -2,6 +2,7 @@
 # Exported from translatewiki.net
 # Export driver: phpyaml
 # Author: Aceman444
+# Author: Cevioch
 # Author: Chiak
 # Author: Dušan Kreheľ
 # Author: Filip009
@@ -1658,15 +1659,31 @@ sk:
         level10: Administratívna hranica (úroveň 10)
         level11: Administratívna hranica (úroveň 11)
       border_types:
+        arrondissement: Hranica arrondissementu
+        borough: Hranica mestskej časti
+        cercle: Hranica kruhu
         city: Hranica mesta
+        comarca: Hranica komarky
         county: Hranica okresu
+        departement: Hranica oddelenia
+        department: Hranica oddelenia
+        district: Hranica okresu
+        distrito: Hranica okresu
+        freguesia: Hranica Freguesie
+        local_authority: Hranice miestnej samosprávy
+        municipality: Hranice obce
+        municipi: Hranice obce
+        município: Hranice obce
         nation: Štátna hranica
         national: Štátna hranica
+        neighbourhood: Hranica susedstva
         parish: Hranica farnosti
+        province: Hranica provincie
         região: Hranica regiónu
         region: Hranica regiónu
         state: Hranica kraja (state)
         town: Hranica mesta
+        township: Hranica mesta
         village: Hranica obce
   searches:
     show:
@@ -1822,22 +1839,30 @@ sk:
       search_language: Hľadať...
       languages:
         af: afrikánčina
+        gsw: Alemančina
         ast: astúrčina
         az: azerbajdžančina
         id: indonézština
         ms: malajčina
         bs: bosniačtina
         br: bretónčina
+        ca: Katalánčina
         cs: čeština
+        cy: Waleština
         da: dánčina
         de: nemčina
+        dsb: Dolnosrbčina
         et: estónčina
         en: angličtina
         en-GB: angličtina (Spojené Kráľovstvo)
         es: španielčina
         eo: esperanto
+        eu: Baskičtina
         fr: francúzština
+        fur: Friulčina
         ga: írčina
+        gd: Škótska gaelčina
+        gl: Galícijčina
         hr: chorvátčina
         ia: Interlingua
         is: islandčina
@@ -1855,6 +1880,7 @@ sk:
         vi: vietnamčina
         el: gréčtina
         be: bieloruština
+        be-Tarask: Bieloruština (tarašk.)
         bg: bulharčina
         mk: macedónčina
         ru: ruština
