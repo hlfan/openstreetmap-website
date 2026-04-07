@@ -8,5 +8,6 @@ class DiaryCommentNotifier < ApplicationNotifier
   deliver_by :email do |config|
     config.mailer = "UserMailer"
     config.method = "diary_comment_notification"
+    config.if = -> { recipient.notification_preferences.diary_comment.include?("email") }
   end
 end
