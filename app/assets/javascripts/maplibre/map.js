@@ -73,6 +73,18 @@ OSM.MapLibre.Map = class extends maplibregl.Map {
     }
     return map;
   }
+
+  // isStyleLoaded() aggregates tile and image loading, so it flips back to false
+  // after style.load fires and can't tell us whether the style document itself is
+  // ready. The style's own _loaded flag is the latch we want: true once style.load
+  // has fired for the current style, reset when setStyle() swaps in a new one.
+  onceStyleReady(fn) {
+    if (this.style?._loaded) {
+      fn();
+      return;
+    }
+    this.once("style.load", fn);
+  }
 };
 
 OSM.MapLibre.SecondaryMap = class extends OSM.MapLibre.Map {
