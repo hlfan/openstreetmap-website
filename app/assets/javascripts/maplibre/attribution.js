@@ -118,7 +118,7 @@ OSM.MapLibre.AttributionControl = class extends maplibregl.AttributionControl {
     const params = new URLSearchParams({
       lat: center.lat.toFixed(5),
       lon: center.lng.toFixed(5),
-      zoom: Math.floor(this._map.getZoom())
+      zoom: Math.floor(this._map.getZoom() + OSM.ZOOM_OFFSET)
     });
     reportLink.href = `/fixthemap?${params.toString()}`;
   }
