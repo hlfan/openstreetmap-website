@@ -4,6 +4,8 @@
 //= require maplibre-gl/dist/maplibre-gl
 //= require maplibre/map
 //= require maplibre/geometry
+//= require maplibre/osm_geojson
+//= require maplibre/data_layer_style
 //= require maplibre/data_layer
 //= require maplibre/main_map
 
@@ -385,5 +387,186 @@ describe("OSM", function () {
     it("suggests 7 digits for z20", function () {
       expect(OSM.zoomPrecision(20)).to.eq(7);
     });
+  });
+});
+
+describe("OSM.MapLibre.osmJsonToGeoJSON", function () {
+  const emit = OSM.MapLibre.osmJsonToGeoJSON;
+
+  it("emits a point feature for a single tagged node", function () {
+    const fc = emit({
+      elements: [
+        { type: "node", id: 1, lat: 10, lon: 20, tags: { amenity: "cafe" } }
+      ]
+    });
+    expect(fc.type).to.eq("FeatureCollection");
+    expect(fc.features).to.have.lengthOf(1);
+    const f = fc.features[0];
+    expect(f.geometry.type).to.eq("Point");
+    expect(f.geometry.coordinates).to.eql([20, 10]);
+    expect(f.properties.featureKind).to.eq("point");
+    expect(f.properties.osmType).to.eq("node");
+    expect(f.properties.osmId).to.eq(1);
+    expect(f.properties.fid).to.eq("n1");
+    expect(f.osm.tags).to.eql({ amenity: "cafe" });
+    expect(f.id).to.eq("n1");
+  });
+
+  it("defaults to an empty tags object on the osm foreign member for untagged elements", function () {
+    const fc = emit({
+      elements: [
+        { type: "node", id: 1, lat: 10, lon: 20, tags: { highway: "traffic_signals" } },
+        { type: "node", id: 2, lat: 11, lon: 21 },
+        { type: "way", id: 100, nodes: [1, 2] }
+      ]
+    });
+    const byType = Object.fromEntries(fc.features.map(f => [f.properties.osmType, f]));
+    expect(byType.node.osm.tags).to.eql({ highway: "traffic_signals" });
+    expect(byType.way.osm.tags).to.eql({});
+  });
+
+  it("keeps tags out of rendering-facing properties so MapLibre only sees primitives", function () {
+    const fc = emit({
+      elements: [
+        { type: "node", id: 1, lat: 10, lon: 20, tags: { amenity: "cafe" } }
+      ]
+    });
+    for (const f of fc.features) {
+      expect(f.properties).to.not.have.property("tags");
+      for (const value of Object.values(f.properties)) {
+        const t = typeof value;
+        expect(t === "string" || t === "number" || t === "boolean" || value === null).to.be.true;
+      }
+    }
+  });
+
+  it("emits a line string for a way and drops its interior nodes", function () {
+    const fc = emit({
+      elements: [
+        { type: "node", id: 1, lat: 10, lon: 20 },
+        { type: "node", id: 2, lat: 11, lon: 21 },
+        { type: "node", id: 3, lat: 12, lon: 22 },
+        { type: "way", id: 100, nodes: [1, 2, 3], tags: { highway: "primary" } }
+      ]
+    });
+    expect(fc.features).to.have.lengthOf(1);
+    const f = fc.features[0];
+    expect(f.geometry.type).to.eq("LineString");
+    expect(f.properties.featureKind).to.eq("line");
+    expect(f.properties.fid).to.eq("w100");
+    expect(f.osm.tags).to.eql({ highway: "primary" });
+    expect(f.geometry.coordinates).to.eql([[20, 10], [21, 11], [22, 12]]);
+  });
+
+  it("emits a polygon for a closed way with an area tag", function () {
+    const fc = emit({
+      elements: [
+        { type: "node", id: 1, lat: 0, lon: 0 },
+        { type: "node", id: 2, lat: 0, lon: 1 },
+        { type: "node", id: 3, lat: 1, lon: 1 },
+        { type: "node", id: 4, lat: 1, lon: 0 },
+        { type: "way", id: 50, nodes: [1, 2, 3, 4, 1], tags: { building: "yes" } }
+      ]
+    });
+    expect(fc.features).to.have.lengthOf(1);
+    expect(fc.features[0].geometry.type).to.eq("Polygon");
+    expect(fc.features[0].properties.featureKind).to.eq("area");
+  });
+
+  it("honours a custom isWayArea override", function () {
+    const fc = emit({
+      elements: [
+        { type: "node", id: 1, lat: 0, lon: 0 },
+        { type: "node", id: 2, lat: 0, lon: 1 },
+        { type: "node", id: 3, lat: 1, lon: 1 },
+        { type: "node", id: 4, lat: 1, lon: 0 },
+        { type: "way", id: 50, nodes: [1, 2, 3, 4, 1], tags: { building: "yes" } }
+      ]
+    }, { isWayArea: () => false });
+    expect(fc.features[0].geometry.type).to.eq("LineString");
+    expect(fc.features[0].properties.featureKind).to.eq("line");
+  });
+
+  it("emits node-member points for a relation with a node member", function () {
+    const fc = emit({
+      elements: [
+        { type: "node", id: 1, lat: 10, lon: 20 },
+        { type: "relation", id: 9, members: [{ type: "node", ref: 1 }] }
+      ]
+    });
+    // The node is referenced by a relation, so it is "interesting" and emitted.
+    expect(fc.features).to.have.lengthOf(1);
+    expect(fc.features[0].properties.osmType).to.eq("node");
+    expect(fc.features[0].properties.osmId).to.eq(1);
+  });
+
+  it("drops plain untagged way nodes via the default interestingNode filter", function () {
+    const fc = emit({
+      elements: [
+        { type: "node", id: 1, lat: 0, lon: 0 },
+        { type: "node", id: 2, lat: 0, lon: 1 },
+        { type: "way", id: 100, nodes: [1, 2] }
+      ]
+    });
+    // Only the way is emitted; nodes 1/2 have no tags and are pure members.
+    expect(fc.features).to.have.lengthOf(1);
+    expect(fc.features[0].properties.osmType).to.eq("way");
+  });
+
+  it("keeps way nodes that carry an interesting tag", function () {
+    const fc = emit({
+      elements: [
+        { type: "node", id: 1, lat: 0, lon: 0, tags: { highway: "traffic_signals" } },
+        { type: "node", id: 2, lat: 0, lon: 1 },
+        { type: "way", id: 100, nodes: [1, 2] }
+      ]
+    });
+    const osmTypes = fc.features.map(f => f.properties.osmType).sort();
+    expect(osmTypes).to.eql(["node", "way"]);
+  });
+
+  it("ignores source tags when computing interestingness", function () {
+    const fc = emit({
+      elements: [
+        { type: "node", id: 1, lat: 0, lon: 0, tags: { source: "survey" } },
+        { type: "node", id: 2, lat: 0, lon: 1 },
+        { type: "way", id: 100, nodes: [1, 2] }
+      ]
+    });
+    // Node 1 only has an uninteresting tag and is a way member → dropped.
+    expect(fc.features).to.have.lengthOf(1);
+    expect(fc.features[0].properties.osmType).to.eq("way");
+  });
+
+  it("emits a polygon for a single-changeset response", function () {
+    const fc = emit({
+      changeset: {
+        id: 42,
+        min_lon: -1,
+        min_lat: -2,
+        max_lon: 3,
+        max_lat: 4
+      }
+    });
+    expect(fc.features).to.have.lengthOf(1);
+    const f = fc.features[0];
+    expect(f.geometry.type).to.eq("Polygon");
+    expect(f.properties.featureKind).to.eq("changeset");
+    expect(f.properties.osmType).to.eq("changeset");
+    expect(f.properties.osmId).to.eq(42);
+    expect(f.properties.fid).to.eq("c42");
+  });
+
+  it("supports a custom nodeFilter that selects a single element", function () {
+    const fc = emit({
+      elements: [
+        { type: "node", id: 1, lat: 0, lon: 0, tags: { foo: "bar" } },
+        { type: "node", id: 2, lat: 1, lon: 1, tags: { foo: "bar" } }
+      ]
+    }, {
+      nodeFilter: (node) => node.id === 2
+    });
+    expect(fc.features).to.have.lengthOf(1);
+    expect(fc.features[0].properties.osmId).to.eq(2);
   });
 });

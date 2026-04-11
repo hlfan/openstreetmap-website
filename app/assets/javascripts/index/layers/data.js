@@ -4,10 +4,6 @@ OSM.initializeDataLayer = function (map) {
   let dataLoader, loadedBounds;
   const dataLayer = map.dataLayer;
 
-  dataLayer.isWayArea = function () {
-    return false;
-  };
-
   dataLayer.on("click", function (e) {
     const feature = e.layer.feature;
     OSM.router.click(e.originalEvent, `/${feature.type}/${feature.id}`);
@@ -127,16 +123,28 @@ OSM.initializeDataLayer = function (map) {
         )
       )
       .then(dataArray => {
-        dataLayer.clearLayers();
-        const allElements = dataArray.flatMap(item => item.elements);
-        const originalFeatures = dataLayer.buildFeatures({ elements: allElements });
-        const features = requestBounds.length > 1 ?
-          [...originalFeatures, ...cloneFeatures(originalFeatures)] : originalFeatures;
+        // The two-request split is purely an OSM API constraint (bbox
+        // must be in [-180, 180] with minLng <= maxLng). Feature wrap
+        // across ±180 is handled by MapLibre's renderWorldCopies: true
+        // default, so both responses can be merged in canonical
+        // coordinates without any per-half longitude shift.
+        //
+        // Main overlay never renders area polygons — ways are drawn as
+        // lines. The element-highlight path (main_map#addObject) uses the
+        // default isWayArea to render polygon fills for area members.
+        const features = dataArray.flatMap(data =>
+          OSM.MapLibre.osmJsonToGeoJSON(data, { isWayArea: () => false }).features
+        );
+        const featureCollection = { type: "FeatureCollection", features };
 
         function addFeatures() {
           $("#browse_status").empty();
-          dataLayer.addData(features);
+          dataLayer.setData(featureCollection);
           loadedBounds = bounds;
+          // The main-overlay render stacks above the element highlight;
+          // restore the highlight on top so a selected element remains
+          // visually distinct after each fetch.
+          map.bringElementHighlightToFront();
         }
 
         function cancelAddFeatures() {
@@ -147,10 +155,6 @@ OSM.initializeDataLayer = function (map) {
           addFeatures();
         } else {
           displayFeatureWarning(features.length, addFeatures, cancelAddFeatures);
-        }
-
-        if (map._objectLayer) {
-          map._objectLayer.bringToFront();
         }
       })
       .catch(function (error) {
@@ -164,27 +168,5 @@ OSM.initializeDataLayer = function (map) {
         dataLoader = null;
         spanLoading.remove();
       });
-  }
-
-  function cloneFeatures(features) {
-    const offset = map.getCenter().lng < 0 ? -360 : 360;
-
-    const cloneNode = ({ latLng, ...rest }) => ({
-      ...rest,
-      latLng: { ...latLng, lng: latLng.lng + offset }
-    });
-
-    return features.flatMap(feature => {
-      if (feature.type === "node") {
-        return [cloneNode(feature)];
-      }
-
-      if (feature.type === "way") {
-        const clonedNodes = feature.nodes.map(cloneNode);
-        return [{ ...feature, nodes: clonedNodes }];
-      }
-
-      return [];
-    });
   }
 };

@@ -1,21 +1,3 @@
-// Expects `this._events` to be initialized as `{}`.
-OSM.MapLibre.Eventable = {
-  on(type, fn) {
-    (this._events[type] = this._events[type] || []).push(fn);
-    return this;
-  },
-  off(type, fn) {
-    if (this._events[type]) {
-      this._events[type] = this._events[type].filter(f => f !== fn);
-    }
-    return this;
-  },
-  fire(type, data) {
-    for (const fn of this._events[type] || []) fn.call(this, data || {});
-    return this;
-  }
-};
-
 OSM.MapLibre.addGeoJSONLayer = function (map, id, geojson, style = {}) {
   OSM.MapLibre.removeGeoJSONLayer(map, id);
 
@@ -29,8 +11,9 @@ OSM.MapLibre.addGeoJSONLayer = function (map, id, geojson, style = {}) {
   // they also add a "-line" outline.
   const kinds = OSM.MapLibre._collectGeometryKinds(geojson);
   const single = kinds.size === 1;
+  const color = style.color || "#FF6200";
   const linePaint = {
-    "line-color": style.color || "#FF6200",
+    "line-color": color,
     "line-width": style.weight || 4,
     "line-opacity": style.opacity ?? 1
   };
@@ -42,10 +25,10 @@ OSM.MapLibre.addGeoJSONLayer = function (map, id, geojson, style = {}) {
       source: id,
       paint: {
         "circle-radius": style.radius || 6,
-        "circle-color": style.color || "#FF6200",
+        "circle-color": color,
         "circle-opacity": style.fillOpacity ?? style.opacity ?? 1,
         "circle-stroke-width": style.weight || 2,
-        "circle-stroke-color": style.color || "#FF6200",
+        "circle-stroke-color": color,
         "circle-stroke-opacity": style.opacity ?? 1
       }
     });
@@ -65,7 +48,7 @@ OSM.MapLibre.addGeoJSONLayer = function (map, id, geojson, style = {}) {
       type: "fill",
       source: id,
       paint: {
-        "fill-color": style.fillColor || style.color || "#FF6200",
+        "fill-color": style.fillColor || color,
         "fill-opacity": style.fillOpacity ?? 0.5
       }
     });
@@ -202,13 +185,17 @@ OSM.MapLibre.getGeoJSONBounds = function (geojson) {
   return bounds;
 };
 
-// Handles bounds that wrap across the antimeridian (ne.lng < sw.lng)
+// Longitude span measured going east from sw to ne, so bounds that wrap
+// across the antimeridian (ne.lng < sw.lng) never yield a negative span.
+OSM.MapLibre._boundsLngSpan = function (bounds) {
+  const lngSpan = bounds.getNorthEast().lng - bounds.getSouthWest().lng;
+  return lngSpan < 0 ? lngSpan + 360 : lngSpan;
+};
+
 OSM.MapLibre.boundsSize = function (bounds) {
   const sw = bounds.getSouthWest();
   const ne = bounds.getNorthEast();
-  let lngSpan = ne.lng - sw.lng;
-  if (lngSpan < 0) lngSpan += 360;
-  return (ne.lat - sw.lat) * lngSpan;
+  return (ne.lat - sw.lat) * OSM.MapLibre._boundsLngSpan(bounds);
 };
 
 // Mirrors Leaflet's LatLngBounds.contains(otherBounds) semantics, since
@@ -223,15 +210,11 @@ OSM.MapLibre.boundsToBBoxString = function (bounds) {
   return [sw.lng, sw.lat, ne.lng, ne.lat].join(",");
 };
 
-// Handles bounds that wrap across the antimeridian (ne.lng < sw.lng) so the
-// longitude span is measured going east from sw to ne, never negative.
 OSM.MapLibre.padBounds = function (bounds, bufferRatio) {
   const sw = bounds.getSouthWest();
   const ne = bounds.getNorthEast();
-  let lngSpan = ne.lng - sw.lng;
-  if (lngSpan < 0) lngSpan += 360;
   const latPad = (ne.lat - sw.lat) * bufferRatio;
-  const lngPad = lngSpan * bufferRatio;
+  const lngPad = OSM.MapLibre._boundsLngSpan(bounds) * bufferRatio;
   return new maplibregl.LngLatBounds(
     [sw.lng - lngPad, sw.lat - latPad],
     [ne.lng + lngPad, ne.lat + latPad]
