@@ -2,9 +2,9 @@
   "name": "openstreetmap",
   "private": true,
   "dependencies": {
+    "@americana/diplomat": "^0.4.0",
     "@mapbox/mapbox-gl-rtl-text": "^0.4.0",
     "@mapbox/polyline": "^1.2.1",
-    "@maptiler/maplibre-gl-omt-language": "^0.0.3",
     "@openstreetmap/id": "2.41.1",
     "bootstrap-icons": "^1.13.1",
     "i18n-js": "^4.5.1",

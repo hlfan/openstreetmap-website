@@ -3,12 +3,21 @@
 //= require maplibre/data_layer
 //= require maplibre/attribution
 //= require maplibre/i18n
-//= require @maptiler/maplibre-gl-omt-language
+//= require @americana/diplomat/dist/index
 //= require download_util
 
 // Layer ids produced by addGeoJSONLayer all start with this prefix so the
 // system test's `osm-data-*` layer check continues to match.
 const HIGHLIGHT_SOURCE_ID = "osm-data-highlight";
+
+// Event-only stand-in for overlays whose rendering lives in index/layers/*.
+OSM.MapLibre.OverlayLayer = class extends maplibregl.Evented {
+  constructor(code) {
+    super();
+    this.options = { code };
+    this._map = null;
+  }
+};
 
 OSM.MapLibre.MainMap = class extends OSM.MapLibre.Map {
   constructor({ container, ...options } = {}) {
@@ -23,13 +32,12 @@ OSM.MapLibre.MainMap = class extends OSM.MapLibre.Map {
     );
 
     const defaultLayer = baseLayers[0];
-    const initialStyle = (OSM.isDark("map") && defaultLayer.styleDark) || defaultLayer.style;
+    const initialStyle = OSM.MapLibre.styleForLayer(defaultLayer);
 
     super({
       container,
       style: initialStyle,
       allowRotation: false,
-      attributionControl: false,
       maxPitch: 0,
       zoomSnap: 1.0,
       ...options
@@ -46,24 +54,9 @@ OSM.MapLibre.MainMap = class extends OSM.MapLibre.Map {
     this._objectLayerIds = new Map();
     this._overlayRestorers = new Map();
 
-    this.noteLayer = {
-      options: { code: "N" },
-      _events: {},
-      _markers: {},
-      _map: null,
-      cancelLoading: () => {},
-      ...OSM.MapLibre.Eventable
-    };
-
+    this.noteLayer = new OSM.MapLibre.OverlayLayer("N");
     this.dataLayer = new OSM.MapLibre.DataLayer({ code: "D" });
-
-    this.gpsLayer = {
-      options: { code: "G" },
-      _events: {},
-      _map: null,
-      cancelLoading: () => {},
-      ...OSM.MapLibre.Eventable
-    };
+    this.gpsLayer = new OSM.MapLibre.OverlayLayer("G");
 
     const attrCredit = this._currentBaseLayer.credit;
     this._attributionControl = new OSM.MapLibre.AttributionControl({
@@ -79,6 +72,8 @@ OSM.MapLibre.MainMap = class extends OSM.MapLibre.Map {
         restorer();
       }
     });
+
+    OSM.MapLibre.localizeMap(this, this._currentBaseLayer);
   }
 
   updateLayers(layerParam) {
@@ -98,7 +93,7 @@ OSM.MapLibre.MainMap = class extends OSM.MapLibre.Map {
 
   _switchBaseLayer(layer) {
     this._currentBaseLayer = layer;
-    const style = (OSM.isDark("map") && layer.styleDark) || layer.style;
+    const style = OSM.MapLibre.styleForLayer(layer);
 
     this._attributionControl._credit = layer.credit;
 
@@ -106,10 +101,7 @@ OSM.MapLibre.MainMap = class extends OSM.MapLibre.Map {
 
     this._applyBaseLayerMaxZoom();
 
-    // Apply OMT language if applicable
-    if (layer.layerId === "openmaptiles_osm") {
-      OSM.MapLibre.setOMTMapLanguage(this);
-    }
+    OSM.MapLibre.localizeMap(this, layer);
 
     this.fire("baselayerchange", { layer });
   }
@@ -560,13 +552,6 @@ OSM.MapLibre.MainMap = class extends OSM.MapLibre.Map {
     const { lat, lng } = OSM.cropLocation(latLng, zoom);
     return `geo:${lat},${lng}?z=${zoom}`;
   }
-};
-
-OSM.isDark = function (subject) {
-  const data = `${subject}-theme`,
-        theme = $(`[data-${data}]`).first().data(data);
-  if (theme) return theme === "dark";
-  return window.matchMedia("(prefers-color-scheme: dark)").matches;
 };
 
 OSM.getMarker = function ({ icon = "dot", color = "var(--marker-red)", ...options }) {

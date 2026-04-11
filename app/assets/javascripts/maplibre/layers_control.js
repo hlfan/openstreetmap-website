@@ -1,4 +1,4 @@
-//= require @maptiler/maplibre-gl-omt-language
+//= require @americana/diplomat/dist/index
 //= require maplibre/map
 //= require maplibre/i18n
 
@@ -32,7 +32,6 @@ OSM.MapLibre.layers = function (options) {
               container,
               style: layer.style,
               interactive: false,
-              attributionControl: false,
               fadeDuration: 0,
               zoomSnap: layer.isVectorStyle ? 0 : 1,
               center: [center.lng, center.lat],
@@ -42,9 +41,7 @@ OSM.MapLibre.layers = function (options) {
             return;
           }
 
-          if (layer.layerId === "openmaptiles_osm") {
-            OSM.MapLibre.setOMTMapLanguage(miniMap);
-          }
+          OSM.MapLibre.localizeMap(miniMap, layer);
 
           map.on("moveend", moved);
         }
