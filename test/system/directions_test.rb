@@ -71,7 +71,7 @@ class DirectionsSystemTest < ApplicationSystemTestCase
 
   def stub_straight_routing(start_instruction: "Start here", finish_instruction: "Finish there")
     stub_routing <<~CALLBACK
-      const distance = points[0].distanceTo(points[1]);
+      const distance = maplibregl.LngLat.convert(points[0]).distanceTo(maplibregl.LngLat.convert(points[1]));
       const time = distance * 30;
       return Promise.resolve({
         line: points,

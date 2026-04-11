@@ -8,16 +8,16 @@ class AccountHomeTest < ApplicationSystemTestCase
     sign_in_as(user)
 
     visit root_path
-    assert_no_selector ".leaflet-marker-icon"
+    assert_no_selector ".maplibre-gl-marker"
 
     click_on "test user"
     click_on "Go to Home Location"
-    all ".leaflet-marker-icon", :count => 1 do |marker|
+    all ".maplibre-gl-marker", :count => 1 do |marker|
       assert_equal "My home location", marker["title"]
     end
 
     click_on "OpenStreetMap logo"
-    assert_no_selector ".leaflet-marker-icon"
+    assert_no_selector ".maplibre-gl-marker"
   end
 
   test "Go to Home Location works on non-map layout pages" do
@@ -25,16 +25,16 @@ class AccountHomeTest < ApplicationSystemTestCase
     sign_in_as(user)
 
     visit about_path
-    assert_no_selector ".leaflet-marker-icon"
+    assert_no_selector ".maplibre-gl-marker"
 
     click_on "test user"
     click_on "Go to Home Location"
-    all ".leaflet-marker-icon", :count => 1 do |marker|
+    all ".maplibre-gl-marker", :count => 1 do |marker|
       assert_equal "My home location", marker["title"]
     end
 
     click_on "OpenStreetMap logo"
-    assert_no_selector ".leaflet-marker-icon"
+    assert_no_selector ".maplibre-gl-marker"
   end
 
   test "Go to Home Location is not available for users without home location" do
@@ -42,7 +42,7 @@ class AccountHomeTest < ApplicationSystemTestCase
     sign_in_as(user)
 
     visit root_path
-    assert_no_selector ".leaflet-marker-icon"
+    assert_no_selector ".maplibre-gl-marker"
 
     click_on "test user"
     assert_no_link "Go to Home Location"
@@ -53,7 +53,7 @@ class AccountHomeTest < ApplicationSystemTestCase
     sign_in_as(user)
 
     visit account_home_path
-    assert_no_selector ".leaflet-marker-icon"
+    assert_no_selector ".maplibre-gl-marker"
     assert_text "Home location is not set"
   end
 end
