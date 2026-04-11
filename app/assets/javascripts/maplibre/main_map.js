@@ -19,7 +19,7 @@ OSM.MapLibre.MainMap = class extends OSM.MapLibre.Map {
     );
 
     const defaultLayer = baseLayers[0];
-    const initialStyle = (OSM.isDarkMap() && defaultLayer.styleDark) || defaultLayer.style;
+    const initialStyle = (OSM.isDark("map") && defaultLayer.styleDark) || defaultLayer.style;
 
     super({
       container,
@@ -97,7 +97,7 @@ OSM.MapLibre.MainMap = class extends OSM.MapLibre.Map {
 
   _switchBaseLayer(layer) {
     this._currentBaseLayer = layer;
-    const style = (OSM.isDarkMap() && layer.styleDark) || layer.style;
+    const style = (OSM.isDark("map") && layer.styleDark) || layer.style;
 
     this._attributionControl._credit = layer.credit;
 
@@ -549,9 +549,10 @@ OSM.MapLibre.MainMap = class extends OSM.MapLibre.Map {
   }
 };
 
-OSM.isDarkMap = function () {
-  const mapTheme = $("body").attr("data-map-theme");
-  if (mapTheme) return mapTheme === "dark";
+OSM.isDark = function (subject) {
+  const data = `${subject}-theme`,
+        theme = $(`[data-${data}]`).first().data(data);
+  if (theme) return theme === "dark";
   return window.matchMedia("(prefers-color-scheme: dark)").matches;
 };
 
