@@ -3580,6 +3580,7 @@ en:
       sorry: "Sorry, note #%{id} could not be found."
   javascripts:
     close: Close
+    pane_load_error: "Failed to load pane. Please try again."
     share:
       title: "Share"
       view_larger_map: "View Larger Map"
@@ -3610,6 +3611,12 @@ en:
         feetPopup:
           one: You are within %{count} foot of this point
           other: You are within %{count} feet of this point
+      scale_control:
+        feet: ft
+        meters: m
+        kilometers: km
+        miles: mi
+        nautical_miles: nm
       attribution_control:
         toggle_attribution: Toggle Attribution
       base:
