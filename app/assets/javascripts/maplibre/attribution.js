@@ -8,6 +8,8 @@ OSM.MapLibre.AttributionControl = class extends maplibregl.AttributionControl {
     this._container = null;
     this._includeReportLink = Boolean(includeReportLink);
     this._credit = credit;
+    this._boundUpdateReportLink = this._updateReportLink.bind(this);
+    this._boundUpdateAttributions = this._updateAttributions.bind(this);
   }
 
   _updateAttributions() {
@@ -90,8 +92,8 @@ OSM.MapLibre.AttributionControl = class extends maplibregl.AttributionControl {
     this._map = map;
 
     if (this._includeReportLink) {
-      map.once("load", this._updateAttributions.bind(this));
-      map.on("moveend", this._updateReportLink.bind(this));
+      map.on("load", this._boundUpdateAttributions);
+      map.on("moveend", this._boundUpdateReportLink);
     }
 
     return super.onAdd(map);
@@ -101,7 +103,8 @@ OSM.MapLibre.AttributionControl = class extends maplibregl.AttributionControl {
     if (!this._map) return;
 
     if (this._includeReportLink) {
-      this._map.off("moveend", this._updateReportLink.bind(this));
+      this._map.off("load", this._boundUpdateAttributions);
+      this._map.off("moveend", this._boundUpdateReportLink);
     }
     this._map = null;
     super.onRemove();
@@ -117,7 +120,7 @@ OSM.MapLibre.AttributionControl = class extends maplibregl.AttributionControl {
     const params = new URLSearchParams({
       lat: center.lat.toFixed(5),
       lon: center.lng.toFixed(5),
-      zoom: Math.floor(this._map.getZoom())
+      zoom: Math.floor(this._map.getZoom() + OSM.ZOOM_OFFSET)
     });
     reportLink.href = `/fixthemap?${params.toString()}`;
   }

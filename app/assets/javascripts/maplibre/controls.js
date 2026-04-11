@@ -34,6 +34,16 @@ OSM.MapLibre.CombinedControlGroup = class CombinedControlGroup {
             iconElement.className = `maplibregl-ctrl-icon fs-5 bi bi-${icon}`;
             button.replaceChildren(iconElement);
           }
+
+          // Shift-click on zoom-in/out zooms by 3 levels, matching
+          // Leaflet's zoomDelta-on-shift behavior.
+          if (type === "zoom-in" || type === "zoom-out") {
+            button.addEventListener("click", (e) => {
+              if (!e.shiftKey) return;
+              const delta = type === "zoom-in" ? 3 : -3;
+              map.easeTo({ zoom: map.getZoom() + delta });
+            });
+          }
         }
         this._container.appendChild(button);
       });
@@ -59,6 +69,11 @@ OSM.MapLibre.GeolocateControl = class extends maplibregl.GeolocateControl {
       trackUserLocation: true,
       ...options
     });
+  }
+
+  onAdd(map) {
+    this.setEventedParent(map);
+    return super.onAdd(map);
   }
 };
 
