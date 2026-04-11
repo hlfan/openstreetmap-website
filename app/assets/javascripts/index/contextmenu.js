@@ -8,7 +8,7 @@ OSM.initializations.push(function (map) {
   };
 
   const updateContextMenuState = () => {
-    const zoom = map.getZoom();
+    const zoom = map.getZoom() + OSM.ZOOM_OFFSET;
     toggleMenuItem($("#menu-action-add-note"), zoom >= 12);
     toggleMenuItem($("#menu-action-query-features"), zoom >= 14);
   };
@@ -20,9 +20,11 @@ OSM.initializations.push(function (map) {
     return $input.val();
   };
 
-  const latLngFromContext = () => L.latLng($contextMenu.data("lat"), $contextMenu.data("lng"));
+  const latLngFromContext = () =>
+    ({ lat: $contextMenu.data("lat"), lng: $contextMenu.data("lng") });
 
-  const croppedLatLng = () => OSM.cropLocation(latLngFromContext(), map.getZoom());
+  const croppedLatLng = () =>
+    OSM.cropLocation(latLngFromContext(), map.getZoom() + OSM.ZOOM_OFFSET);
 
   const routeWithLatLon = (path, extraParams = {}) => {
     const { lat, lng } = croppedLatLng();
@@ -72,7 +74,7 @@ OSM.initializations.push(function (map) {
       id: "menu-action-show-address",
       icon: "bi-compass",
       text: OSM.i18n.t("javascripts.context.show_address"),
-      callback: () => routeWithLatLon("/search", { zoom: map.getZoom() })
+      callback: () => routeWithLatLon("/search", { zoom: map.getZoom() + OSM.ZOOM_OFFSET })
     },
     {
       id: "menu-action-query-features",
@@ -84,7 +86,9 @@ OSM.initializations.push(function (map) {
       id: "menu-action-centre-map",
       icon: "bi-crosshair",
       text: OSM.i18n.t("javascripts.context.centre_map"),
-      callback: () => map.panTo(latLngFromContext())
+      callback: () => {
+        map.panTo(latLngFromContext());
+      }
     }
   ];
 
@@ -124,8 +128,8 @@ OSM.ContextMenu = class {
     this._$element.removeClass("d-none");
     this._updatePopper(e);
 
-    this._$element.data("lat", e.latlng.lat);
-    this._$element.data("lng", e.latlng.lng);
+    this._$element.data("lat", e.lngLat.lat);
+    this._$element.data("lng", e.lngLat.lng);
   }
 
   hide() {

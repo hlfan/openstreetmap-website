@@ -185,8 +185,8 @@ export default function (map) {
     }
   });
 
-  function sendStartingLocation({ latlng: { lat, lng } }) {
-    map.fire("startinglocation", { lat, lng });
+  function sendStartingLocation({ coords }) {
+    map.fire("startinglocation", { lat: coords.latitude, lng: coords.longitude });
   }
 
   function startingLocationListener({ lat, lng }) {
@@ -195,11 +195,12 @@ export default function (map) {
     endpoints[0].setValue(`${lat}, ${lng}`);
   }
 
-  map
-    .on("locationfound", ({ latlng: { lat, lng } }) => lastLocation = { lat, lng })
-    .on("locateactivate", () => {
-      map.once("startinglocation", startingLocationListener);
-    });
+  map.on("geolocate", ({ coords }) => {
+    lastLocation = { lat: coords.latitude, lng: coords.longitude };
+  });
+  map.on("trackuserlocationstart", () => {
+    map.once("startinglocation", startingLocationListener);
+  });
 
   function initializeFromParams() {
     const params = new URLSearchParams(location.search),
@@ -225,17 +226,17 @@ export default function (map) {
       const oe = e.originalEvent;
       const dragData = JSON.parse(oe.dataTransfer.getData("text"));
       const type = dragData.type;
-      const pt = L.DomEvent.getMousePosition(oe, map.getContainer()); // co-ordinates of the mouse pointer at present
+      const container = map.getContainer();
+      const rect = container.getBoundingClientRect();
+      const pt = { x: oe.clientX - rect.left, y: oe.clientY - rect.top + 20 };
 
-      pt.y += 20;
-
-      const ll = map.containerPointToLatLng(pt);
-      const { lat, lng } = OSM.cropLocation(ll, map.getZoom());
+      const ll = map.unproject(pt);
+      const { lat, lng } = OSM.cropLocation(ll, map.getZoom() + OSM.ZOOM_OFFSET);
 
       endpoints[type === "from" ? 0 : 1].setValue(`${lat}, ${lng}`);
     });
 
-    map.on("locationfound", sendStartingLocation);
+    map.on("geolocate", sendStartingLocation);
 
     endpoints[0].enableListeners();
     endpoints[1].enableListeners();
@@ -274,7 +275,7 @@ export default function (map) {
 
     $("#sidebar .sidebar-close-controls button").off("click", closeButtonListener);
     $("#map").off("dragend dragover drop");
-    map.off("locationfound", sendStartingLocation);
+    map.off("geolocate", sendStartingLocation);
 
     endpoints[0].disableListeners();
     endpoints[1].disableListeners();

@@ -1,13 +1,13 @@
 //= require_self
 //= require numbered_pagination
-//= require leaflet.sidebar
-//= require leaflet.sidebar-pane
-//= require leaflet.locate
-//= require leaflet.layers
-//= require leaflet.legend
-//= require leaflet.note
-//= require leaflet.share
-//= require leaflet.query
+//= require maplibre/sidebar
+//= require maplibre/sidebar_pane
+//= require maplibre/layers_control
+//= require maplibre/legend_control
+//= require maplibre/note_control
+//= require maplibre/share_control
+//= require maplibre/query_control
+//= require maplibre/location_filter
 //= require index/contextmenu
 //= require index/initializations
 //= require index/layers/data
@@ -17,12 +17,10 @@
 OSM.initializations = [];
 
 $(function () {
-  const map = new L.OSM.Map("map", {
-    zoomControl: false,
-    layerControl: false,
-    contextmenu: true,
-    worldCopyJump: true
+  const map = new OSM.MapLibre.MainMap({
+    container: "map"
   });
+  window.__map__ = map;
 
   OSM.loadSidebarContent = function (path, callback) {
     let content_path = path;
@@ -75,64 +73,61 @@ $(function () {
 
   const params = OSM.mapParams();
 
-  map.attributionControl.setPrefix("");
-
   map.updateLayers(params.layers);
 
   map.on("baselayerchange", function (e) {
-    if (map.getZoom() > e.layer.options.maxZoom) {
-      map.setView(map.getCenter(), e.layer.options.maxZoom, { reset: true });
+    const maxZoom = e.layer?.maxZoom;
+    if (maxZoom && map.getZoom() + OSM.ZOOM_OFFSET > maxZoom) {
+      map.setView(map.getCenter(), maxZoom, { reset: true });
     }
   });
 
-  const sidebar = L.OSM.sidebar("#map-ui")
+  const sidebar = OSM.MapLibre.sidebar("#map-ui")
     .addTo(map);
 
-  const position = $("html").attr("dir") === "rtl" ? "topleft" : "topright";
+  const position = $("html").attr("dir") === "rtl" ? "top-left" : "top-right";
 
-  function addControlGroup(controls) {
-    for (const control of controls) control.addTo(map);
+  map.addControl(new OSM.MapLibre.CombinedControlGroup([
+    new OSM.MapLibre.NavigationControl(),
+    new OSM.MapLibre.GeolocateControl()
+  ]), position);
 
-    const firstContainer = controls[0].getContainer();
-    $(firstContainer).find(".control-button").first()
-      .addClass("control-button-first");
+  const layersControl = OSM.MapLibre.layers({
+    position,
+    sidebar,
+    layers: map.baseLayers
+  });
 
-    const lastContainer = controls[controls.length - 1].getContainer();
-    $(lastContainer).find(".control-button").last()
-      .addClass("control-button-last");
-  }
+  const legendControl = OSM.MapLibre.legend({ position, sidebar });
 
-  addControlGroup([
-    L.OSM.zoom({ position }),
-    L.OSM.locate({ position })
-  ]);
+  const shareControl = OSM.MapLibre.share({
+    position,
+    sidebar,
+    "short": true
+  });
 
-  addControlGroup([
-    L.OSM.layers({
-      position,
-      sidebar,
-      layers: map.baseLayers
-    }),
-    L.OSM.legend({ position, sidebar }),
-    L.OSM.share({
-      position,
-      sidebar,
-      "short": true
-    })
-  ]);
+  const noteControl = OSM.MapLibre.note({ position, sidebar });
+  const queryControl = OSM.MapLibre.query({ position, sidebar });
 
-  addControlGroup([
-    L.OSM.note({ position, sidebar })
-  ]);
+  map.addControl(layersControl, position);
+  map.addControl(legendControl, position);
+  map.addControl(shareControl, position);
+  map.addControl(noteControl, position);
+  map.addControl(queryControl, position);
 
-  addControlGroup([
-    L.OSM.query({ position, sidebar })
-  ]);
-
-  L.control.scale()
-    .addTo(map);
+  map.addControl(new maplibregl.ScaleControl({ unit: "metric" }), "bottom-left");
+  map.addControl(new maplibregl.ScaleControl({ unit: "imperial" }), "bottom-left");
 
   OSM.initializations.forEach(func => func(map));
+
+  // Position the map before any overlays are added so that overlay init
+  // (e.g. `dataLayer.on("add", ...)` fetching via `map.getBounds()`) sees
+  // the intended viewport rather than the default unpositioned bounds.
+  if (params.bounds) {
+    map.fitBounds(params.bounds);
+  } else {
+    map.setView({ lng: params.lon, lat: params.lat }, params.zoom);
+  }
 
   if (OSM.STATUS !== "api_offline" && OSM.STATUS !== "database_offline") {
     OSM.initializeNotesLayer(map);
@@ -150,7 +145,7 @@ $(function () {
     }
   }
 
-  $(".leaflet-control .control-button").tooltip({ placement: "left", container: "body" });
+  $(".maplibregl-ctrl .control-button, .control-button").tooltip({ placement: "left", container: "body" });
 
   const expires = new Date();
   const thisYear = expires.getFullYear();
@@ -159,7 +154,7 @@ $(function () {
   const updateCookieAndLinks = function () {
     updateLinks(
       map.getCenter().wrap(),
-      map.getZoom(),
+      map.getZoom() + OSM.ZOOM_OFFSET,
       map.getLayersCode(),
       map._object);
 
@@ -168,6 +163,10 @@ $(function () {
   for (const e of ["moveend", "baselayerchange", "overlayadd", "overlayremove"]) {
     map.on(e, updateCookieAndLinks);
   }
+  // Trigger once at page load so links, cookie, and the #edit_tab tooltip
+  // are initialized from the current map state (the moveend from setView
+  // above fires before this listener is attached).
+  updateCookieAndLinks();
 
   if (OSM.cookies.get("_osm_welcome") !== "hide") {
     $(".welcome").addClass("d-md-block");
@@ -191,8 +190,9 @@ $(function () {
 
   if (OSM.MATOMO) {
     const matomoLayerHandler = function (e) {
-      if (e.layer.options) {
-        const goal = OSM.MATOMO.goals[e.layer.options.layerId];
+      const layerOptions = e.layer;
+      if (layerOptions) {
+        const goal = OSM.MATOMO.goals[layerOptions.layerId];
 
         if (goal) {
           $("body").trigger("matomogoal", goal);
@@ -203,16 +203,18 @@ $(function () {
     map.on("overlayadd", matomoLayerHandler);
   }
 
-  if (params.bounds) {
-    map.fitBounds(params.bounds);
-  } else {
-    map.setView([params.lat, params.lon], params.zoom);
-  }
-
   if (params.marker && params.mrad) {
-    L.circle([params.mlat, params.mlon], { radius: params.mrad }).addTo(map);
+    const circleGeoJSON = OSM.MapLibre.circleGeoJSON(
+      { lat: params.mlat, lng: params.mlon }, params.mrad
+    );
+    const circleStyle = { color: "#03f", fillOpacity: 0.2, weight: 2, opacity: 0.5 };
+    map.onceStyleReady(() => {
+      OSM.MapLibre.addGeoJSONLayer(map, "url-marker-circle", circleGeoJSON, circleStyle);
+    });
   } else if (params.marker) {
-    L.marker([params.mlat, params.mlon], { icon: OSM.getMarker({ color: "var(--marker-blue)" }) }).addTo(map);
+    new OSM.MapLibre.Marker({ icon: "dot", color: "var(--marker-blue)" })
+      .setLngLat([params.mlon, params.mlat])
+      .addTo(map);
   }
 
   function remoteEditHandler(bbox, object) {

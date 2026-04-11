@@ -3,15 +3,14 @@
 export default function (map) {
   const page = {};
 
-  const locationFilter = new L.LocationFilter({
-    enableButton: false,
-    adjustButton: false
-  }).on("change", update);
+  const locationFilter = new OSM.MapLibre.LocationFilter();
+  locationFilter.on("change", update);
 
   function getBounds() {
-    return L.latLngBounds(
-      { lat: $("#minlat").val(), lng: $("#minlon").val() },
-      { lat: $("#maxlat").val(), lng: $("#maxlon").val() });
+    return new maplibregl.LngLatBounds(
+      [parseFloat($("#minlon").val()), parseFloat($("#minlat").val())],
+      [parseFloat($("#maxlon").val()), parseFloat($("#maxlat").val())]
+    );
   }
 
   function boundsChanged() {
@@ -27,7 +26,7 @@ export default function (map) {
 
     $("#drag_box").hide();
 
-    locationFilter.setBounds(map.getBounds().pad(-0.2));
+    locationFilter.setBounds(OSM.MapLibre.padBounds(map.getBounds(), -0.2));
     locationFilter.enable();
     validateControls();
   }
@@ -60,10 +59,11 @@ export default function (map) {
   }
 
   function setBounds(bounds) {
-    const sw = OSM.cropLocation(bounds.getSouthWest(), map.getZoom());
+    const zoom = map.getZoom() + OSM.ZOOM_OFFSET;
+    const sw = OSM.cropLocation(bounds.getSouthWest(), zoom);
     $("#minlon").val(sw.lng);
     $("#minlat").val(sw.lat);
-    const ne = OSM.cropLocation(bounds.getNorthEast(), map.getZoom());
+    const ne = OSM.cropLocation(bounds.getNorthEast(), zoom);
     $("#maxlon").val(ne.lng);
     $("#maxlat").val(ne.lat);
 
@@ -72,12 +72,14 @@ export default function (map) {
   }
 
   function validateControls() {
-    $("#export_osm_too_large").toggle(getBounds().getSize() > OSM.MAX_REQUEST_AREA);
-    $("#export_commit").toggle(getBounds().getSize() < OSM.MAX_REQUEST_AREA);
+    const bounds = getBounds();
+    const boundsSize = OSM.MapLibre.boundsSize(bounds);
+    $("#export_osm_too_large").toggle(boundsSize > OSM.MAX_REQUEST_AREA);
+    $("#export_commit").toggle(boundsSize < OSM.MAX_REQUEST_AREA);
   }
 
   function checkSubmit(e) {
-    if (getBounds().getSize() > OSM.MAX_REQUEST_AREA) e.preventDefault();
+    if (OSM.MapLibre.boundsSize(getBounds()) > OSM.MAX_REQUEST_AREA) e.preventDefault();
   }
 
   page.pushstate = page.popstate = function (path) {
@@ -85,9 +87,8 @@ export default function (map) {
   };
 
   page.load = function () {
-    map
-      .addLayer(locationFilter)
-      .on("moveend", update);
+    locationFilter.addTo(map);
+    map.on("moveend", update);
 
     $("#maxlat, #minlon, #maxlon, #minlat").change(boundsChanged);
     $("#drag_box").click(enableFilter);
@@ -118,9 +119,8 @@ export default function (map) {
   };
 
   page.unload = function () {
-    map
-      .removeLayer(locationFilter)
-      .off("moveend", update);
+    locationFilter.remove();
+    map.off("moveend", update);
   };
 
   return page;

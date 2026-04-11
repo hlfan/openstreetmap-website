@@ -5,7 +5,7 @@ export default function (map) {
         control = $(".control-note"),
         addNoteButton = control.find(".control-button");
   let newNoteMarker,
-      halo,
+      haloSourceId,
       errorPanel,
       errorPanelDetail;
 
@@ -25,66 +25,63 @@ export default function (map) {
       });
   }
 
-  function addCreatedNoteMarker(feature) {
-    const marker = L.marker(feature.geometry.coordinates.reverse(), {
-      icon: OSM.noteMarkers[feature.properties.status],
-      opacity: 0.9,
-      interactive: true
-    });
-    marker.id = feature.properties.id;
-    marker.addTo(noteLayer);
-  }
-
   function addHalo(latlng) {
-    if (halo) map.removeLayer(halo);
-
-    halo = L.circleMarker(latlng, {
-      weight: 2.5,
-      radius: 20,
-      fillOpacity: 0.5,
-      color: "#FF6200"
+    removeHalo();
+    haloSourceId = "new-note-halo";
+    const geojson = {
+      type: "Feature",
+      geometry: { type: "Point", coordinates: [latlng.lng, latlng.lat] }
+    };
+    map.onceStyleReady(() => {
+      OSM.MapLibre.addGeoJSONLayer(map, haloSourceId, geojson, {
+        color: "#FF6200",
+        radius: 20,
+        weight: 2.5,
+        fillOpacity: 0.5,
+        opacity: 1
+      });
     });
-
-    map.addLayer(halo);
   }
 
   function removeHalo() {
-    if (halo) map.removeLayer(halo);
-    halo = null;
+    if (haloSourceId) {
+      OSM.MapLibre.removeGeoJSONLayer(map, haloSourceId);
+      haloSourceId = null;
+    }
   }
 
   function addNewNoteMarker(latlng) {
-    if (newNoteMarker) map.removeLayer(newNoteMarker);
+    if (newNoteMarker) newNoteMarker.remove();
 
-    newNoteMarker = L.marker(latlng, {
-      icon: OSM.noteMarkers.new,
-      opacity: 0.9,
-      draggable: true
-    });
+    const markerOpts = OSM.noteMarkers.new;
+    newNoteMarker = new OSM.MapLibre.Marker({ ...markerOpts, draggable: true })
+      .setLngLat(latlng)
+      .addTo(map);
 
     newNoteMarker.on("dragstart", removeHalo);
-    newNoteMarker.on("dragend", function () {
-      removeHalo();
-      addHalo(newNoteMarker.getLatLng());
-    });
-
-    newNoteMarker.addTo(map);
-    addHalo(newNoteMarker.getLatLng());
 
     newNoteMarker.on("dragend", function () {
+      addHalo(newNoteMarker.getLngLat());
       content.find("textarea").trigger("focus");
     });
+
+    addHalo(newNoteMarker.getLngLat());
   }
 
   function removeNewNoteMarker() {
     removeHalo();
-    if (newNoteMarker) map.removeLayer(newNoteMarker);
+    if (newNoteMarker) newNoteMarker.remove();
     newNoteMarker = null;
   }
 
   function moveNewNoteMarkerToClick(e) {
-    if (newNoteMarker) newNoteMarker.setLatLng(e.latlng);
-    if (halo) halo.setLatLng(e.latlng);
+    if (newNoteMarker) newNoteMarker.setLngLat(e.lngLat);
+    if (haloSourceId && map.getSource(haloSourceId)) {
+      OSM.MapLibre.updateGeoJSONSource(map, haloSourceId, {
+        type: "Feature",
+        geometry: { type: "Point", coordinates: [e.lngLat.lng, e.lngLat.lat] }
+      });
+    }
     content.find("textarea").trigger("focus");
   }
 
@@ -94,7 +91,12 @@ export default function (map) {
 
     content.find("#new-note-zoom-warning").prop("hidden", !zoomedOut);
     content.find("input[type=submit]").prop("disabled", zoomedOut || withoutText);
-    if (newNoteMarker) newNoteMarker.setOpacity(zoomedOut ? 0.5 : 0.9);
+    // Fade the draggable marker while the submit button is disabled by the
+    // zoom threshold — mirrors the Leaflet marker.setOpacity(0.5) feedback
+    // so the user sees that the marker won't submit at this zoom.
+    if (newNoteMarker) {
+      newNoteMarker.getElement().classList.toggle("opacity-50", zoomedOut);
+    }
   }
 
   page.pushstate = page.popstate = function (path) {
@@ -106,13 +108,13 @@ export default function (map) {
   page.load = function (path) {
     control.addClass("active");
 
-    map.addLayer(noteLayer);
+    map.addLayer(map.noteLayer);
 
     const params = new URLSearchParams(path.substring(path.indexOf("?")));
     let markerLatlng;
 
     if (params.has("lat") && params.has("lon")) {
-      markerLatlng = { lat: params.get("lat"), lng: params.get("lon") };
+      markerLatlng = { lat: parseFloat(params.get("lat")), lng: parseFloat(params.get("lon")) };
     } else {
       markerLatlng = map.getCenter();
     }
@@ -130,7 +132,7 @@ export default function (map) {
       .removeAttr("readonly");
 
     content.find("input[type=submit]").on("click", function (e) {
-      const location = newNoteMarker.getLatLng().wrap();
+      const location = newNoteMarker.getLngLat().wrap();
       const text = content.find("textarea").val();
 
       errorPanel = content.find(".new-note-error");
@@ -139,8 +141,7 @@ export default function (map) {
 
       e.preventDefault();
       $(this).prop("disabled", true);
-      newNoteMarker.options.draggable = false;
-      newNoteMarker.dragging.disable();
+      newNoteMarker.setDraggable(false);
 
       createNote(location, text)
         .then(feature => {
@@ -149,7 +150,7 @@ export default function (map) {
             OSM.cookies.set("_osm_anonymous_notes_count", anonymousNotesCount + 1, { expires: 14 });
           }
           content.find("textarea").val("");
-          addCreatedNoteMarker(feature);
+          noteLayer.addNote(feature);
           OSM.router.route("/note/" + feature.properties.id);
         })
         .catch(err => {

@@ -13,7 +13,7 @@ OSM.initializations.push(function (map) {
     const bounds = map.getBounds();
     const params = new URLSearchParams({
       query: this.elements.query.value,
-      zoom: map.getZoom(),
+      zoom: map.getZoom() + OSM.ZOOM_OFFSET,
       minlon: bounds.getWest(),
       minlat: bounds.getSouth(),
       maxlon: bounds.getEast(),
@@ -26,7 +26,7 @@ OSM.initializations.push(function (map) {
   $(".describe_location").on("click", function (e) {
     e.preventDefault();
     $("header").addClass("closed");
-    const zoom = map.getZoom();
+    const zoom = map.getZoom() + OSM.ZOOM_OFFSET;
     const { lat, lng } = OSM.cropLocation(map.getCenter(), zoom);
 
     OSM.router.route("/search?" + new URLSearchParams({ lat, lon: lng, zoom }));
@@ -72,7 +72,7 @@ OSM.initializations.push(function (map) {
   });
 
   function clickHandler(e) {
-    const { lat, lng } = OSM.cropLocation(e.latlng, map.getZoom());
+    const { lat, lng } = OSM.cropLocation(e.lngLat, map.getZoom() + OSM.ZOOM_OFFSET);
 
     OSM.router.route("/query?" + new URLSearchParams({ lat, lon: lng }));
   }

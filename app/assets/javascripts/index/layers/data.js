@@ -1,4 +1,5 @@
 //= require download_util
+
 OSM.initializeDataLayer = function (map) {
   let dataLoader, loadedBounds;
   const dataLayer = map.dataLayer;
@@ -28,7 +29,11 @@ OSM.initializeDataLayer = function (map) {
 
   function updateData() {
     const bounds = map.getBounds();
-    if (!loadedBounds || !loadedBounds.contains(bounds)) {
+    // Skip fetches with out-of-range bounds (e.g. an unpositioned map at zoom
+    // 0 whose wrapped viewport spans most of the world). The API will reject
+    // them with a 400 and the Map Data overlay stays empty.
+    if (OSM.MapLibre.boundsSize(bounds) >= OSM.MAX_REQUEST_AREA) return;
+    if (!loadedBounds || !OSM.MapLibre.boundsContainBounds(loadedBounds, bounds)) {
       getData();
     }
   }
@@ -85,18 +90,16 @@ OSM.initializeDataLayer = function (map) {
     function getRequestBounds(bounds) {
       const wrapped = getWrappedBounds(bounds);
       if (wrapped.minLng > wrapped.maxLng) {
-        // BBox is crossing antimeridian: split into two bboxes in order to stay
-        // within OSM API's map endpoint permitted range for longitude [-180..180].
         return [
-          L.latLngBounds([wrapped.minLat, wrapped.minLng], [wrapped.maxLat, 180]),
-          L.latLngBounds([wrapped.minLat, -180], [wrapped.maxLat, wrapped.maxLng])
+          new maplibregl.LngLatBounds([wrapped.minLng, wrapped.minLat], [180, wrapped.maxLat]),
+          new maplibregl.LngLatBounds([-180, wrapped.minLat], [wrapped.maxLng, wrapped.maxLat])
         ];
       }
-      return [L.latLngBounds([wrapped.minLat, wrapped.minLng], [wrapped.maxLat, wrapped.maxLng])];
+      return [new maplibregl.LngLatBounds([wrapped.minLng, wrapped.minLat], [wrapped.maxLng, wrapped.maxLat])];
     }
 
     function fetchDataForBounds(bounds) {
-      return fetch(`/api/${OSM.API_VERSION}/map.json?bbox=${bounds.toBBoxString()}`, {
+      return fetch(`/api/${OSM.API_VERSION}/map.json?bbox=${OSM.MapLibre.boundsToBBoxString(bounds)}`, {
         headers: { ...OSM.oauth },
         signal: dataLoader.signal
       });
@@ -127,7 +130,6 @@ OSM.initializeDataLayer = function (map) {
         dataLayer.clearLayers();
         const allElements = dataArray.flatMap(item => item.elements);
         const originalFeatures = dataLayer.buildFeatures({ elements: allElements });
-        // clone features when crossing antimeridian to work around Leaflet restrictions
         const features = requestBounds.length > 1 ?
           [...originalFeatures, ...cloneFeatures(originalFeatures)] : originalFeatures;
 
