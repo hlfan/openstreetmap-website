@@ -233,15 +233,22 @@ export default function (map) {
   }
 
   function setBboxFetchData(data) {
-    const crs = map.options.crs;
-    const sw = map.getBounds().getSouthWest();
-    const ne = map.getBounds().getNorthEast();
-    const swClamped = crs.unproject(crs.project(sw));
-    const neClamped = crs.unproject(crs.project(ne));
+    const bounds = map.getBounds();
+    const sw = bounds.getSouthWest();
+    const ne = bounds.getNorthEast();
+    const latSpan = ne.lat - sw.lat;
+    const lngSpan = ne.lng - sw.lng;
 
-    if (sw.lat >= swClamped.lat || ne.lat <= neClamped.lat || ne.lng - sw.lng < 360) {
-      data.set("bbox", map.getBounds().toBBoxString());
-    }
+    // Skip bbox filter when the view is fully zoomed out to show the whole
+    // world. MapLibre enforces a minimum zoom that makes the world fill the
+    // viewport, so at minimum zoom latSpan reaches the full Mercator range
+    // (~170°) even when lngSpan is < 360°. Sending a bbox with a partial
+    // lngSpan in that case would wrap_lon on the server and exclude
+    // changesets near the antimeridian. Use 170° / 360° as "effectively
+    // the whole world" thresholds.
+    if (latSpan >= 170 || lngSpan >= 360) return;
+
+    data.set("bbox", OSM.MapLibre.boundsToBBoxString(bounds));
   }
 
   function setListFetchData(data, url) {
@@ -283,7 +290,7 @@ export default function (map) {
 
     if (!isHistory) {
       const bounds = changesetsLayer.getBounds();
-      if (bounds.isValid()) map.fitBounds(bounds);
+      if (!bounds.isEmpty()) map.fitBounds(bounds, { animate: false });
     }
   }
 

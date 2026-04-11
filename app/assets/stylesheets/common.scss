@@ -180,10 +180,11 @@ nav.primary, nav.secondary {
   font-weight: $font-weight-normal;
 }
 
-/* Rules for Leaflet maps */
+/* Rules for map controls */
 
-.leaflet-top.leaflet-right,
-.leaflet-top.leaflet-left {
+.maplibregl-ctrl-top-right,
+.maplibregl-ctrl-top-left {
+  top: 10px !important;
   height: 100%;
   column-gap: 10px;
   display: flex;
@@ -191,7 +192,8 @@ nav.primary, nav.secondary {
   flex-wrap: wrap-reverse;
 }
 
-.leaflet-control .control-button {
+.maplibregl-ctrl .control-button,
+.control-button {
   display: grid;
   height: 40px;
   width: 40px;
@@ -199,29 +201,22 @@ nav.primary, nav.secondary {
   place-content: center;
   background-color: rgba(0, 0, 0, 0.6);
   outline: none;
+  border-start-start-radius: 4px;
+  border-end-start-radius: 4px;
 
   &:hover,
   &:focus {
     background-color: black;
   }
 
-  &.disabled,
-  &.leaflet-disabled {
+  &.disabled {
     background-color: rgba(0,0,0,.5);
     cursor: default;
   }
-
-  &-first {
-    border-start-start-radius: 4px;
-  }
-
-  &-last {
-    border-end-start-radius: 4px;
-    margin-bottom: 10px;
-  }
 }
 
-.leaflet-control.active .control-button {
+.maplibregl-ctrl.active .control-button,
+.active .control-button {
   background-color: $vibrant-green;
 }
 
@@ -280,16 +275,8 @@ nav.primary, nav.secondary {
       cursor: not-allowed;
     }
 
-    .leaflet-marker-draggable {
+    .maplibregl-marker-draggable {
       cursor: move;
-    }
-
-    .query-marker {
-      animation: 1500ms forwards query-marker-fade;
-
-      @keyframes query-marker-fade {
-        to { opacity: 0 }
-      }
     }
   }
 
@@ -359,18 +346,11 @@ nav.primary, nav.secondary {
   }
 }
 
-.leaflet-top {
-  top: 10px !important;
-  .leaflet-control {
-    margin-right: 0px !important;
-    margin-top: 0px !important;
-  }
-}
+/* margin resets handled by maplibre-gl-all.scss */
 
-.leaflet-popup-scrolled {
-  padding-right: $lineheight;
-  border-bottom: 0px !important;
-  border-top: 0px !important;
+.maplibregl-popup-content {
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 @each $anchor, $border in (
@@ -386,18 +366,21 @@ nav.primary, nav.secondary {
 
 .maplibregl-ctrl.maplibregl-ctrl-attrib,
 .maplibregl-popup-content,
-.leaflet-popup-content-wrapper, .leaflet-popup-tip,
-.leaflet-control-attribution, .leaflet-control-scale-line {
+.maplibregl-ctrl-scale {
   @extend .bg-body, .text-body;
 }
 
 .maplibregl-ctrl.maplibregl-ctrl-attrib,
-.leaflet-control-attribution, .leaflet-control-scale-line {
+.maplibregl-ctrl-scale {
   @extend .bg-opacity-75;
   text-shadow: none !important;
 }
 
-.leaflet-popup-content-wrapper {
+.maplibregl-ctrl-bottom-left .maplibregl-ctrl-scale:not(:last-child) {
+  margin-bottom: 0;
+}
+
+.maplibregl-popup-content {
   @extend .rounded-1;
 
   a {
@@ -406,13 +389,28 @@ nav.primary, nav.secondary {
 }
 
 @include color-mode(dark) {
-  .maplibregl-ctrl.maplibregl-ctrl-attrib a,
-  .leaflet-container .leaflet-control-attribution a {
+  .maplibregl-ctrl.maplibregl-ctrl-attrib a {
     color: var(--bs-link-color);
   }
 
-  .leaflet-control-scale-line {
+  .maplibregl-ctrl-scale {
     border-color: rgba(var(--bs-light-rgb), .75) !important;
+  }
+}
+
+@mixin dark-map-color-scheme {
+  #legend .filtered-image {
+    filter: var(--dark-mode-map-filter);
+  }
+}
+
+body[data-map-theme="dark"] {
+  @include dark-map-color-scheme;
+}
+
+@include color-mode(dark) {
+  body:not([data-map-theme]) {
+    @include dark-map-color-scheme;
   }
 }
 
@@ -484,7 +482,8 @@ legend {
   border-right: 1em solid var(--marker-color);
 }
 
-.leaflet-marker-icon.activatable:is(.active, :hover) > svg {
+.maplibre-gl-marker.activatable:is(.active, :hover) > svg,
+.maplibregl-marker.activatable:is(.active, :hover) > svg {
   transform: scale(1.5);
   transform-origin: bottom;
 }
@@ -690,7 +689,7 @@ tr.turn {
 
 /* Rules for the user map */
 
-.content_map .leaflet-popup-content {
+.content_map .maplibregl-popup-content {
   margin: $spacer;
 }
 

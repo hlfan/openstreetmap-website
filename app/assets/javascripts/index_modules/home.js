@@ -2,7 +2,7 @@ export default function (map) {
   let marker;
 
   function clearMarker() {
-    if (marker) map.removeLayer(marker);
+    if (marker) marker.remove();
     marker = null;
   }
 
@@ -16,10 +16,10 @@ export default function (map) {
       OSM.router.withoutMoveListener(function () {
         map.setView(OSM.home, 15, { reset: true });
       });
-      marker = L.marker(OSM.home, {
-        icon: OSM.getMarker({}),
-        title: OSM.i18n.t("javascripts.home.marker_title")
-      }).addTo(map);
+      marker = new OSM.MapLibre.Marker({ icon: "dot", color: "var(--marker-red)" })
+        .setLngLat([OSM.home.lon, OSM.home.lat])
+        .addTo(map);
+      marker.getElement().title = OSM.i18n.t("javascripts.home.marker_title");
     } else {
       $("#browse_status").html(
         $("<div class='m-2 alert alert-warning'>").text(

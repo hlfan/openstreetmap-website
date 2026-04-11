@@ -1,18 +1,10 @@
 /* exported RouteOutput */
 function RouteOutput(map) {
-  const popup = L.popup({ autoPanPadding: [100, 100] });
+  const popup = new OSM.MapLibre.Popup({ anchor: "bottom", offset: [0, -5] });
 
-  const polyline = L.polyline([], {
-    color: "#03f",
-    opacity: 0.3,
-    weight: 10
-  });
-
-  const highlight = L.polyline([], {
-    color: "#ff0",
-    opacity: 0.5,
-    weight: 12
-  });
+  const routeSourceId = "directions-route";
+  const highlightSourceId = "directions-highlight";
+  let currentRoute = null;
 
   let distanceUnits = "km_m";
   let downloadURL = null;
@@ -101,30 +93,65 @@ function RouteOutput(map) {
       row.append("<td class='pe-3 distance text-body-secondary text-end'>" + formatStepDistance(...translateDistanceUnits(dist)));
 
       row.on("click", function () {
+        const ll = lineseg[0];
         popup
-          .setLatLng(lineseg[0])
-          .setContent(`<p><b>${i + 1}.</b> ${instruction}</p>`)
-          .openOn(map);
+          .setLngLat([ll.lng, ll.lat])
+          .setHTML(`<p><b>${i + 1}.</b> ${instruction}</p>`)
+          .addTo(map);
+        map.panInside([ll.lng, ll.lat], { padding: [100, 100] });
       });
 
       row
         .on("mouseenter", function () {
-          highlight
-            .setLatLngs(lineseg)
-            .addTo(map);
+          const geojson = OSM.MapLibre.lineGeoJSON(lineseg);
+          if (map.getSource(highlightSourceId)) {
+            OSM.MapLibre.updateGeoJSONSource(map, highlightSourceId, geojson);
+          } else {
+            OSM.MapLibre.addGeoJSONLayer(map, highlightSourceId, geojson, {
+              color: "#ff0",
+              weight: 12,
+              opacity: 0.5
+            });
+          }
         })
         .on("mouseleave", function () {
-          map.removeLayer(highlight);
+          OSM.MapLibre.removeGeoJSONLayer(map, highlightSourceId);
         });
     }
   }
 
   const routeOutput = {};
 
+  // Re-add the route after a base-layer switch: MainMap uses
+  // setStyle({diff:false}) which wipes custom sources and layers, so the
+  // blue polyline would otherwise disappear until the user resubmits the
+  // form. The highlight is transient (mouseenter/mouseleave), so nothing
+  // to restore for it.
+  function restoreRouteOnStyleLoad() {
+    if (!currentRoute) return;
+    if (map.getSource(routeSourceId)) return;
+    const routeGeoJSON = OSM.MapLibre.lineGeoJSON(currentRoute.line);
+    OSM.MapLibre.addGeoJSONLayer(map, routeSourceId, routeGeoJSON, {
+      color: "#03f",
+      weight: 10,
+      opacity: 0.3
+    });
+  }
+  map.on("style.load", restoreRouteOnStyleLoad);
+
   routeOutput.write = function (route) {
-    polyline
-      .setLatLngs(route.line)
-      .addTo(map);
+    currentRoute = route;
+
+    const routeGeoJSON = OSM.MapLibre.lineGeoJSON(route.line);
+    if (map.getSource(routeSourceId)) {
+      OSM.MapLibre.updateGeoJSONSource(map, routeSourceId, routeGeoJSON);
+    } else {
+      OSM.MapLibre.addGeoJSONLayer(map, routeSourceId, routeGeoJSON, {
+        color: "#03f",
+        weight: 10,
+        opacity: 0.3
+      });
+    }
 
     writeSummary(route);
     writeSteps(route);
@@ -135,7 +162,7 @@ function RouteOutput(map) {
       writeSteps(route);
     });
 
-    const blob = new Blob([JSON.stringify(polyline.toGeoJSON())], { type: "application/geo+json" });
+    const blob = new Blob([JSON.stringify(routeGeoJSON)], { type: "application/geo+json" });
 
     URL.revokeObjectURL(downloadURL);
     downloadURL = URL.createObjectURL(blob);
@@ -150,17 +177,21 @@ function RouteOutput(map) {
   };
 
   routeOutput.fit = function () {
-    map.fitBounds(polyline.getBounds().pad(0.05));
+    if (!currentRoute) return;
+    const bounds = OSM.MapLibre.getGeoJSONBounds(OSM.MapLibre.lineGeoJSON(currentRoute.line));
+    map.fitBounds(OSM.MapLibre.padBounds(bounds, 0.05));
   };
 
   routeOutput.isVisible = function () {
-    return map.hasLayer(polyline);
+    return Boolean(map.getSource(routeSourceId));
   };
 
   routeOutput.remove = function () {
-    map
-      .removeLayer(popup)
-      .removeLayer(polyline);
+    popup.remove();
+    map.off("style.load", restoreRouteOnStyleLoad);
+    OSM.MapLibre.removeGeoJSONLayer(map, routeSourceId);
+    OSM.MapLibre.removeGeoJSONLayer(map, highlightSourceId);
+    currentRoute = null;
 
     $("#directions_distance_units_settings input").off();
 

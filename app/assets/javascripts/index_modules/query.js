@@ -2,25 +2,36 @@
 
 export default function (map) {
   const uninterestingTags = ["source", "source_ref", "source:ref", "history", "attribution", "created_by", "tiger:county", "tiger:tlid", "tiger:upload_uuid", "KSJ2:curve_id", "KSJ2:lat", "KSJ2:lon", "KSJ2:coordinate", "KSJ2:filename", "note:ja"];
-  let marker;
+  let markerSourceId;
+  const geometryLayers = [];
 
   const featureStyle = {
     color: "#FF6200",
     weight: 4,
     opacity: 1,
-    fillOpacity: 0.5,
-    interactive: false
+    fillOpacity: 0.5
   };
 
   function showResultGeometry() {
     const geometry = $(this).data("geometry");
-    if (geometry) map.addLayer(geometry);
+    if (geometry) {
+      const id = "query-geom-" + geometryLayers.length;
+      geometryLayers.push(id);
+      $(this).data("geometryId", id);
+      OSM.MapLibre.whenStyleReady(map, () => {
+        OSM.MapLibre.addGeoJSONLayer(map, id, geometry, featureStyle);
+      });
+    }
     $(this).addClass("selected");
   }
 
   function hideResultGeometry() {
-    const geometry = $(this).data("geometry");
-    if (geometry) map.removeLayer(geometry);
+    const id = $(this).data("geometryId");
+    if (id) {
+      OSM.MapLibre.removeGeoJSONLayer(map, id);
+      const idx = geometryLayers.indexOf(id);
+      if (idx >= 0) geometryLayers.splice(idx, 1);
+    }
     $(this).removeClass("selected");
   }
 
@@ -44,13 +55,29 @@ export default function (map) {
     switch (feature.type) {
       case "node":
         if (!feature.lat || !feature.lon) return;
-        return L.circleMarker([feature.lat, feature.lon], featureStyle);
+        return {
+          type: "Feature",
+          geometry: { type: "Point", coordinates: [feature.lon, feature.lat] }
+        };
       case "way":
         if (!feature.geometry?.length) return;
-        return L.polyline(feature.geometry.filter(p => p).map(p => [p.lat, p.lon]), featureStyle);
+        return {
+          type: "Feature",
+          geometry: {
+            type: "LineString",
+            coordinates: feature.geometry.filter(p => p).map(p => [p.lon, p.lat])
+          }
+        };
       case "relation":
         if (!feature.members?.length) return;
-        return L.featureGroup(feature.members.map(featureGeometry).filter(g => g));
+        {
+          const memberGeoms = feature.members.map(featureGeometry).filter(g => g);
+          if (memberGeoms.length === 0) return;
+          return {
+            type: "FeatureCollection",
+            features: memberGeoms
+          };
+        }
     }
   }
 
@@ -84,7 +111,6 @@ export default function (map) {
 
         $section.find(".loader").hide();
 
-        // Make Overpass-specific bounds to Leaflet compatible
         for (const element of elements) {
           if (!element.bounds) continue;
           if (element.bounds.maxlon >= element.bounds.minlon) continue;
@@ -149,51 +175,37 @@ export default function (map) {
     return (maxlon - minlon) * (maxlat - minlat);
   }
 
-  /*
-   * To find nearby objects we ask overpass for the union of the
-   * following sets:
-   *
-   *   node(around:<radius>,<lat>,<lng>)
-   *   way(around:<radius>,<lat>,<lng>)
-   *   relation(around:<radius>,<lat>,<lng>)
-   *
-   * to find enclosing objects we first find all the enclosing areas:
-   *
-   *   is_in(<lat>,<lng>)->.a
-   *
-   * and then return the union of the following sets:
-   *
-   *   relation(pivot.a)
-   *   way(pivot.a)
-   *
-   * In both cases we then ask to retrieve tags and the geometry
-   * for each object.
-   */
   function queryOverpass(latlng) {
-    const bounds = map.getBounds(),
-          zoom = map.getZoom(),
+    const { lng, lat } = latlng,
+          bounds = map.getBounds(),
+          zoom = map.getZoom() + OSM.ZOOM_OFFSET,
           sw = OSM.cropLocation(bounds.getSouthWest(), zoom),
           ne = OSM.cropLocation(bounds.getNorthEast(), zoom),
-          bbox = `${sw.lat},${sw.lng},${ne.lat},${ne.lng}`,
-          geom = `geom(${bbox})`,
+          geom = `geom(${sw.lat},${sw.lng},${ne.lat},${ne.lng})`,
           radius = 10 * Math.pow(1.5, 19 - zoom),
-          here = `(around:${radius},${latlng})`,
+          here = `(around:${radius},${lat},${lng})`,
           enclosed = "(pivot.a);out tags bb",
           nearby = `(node${here};way${here};);out tags ${geom};relation${here};out ${geom};`,
-          isin = `is_in(${latlng})->.a;way${enclosed};out ids ${geom};relation${enclosed};`;
+          isin = `is_in(${lat},${lng})->.a;way${enclosed};out ids ${geom};relation${enclosed};`;
 
-    $("#sidebar_content .query-intro")
-      .hide();
+    $("#sidebar_content .query-intro").hide();
 
-    if (marker) map.removeLayer(marker);
-    marker = L.circle(L.latLng(latlng).wrap(), {
-      radius: radius,
-      className: "query-marker",
-      ...featureStyle
-    }).addTo(map);
+    removeMarker();
+    markerSourceId = "query-marker";
+    const circleGeoJSON = OSM.MapLibre.circleGeoJSON(latlng, radius);
+    OSM.MapLibre.whenStyleReady(map, () => {
+      OSM.MapLibre.addGeoJSONLayer(map, markerSourceId, circleGeoJSON, featureStyle);
+    });
 
     runQuery(nearby, $("#query-nearby"), false);
     runQuery(isin, $("#query-isin"), true, (feature1, feature2) => size(feature1.bounds) - size(feature2.bounds));
+  }
+
+  function removeMarker() {
+    if (markerSourceId) {
+      OSM.MapLibre.removeGeoJSONLayer(map, markerSourceId);
+      markerSourceId = null;
+    }
   }
 
   const page = {};
@@ -206,21 +218,22 @@ export default function (map) {
 
   page.load = function (path, noCentre) {
     const params = new URLSearchParams(path.substring(path.indexOf("?"))),
-          latlng = L.latLng(params.get("lat"), params.get("lon"));
+          latlng = { lng: parseFloat(params.get("lon")), lat: parseFloat(params.get("lat")) };
 
-    if (!location.hash && !noCentre && !map.getBounds().contains(latlng)) {
+    if (!location.hash && !noCentre && !map.getBounds().contains([latlng.lng, latlng.lat])) {
       OSM.router.withoutMoveListener(function () {
         map.setView(latlng, 15);
       });
     }
 
-    queryOverpass([params.get("lat"), params.get("lon")]);
+    queryOverpass(latlng);
   };
 
   page.unload = function (sameController) {
     if (!sameController) {
       $("#sidebar_content .query-results a.selected").each(hideResultGeometry);
     }
+    removeMarker();
   };
 
   return page;

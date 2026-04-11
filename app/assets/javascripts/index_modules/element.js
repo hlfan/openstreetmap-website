@@ -41,11 +41,13 @@ export function mappedElement(type) {
     page._addObject = function (type, id, version, center) {
       const hashParams = OSM.parseHash();
       map.addObject({ type: type, id: parseInt(id, 10), version: version && parseInt(version, 10) }, function (bounds) {
-        if (!hashParams.center && bounds.isValid() &&
-            (center || !map.getBounds().contains(bounds))) {
-          OSM.router.withoutMoveListener(function () {
-            map.fitBounds(bounds);
-          });
+        if (!hashParams.center && !bounds.isEmpty()) {
+          const fullyVisible = OSM.MapLibre.boundsContainBounds(map.getBounds(), bounds);
+          if (center || !fullyVisible) {
+            OSM.router.withoutMoveListener(function () {
+              map.fitBounds(bounds);
+            });
+          }
         }
       });
     };
