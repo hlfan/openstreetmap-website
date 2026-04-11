@@ -6,9 +6,9 @@
           <% description = entry["name"].map { |feature_name| t ".entries.#{feature_name}" }.join(" · ") %>
           <td>
             <% if entry["image"] %>
-              <%= image_tag "legend/#{layer_name}/#{entry['image']}", :class => "filtered-image d-block mx-auto", :alt => description %>
+              <%= image_tag "legend/#{layer_name}/#{entry['image']}", :class => "d-block mx-auto", :alt => description %>
             <% else %>
-              <%= legend_svg_tag :class => "filtered-image d-block mx-auto", **entry, :title => description %>
+              <%= legend_svg_tag :class => "d-block mx-auto", **entry, :title => description %>
             <% end %>
           </td>
           <td><%= description %></td>
