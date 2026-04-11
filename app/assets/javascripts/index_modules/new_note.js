@@ -34,7 +34,7 @@ export default function (map) {
     };
     OSM.MapLibre.whenStyleReady(map, () => {
       OSM.MapLibre.addGeoJSONLayer(map, haloSourceId, geojson, {
-        color: "#FF6200",
+        color: OSM.MapLibre.DATA_LAYER_STYLE.color,
         radius: 20,
         weight: 2.5,
         fillOpacity: 0.5,

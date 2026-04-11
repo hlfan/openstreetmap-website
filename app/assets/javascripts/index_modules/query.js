@@ -6,7 +6,7 @@ export default function (map) {
   const geometryLayers = [];
 
   const featureStyle = {
-    color: "#FF6200",
+    color: OSM.MapLibre.DATA_LAYER_STYLE.color,
     weight: 4,
     opacity: 1,
     fillOpacity: 0.5

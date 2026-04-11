@@ -6,6 +6,10 @@
 //= require @maptiler/maplibre-gl-omt-language
 //= require download_util
 
+// Layer ids produced by addGeoJSONLayer all start with this prefix so the
+// system test's `osm-data-*` layer check continues to match.
+const HIGHLIGHT_SOURCE_ID = "osm-data-highlight";
+
 OSM.MapLibre.MainMap = class extends OSM.MapLibre.Map {
   constructor({ container, ...options } = {}) {
     const baseLayers = OSM.LAYER_DEFINITIONS.map(
@@ -36,10 +40,10 @@ OSM.MapLibre.MainMap = class extends OSM.MapLibre.Map {
     this._layers = new Set();
     this._object = null;
     this._objectLoader = null;
-    this._objectLayer = null;
     this._objectMarkers = [];
     this._objectSourceIds = [];
     this._objectSourceBounds = new Map();
+    this._objectLayerIds = new Map();
     this._overlayRestorers = new Map();
 
     this.noteLayer = {
@@ -52,9 +56,6 @@ OSM.MapLibre.MainMap = class extends OSM.MapLibre.Map {
     };
 
     this.dataLayer = new OSM.MapLibre.DataLayer({ code: "D" });
-    this.dataLayer.isWayArea = function () {
-      return false;
-    };
 
     this.gpsLayer = {
       options: { code: "G" },
@@ -273,16 +274,18 @@ OSM.MapLibre.MainMap = class extends OSM.MapLibre.Map {
       }
     }
 
-    const objectStyle = {
-      color: "#FF6200",
+    const palette = OSM.MapLibre.DATA_LAYER_STYLE;
+
+    const highlightStyle = {
+      color: palette.hoverColor,
       weight: 4,
       opacity: 1,
-      fillOpacity: 0.5
+      fillOpacity: 0.35
     };
 
     const changesetStyle = {
       weight: 4,
-      color: "#FF9500",
+      color: palette.changesetColor,
       opacity: 1,
       fillOpacity: 0
     };
@@ -291,7 +294,7 @@ OSM.MapLibre.MainMap = class extends OSM.MapLibre.Map {
       weight: 2.5,
       radius: 20,
       fillOpacity: 0.5,
-      color: "#FF6200"
+      color: palette.color
     };
 
     this.removeObject();
@@ -327,7 +330,7 @@ OSM.MapLibre.MainMap = class extends OSM.MapLibre.Map {
 
       const bounds = this._getObjectBounds();
       if (callback) callback(bounds);
-      this.fire("overlayadd", { layer: this._objectLayer });
+      this.fire("overlayadd", { layer: this._object });
     } else {
       const map = this;
       this._objectLoader = new AbortController();
@@ -349,27 +352,23 @@ OSM.MapLibre.MainMap = class extends OSM.MapLibre.Map {
             elements: data.elements?.filter(el => el.visible !== false) ?? []
           };
 
-          map._object = object;
-          map._objectLayer = new OSM.MapLibre.DataLayer({
-            styles: {
-              node: objectStyle,
-              way: objectStyle,
-              area: objectStyle,
-              changeset: changesetStyle
+          // nodeFilter restricts emitted point features to members of the
+          // selected element — plain way nodes are not drawn for a way view,
+          // but a relation's node members are drawn for a relation view.
+          const fc = OSM.MapLibre.osmJsonToGeoJSON(visibleData, {
+            nodeFilter: (node, ctx) => {
+              if (object.type === "node") return node.id === Number(object.id);
+              if (object.type === "way") return false;
+              if (object.type === "relation") return ctx.relationNodeIds.has(node.id);
+              return false;
             }
           });
 
-          map._objectLayer.interestingNode = function (node, wayNodes, relationNodes) {
-            return object.type === "node" ||
-                   (object.type === "way" && Boolean(wayNodes[node.id])) ||
-                   (object.type === "relation" && Boolean(relationNodes[node.id]));
-          };
+          map._object = object;
+          map._addObjectSource(HIGHLIGHT_SOURCE_ID, fc, highlightStyle);
 
-          map._objectLayer.addData(visibleData);
-          map._objectLayer.addTo(map);
-
-          if (callback) callback(map._objectLayer.getBounds());
-          map.fire("overlayadd", { layer: map._objectLayer });
+          if (callback) callback(OSM.MapLibre.getGeoJSONBounds(fc));
+          map.fire("overlayadd", { layer: map._object });
           $("#browse_status").empty();
         })
         .catch(function (error) {
@@ -390,7 +389,13 @@ OSM.MapLibre.MainMap = class extends OSM.MapLibre.Map {
       this._objectSourceIds.push(id);
     }
     this._objectSourceBounds.set(id, OSM.MapLibre.getGeoJSONBounds(geojson));
-    const restorer = () => OSM.MapLibre.addGeoJSONLayer(this, id, geojson, style);
+    const restorer = () => {
+      OSM.MapLibre.addGeoJSONLayer(this, id, geojson, style);
+      const layerIds = this.getStyle().layers
+        .filter(l => l.source === id)
+        .map(l => l.id);
+      this._objectLayerIds.set(id, layerIds);
+    };
     this._overlayRestorers.set("object-" + id, restorer);
     if (this.isStyleLoaded()) restorer();
   }
@@ -407,14 +412,10 @@ OSM.MapLibre.MainMap = class extends OSM.MapLibre.Map {
   }
 
   removeObject() {
-    const removedLayer = this._objectLayer;
-    const hadContent = removedLayer || this._objectMarkers.length || this._objectSourceIds.length;
+    const previousObject = this._object;
+    const hadContent = previousObject || this._objectMarkers.length || this._objectSourceIds.length;
     this._object = null;
     if (this._objectLoader) this._objectLoader.abort();
-    if (this._objectLayer) {
-      this._objectLayer.remove();
-      this._objectLayer = null;
-    }
     for (const marker of this._objectMarkers) {
       marker.remove();
     }
@@ -422,11 +423,23 @@ OSM.MapLibre.MainMap = class extends OSM.MapLibre.Map {
     for (const id of this._objectSourceIds) {
       this._overlayRestorers.delete("object-" + id);
       this._objectSourceBounds.delete(id);
+      this._objectLayerIds.delete(id);
       OSM.MapLibre.removeGeoJSONLayer(this, id);
     }
     this._objectSourceIds = [];
     if (hadContent) {
-      this.fire("overlayremove", { layer: removedLayer });
+      this.fire("overlayremove", { layer: previousObject });
+    }
+  }
+
+  // Called by index/layers/data.js after each overlay reload so a selected
+  // element keeps its distinct rendering on top. Uses the layer ids
+  // snapshotted at _addObjectSource time so this is O(n) in the highlight's
+  // own layers, not in the full base-style layer list (150–250 layers on
+  // OpenMapTiles).
+  bringElementHighlightToFront() {
+    for (const layerId of this._objectLayerIds.get(HIGHLIGHT_SOURCE_ID) ?? []) {
+      this.moveLayer(layerId);
     }
   }
 
