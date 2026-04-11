@@ -8,6 +8,8 @@
 //= require maplibre/attribution
 //= require maplibre/map
 //= require maplibre/controls
+//= require @americana/diplomat/dist/index
+//= require maplibre/i18n
 
 if (navigator.languages) {
   OSM.i18n.locale = navigator.languages[0];
@@ -51,6 +53,8 @@ window.onload = function () {
 
   const navigationControl = new OSM.MapLibre.NavigationControl();
   map.addControl(new OSM.MapLibre.CombinedControlGroup([navigationControl]), `top-${position}`);
+
+  OSM.MapLibre.localizeMap(map, { ...layerConfig, layerId });
 
   if (args.has("marker")) {
     const markerCoords = args.get("marker").split(",").map(parseFloat);

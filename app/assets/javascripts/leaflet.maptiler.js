@@ -1,5 +1,5 @@
 //= require maplibre/i18n
-//= require @maptiler/maplibre-gl-omt-language
+//= require @americana/diplomat/dist/index
 
 L.OSM.OpenMapTiles = L.OSM.MaplibreGL.extend({
   initialize: function (options) {
@@ -12,7 +12,7 @@ L.OSM.OpenMapTiles = L.OSM.MaplibreGL.extend({
   },
   onAdd: function (map) {
     L.OSM.MaplibreGL.prototype.onAdd.call(this, map);
-    OSM.MapLibre.setOMTMapLanguage(this.getMaplibreMap());
+    OSM.MapLibre.localizeMap(this.getMaplibreMap(), this.options);
   },
   onRemove: function (map) {
     L.OSM.MaplibreGL.prototype.onRemove.call(this, map);

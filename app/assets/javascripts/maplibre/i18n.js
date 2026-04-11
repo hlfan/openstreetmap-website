@@ -1,20 +1,10 @@
-OSM.MapLibre.setOMTMapLanguage = function (map) {
-  if (!map.style.loaded()) {
-    map.once("load", () => OSM.MapLibre.setOMTMapLanguage(map));
-    return;
-  }
-
-  for (const preferredLanguage of OSM.preferred_languages) {
-    const normalizedPreferredLanguage = preferredLanguage
-      .toLowerCase()
-      .replace("-", "_");
-    // supportedLanguages and setLanguage come from @maptiler/maplibre-gl-omt-language
-    const matchedLanguage = map.supportedLanguages.find(
-      (supported) => supported.toLowerCase() === normalizedPreferredLanguage
-    );
-    if (matchedLanguage) {
-      map.setLanguage(matchedLanguage);
-      break;
-    }
-  }
+OSM.MapLibre.localizeMap = function (map, layer) {
+  if (!layer || !layer.isVectorStyle) return;
+  const locales = (Array.isArray(window.OSM?.preferred_languages) && OSM.preferred_languages.length) ?
+    OSM.preferred_languages :
+    maplibregl.Diplomat.getLocales();
+  const options = layer.layerId === "shortbread" ?
+    { localizedNamePropertyFormat: "name_$1" } :
+    {};
+  map.once("styledata", () => map.localizeStyle(locales, options));
 };
