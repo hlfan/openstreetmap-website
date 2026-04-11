@@ -112,7 +112,7 @@ class IndexTest < ApplicationSystemTestCase
       assert_text "Hidden Note Description"
     end
 
-    visible_note_marker = find(".leaflet-marker-icon[title=this-is-a-visible-note]")
+    visible_note_marker = find(".maplibre-gl-marker[title=this-is-a-visible-note]")
     visible_note_marker.click
 
     within_sidebar do

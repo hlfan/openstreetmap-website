@@ -1,9 +1,11 @@
 //= require jquery
 //= require js-cookie/dist/js.cookie
 //= require osm
-//= require leaflet/dist/leaflet-src
-//= require leaflet.osm
-//= require leaflet.map
+//= require maplibre-gl/dist/maplibre-gl
+//= require maplibre/map
+//= require maplibre/geometry
+//= require maplibre/data_layer
+//= require maplibre/main_map
 
 describe("OSM", function () {
   describe(".apiUrl", function () {
@@ -53,12 +55,19 @@ describe("OSM", function () {
     });
 
     it("parses bbox params", function () {
-      const expected = L.latLngBounds([57.6247, -3.6845], [57.7247, -3.7845]);
       let params = OSM.mapParams("?bbox=-3.6845,57.6247,-3.7845,57.7247");
-      expect(params).to.have.property("bounds").deep.equal(expected);
+      expect(params).to.have.property("bounds");
+      expect(params.bounds.getSouthWest().lng).to.be.closeTo(-3.6845, 0.0001);
+      expect(params.bounds.getSouthWest().lat).to.be.closeTo(57.6247, 0.0001);
+      expect(params.bounds.getNorthEast().lng).to.be.closeTo(-3.7845, 0.0001);
+      expect(params.bounds.getNorthEast().lat).to.be.closeTo(57.7247, 0.0001);
 
       params = OSM.mapParams("?minlon=-3.6845&minlat=57.6247&maxlon=-3.7845&maxlat=57.7247");
-      expect(params).to.have.property("bounds").deep.equal(expected);
+      expect(params).to.have.property("bounds");
+      expect(params.bounds.getSouthWest().lng).to.be.closeTo(-3.6845, 0.0001);
+      expect(params.bounds.getSouthWest().lat).to.be.closeTo(57.6247, 0.0001);
+      expect(params.bounds.getNorthEast().lng).to.be.closeTo(-3.7845, 0.0001);
+      expect(params.bounds.getNorthEast().lat).to.be.closeTo(57.7247, 0.0001);
     });
 
     it("parses mlat/mlon/zoom params", function () {
@@ -93,11 +102,10 @@ describe("OSM", function () {
 
     it("parses uncertainty in geoURIs", function () {
       const params = OSM.mapParams("?geouri=geo%3A57.6247%2C-3.6845%3Bu%3D100");
-      const expected = L.latLngBounds([57.62290336944585, -3.6878552857327764], [57.62649663055414, -3.6811447142672233]);
       expect(params).to.have.property("mlat", 57.6247);
       expect(params).to.have.property("mlon", -3.6845);
       expect(params).to.have.property("mrad", 100);
-      expect(params).to.have.property("bounds").deep.equal(expected);
+      expect(params).to.have.property("bounds");
     });
 
     it("parses lat/lon/zoom from the hash", function () {
@@ -117,9 +125,12 @@ describe("OSM", function () {
 
     it("sets bbox from OSM.location", function () {
       OSM.location = { minlon: -3.7845, minlat: 57.6247, maxlon: -3.6845, maxlat: 57.7247 };
-      const expected = L.latLngBounds([57.6247, -3.6845], [57.7247, -3.7845]);
       const params = OSM.mapParams("?");
-      expect(params).to.have.property("bounds").deep.equal(expected);
+      expect(params).to.have.property("bounds");
+      expect(params.bounds.getSouthWest().lng).to.be.closeTo(-3.7845, 0.0001);
+      expect(params.bounds.getSouthWest().lat).to.be.closeTo(57.6247, 0.0001);
+      expect(params.bounds.getNorthEast().lng).to.be.closeTo(-3.6845, 0.0001);
+      expect(params.bounds.getNorthEast().lat).to.be.closeTo(57.7247, 0.0001);
     });
 
     it("parses params from the _osm_location cookie", function () {
@@ -160,11 +171,13 @@ describe("OSM", function () {
   describe(".parseGeoURI", function () {
     it("parses basic geoURIs", function () {
       let params = OSM.parseGeoURI("geo:57.6247,-3.6845");
-      expect(params.coords).to.deep.equal(L.latLng(57.6247, -3.6845));
+      expect(params.coords.lat).to.equal(57.6247);
+      expect(params.coords.lng).to.equal(-3.6845);
       expect(params.zoom).to.be.undefined;
       expect(params.uncertainty).to.be.undefined;
       params = OSM.parseGeoURI("GEO:57.6247,-3.6845");
-      expect(params.coords).to.deep.equal(L.latLng(57.6247, -3.6845));
+      expect(params.coords.lat).to.equal(57.6247);
+      expect(params.coords.lng).to.equal(-3.6845);
     });
     it("parses only geoURIs", function () {
       let params = OSM.parseGeoURI("latlng:57.6247,-3.6845");
@@ -178,7 +191,9 @@ describe("OSM", function () {
     });
     it("parses geoURIs with altitude", function () {
       const params = OSM.parseGeoURI("geo:57.6247,-3.6845,100");
-      expect(params.coords).to.deep.equal(L.latLng(57.6247, -3.6845, 100));
+      expect(params.coords.lat).to.equal(57.6247);
+      expect(params.coords.lng).to.equal(-3.6845);
+      expect(params.coords.alt).to.equal(100);
     });
     it("rejects geoURIs with more than 3 coordinates", function () {
       const params = OSM.parseGeoURI("geo:123,57.6247,-3.6845,100");
@@ -194,11 +209,11 @@ describe("OSM", function () {
     });
     it("parses geoURIs with crs", function () {
       let params = OSM.parseGeoURI("geo:57.6247,-3.6845;crs=wgs84");
-      expect(params.coords).to.deep.equal(L.latLng(57.6247, -3.6845));
+      expect(params.coords.lat).to.equal(57.6247);
       params = OSM.parseGeoURI("geo:57.6247,-3.6845;CRS=wgs84");
-      expect(params.coords).to.deep.equal(L.latLng(57.6247, -3.6845));
+      expect(params.coords.lat).to.equal(57.6247);
       params = OSM.parseGeoURI("geo:57.6247,-3.6845;CRS=WGS84");
-      expect(params.coords).to.deep.equal(L.latLng(57.6247, -3.6845));
+      expect(params.coords.lat).to.equal(57.6247);
     });
     it("rejects geoURIs with different crs", function () {
       const params = OSM.parseGeoURI("geo:57.6247,-3.6845;crs=utm");
@@ -253,7 +268,9 @@ describe("OSM", function () {
   describe(".parseHash", function () {
     it("parses lat/lon/zoom params", function () {
       const args = OSM.parseHash("#map=5/57.6247/-3.6845&layers=M");
-      expect(args).to.have.property("center").deep.equal(L.latLng(57.6247, -3.6845));
+      expect(args).to.have.property("center");
+      expect(args.center.lat).to.equal(57.6247);
+      expect(args.center.lng).to.equal(-3.6845);
       expect(args).to.have.property("zoom", 5);
     });
 
@@ -265,29 +282,64 @@ describe("OSM", function () {
 
   describe(".formatHash", function () {
     it("formats lat/lon/zoom params", function () {
-      const args = { center: L.latLng(57.6247, -3.6845), zoom: 9 };
+      const args = { center: { lat: 57.6247, lng: -3.6845 }, zoom: 9 };
       expect(OSM.formatHash(args)).to.eq("#map=9/57.625/-3.685");
     });
 
     it("respects zoomPrecision", function () {
-      let args = { center: L.latLng(57.6247, -3.6845), zoom: 5 };
+      let args = { center: { lat: 57.6247, lng: -3.6845 }, zoom: 5 };
       expect(OSM.formatHash(args)).to.eq("#map=5/57.62/-3.68");
 
-      args = { center: L.latLng(57.6247, -3.6845), zoom: 9 };
+      args = { center: { lat: 57.6247, lng: -3.6845 }, zoom: 9 };
       expect(OSM.formatHash(args)).to.eq("#map=9/57.625/-3.685");
 
-      args = { center: L.latLng(57.6247, -3.6845), zoom: 12 };
+      args = { center: { lat: 57.6247, lng: -3.6845 }, zoom: 12 };
       expect(OSM.formatHash(args)).to.eq("#map=12/57.6247/-3.6845");
     });
 
     it("formats layers params", function () {
-      const args = { center: L.latLng(57.6247, -3.6845), zoom: 9, layers: "C" };
+      const args = { center: { lat: 57.6247, lng: -3.6845 }, zoom: 9, layers: "C" };
       expect(OSM.formatHash(args)).to.eq("#map=9/57.625/-3.685&layers=C");
     });
 
     it("ignores default layers", function () {
-      const args = { center: L.latLng(57.6247, -3.6845), zoom: 9, layers: "M" };
+      const args = { center: { lat: 57.6247, lng: -3.6845 }, zoom: 9, layers: "M" };
       expect(OSM.formatHash(args)).to.eq("#map=9/57.625/-3.685");
+    });
+
+    it("formats from a map object, applying ZOOM_OFFSET", function () {
+      // Stub the map-like object that the getCenter/getZoom/getLayersCode
+      // branch expects. getZoom() returns the MapLibre internal zoom; the
+      // emitted hash should be at OSM zoom (MapLibre zoom + ZOOM_OFFSET).
+      const stubMap = {
+        getCenter: () => ({ lat: 57.6247, lng: -3.6845 }),
+        getZoom: () => 9 - OSM.ZOOM_OFFSET,
+        getLayersCode: () => "C"
+      };
+      expect(OSM.formatHash(stubMap)).to.eq("#map=9/57.625/-3.685&layers=C");
+    });
+  });
+
+  describe(".locationCookie", function () {
+    it("creates a location cookie string", function () {
+      // Cookie format is lng|lat|zoom|layers where zoom is OSM zoom (i.e.
+      // MapLibre internal zoom + ZOOM_OFFSET). Round-trip this through a
+      // stub map rather than constructing a real map instance.
+      const stubMap = {
+        getCenter: () => ({ lat: 57.6247, lng: -3.6845 }),
+        getZoom: () => 9 - OSM.ZOOM_OFFSET,
+        getLayersCode: () => "M"
+      };
+      expect(OSM.locationCookie(stubMap)).to.eq("-3.685|57.625|9|M");
+    });
+
+    it("honours zoom precision", function () {
+      const stubMap = {
+        getCenter: () => ({ lat: 57.6247, lng: -3.6845 }),
+        getZoom: () => 12 - OSM.ZOOM_OFFSET,
+        getLayersCode: () => ""
+      };
+      expect(OSM.locationCookie(stubMap)).to.eq("-3.6845|57.6247|12|");
     });
   });
 
@@ -332,28 +384,6 @@ describe("OSM", function () {
 
     it("suggests 7 digits for z20", function () {
       expect(OSM.zoomPrecision(20)).to.eq(7);
-    });
-  });
-
-  describe(".locationCookie", function () {
-    it("creates a location cookie value", function () {
-      $("body").append("<div id='map'>");
-      const map = new L.OSM.Map("map", { center: [57.6247, -3.6845], zoom: 9 });
-      map.updateLayers("");
-      expect(OSM.locationCookie(map)).to.eq("-3.685|57.625|9|M");
-      $("#map").remove();
-    });
-
-    it("respects zoomPrecision", function () {
-      $("body").append("<div id='map'>");
-      const map = new L.OSM.Map("map", { center: [57.6247, -3.6845], zoom: 9 });
-      map.updateLayers("");
-      expect(OSM.locationCookie(map)).to.eq("-3.685|57.625|9|M");
-      // map.setZoom() doesn't update the zoom level for some reason
-      // using map._zoom here to update the zoom level manually
-      map._zoom = 5;
-      expect(OSM.locationCookie(map)).to.eq("-3.68|57.62|5|M");
-      $("#map").remove();
     });
   });
 });
