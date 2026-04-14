@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class UserNotificationPreferences
+  extend ActiveModel::Naming
+  include ActiveModel::Conversion
+
   EVENTS = %w[
     changeset_comment
     diary_comment
@@ -39,7 +42,8 @@ class UserNotificationPreferences
     end
   end
 
-  # One getter method for each event.
+  # One getter method for each event. Required by ActionView
+  # to render the form, but also generally useful to us.
   EVENTS.each do |event_name|
     define_method event_name do
       prefs =

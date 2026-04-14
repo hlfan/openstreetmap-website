@@ -2113,8 +2113,9 @@ en:
       update_success_flash:
         message: Preferences updated.
       navigation:
-        preferences: Preferences
-        advanced_preferences: Advanced Preferences
+        preferences: Interface
+        notification_preferences: Notifications
+        advanced_preferences: Advanced
     basic_preferences:
       show:
         title: My Preferences
@@ -2135,6 +2136,19 @@ en:
           light: Light
           dark: Dark
         save: Update Preferences
+    notification_preferences:
+      show:
+        title: Notification Preferences
+        changeset_comment: Changeset comments
+        diary_comment: Diary comments
+        direct_message: Direct messages
+        gpx_import_failure: "GPS trace import: failure"
+        gpx_import_success: "GPX trace import: success"
+        new_follower: New followers
+        note_comment: Note comments
+        save: Update Preferences
+        delivery_mechanisms:
+          email: Email
     advanced_preferences:
       show:
         title: My Advanced Preferences
