@@ -301,7 +301,7 @@ en:
         title: "Terms"
         heading: "Terms"
         heading_ct: "Contributor terms"
-        read and accept with tou: "Please read the contributor agreement and the terms of use, check both checkboxes when done and then press the continue button."
+        read and accept with tou: "Please read the Contributor Terms and the Terms of Use, check both checkboxes when done, and then press \"Continue\"."
         contributor_terms_explain: "This agreement governs the terms for your existing and future contributions."
         read_ct: "I have read and agree to the above contributor terms"
         tou_explain:
