@@ -13,7 +13,6 @@ $bootstrap-icons-font-dir: "bootstrap-icons/font/fonts";
 
 body {
   font-size: $typeheight;
-  --dark-mode-map-filter: none;
 }
 
 time[title] {
@@ -414,27 +413,6 @@ nav.primary, nav.secondary {
 
   .leaflet-control-scale-line {
     border-color: rgba(var(--bs-light-rgb), .75) !important;
-  }
-}
-
-@mixin dark-map-color-scheme {
-  .leaflet-tile-container,
-  #legend .filtered-image {
-    filter: var(--dark-mode-map-filter);
-  }
-
-  .leaflet-tile-container .leaflet-tile {
-    filter: none;
-  }
-}
-
-body[data-map-theme="dark"] {
-  @include dark-map-color-scheme;
-}
-
-@include color-mode(dark) {
-  body:not([data-map-theme]) {
-    @include dark-map-color-scheme;
   }
 }
 
