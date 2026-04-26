@@ -141,7 +141,9 @@ L.OSM.Map = L.Map.extend({
     const params = {};
 
     if (marker && this.hasLayer(marker)) {
-      [params.mlat, params.mlon] = OSM.cropLocation(marker.getLatLng(), this.getZoom());
+      const { lat, lng } = OSM.cropLocation(marker.getLatLng(), this.getZoom());
+      params.mlat = lat;
+      params.mlon = lng;
     }
 
     let url = location.protocol + "//" + OSM.SERVER_URL + "/";
@@ -223,7 +225,8 @@ L.OSM.Map = L.Map.extend({
       latLng = marker.getLatLng();
     }
 
-    return `geo:${OSM.cropLocation(latLng, zoom).join(",")}?z=${zoom}`;
+    const { lat, lng } = OSM.cropLocation(latLng, zoom);
+    return `geo:${lat},${lng}?z=${zoom}`;
   },
 
   addObject: function (object, callback) {
