@@ -185,7 +185,7 @@ OSM.Directions = function (map) {
     }
   });
 
-  function sendstartinglocation({ lat, lng }) {
+  function sendStartingLocation({ lat, lng }) {
     map.fire("startinglocation", { lat, lng });
   }
 
@@ -235,7 +235,7 @@ OSM.Directions = function (map) {
       endpoints[type === "from" ? 0 : 1].setValue(`${lat}, ${lng}`);
     });
 
-    map.on("locationfound", sendstartinglocation);
+    map.on("locationfound", sendStartingLocation);
 
     endpoints[0].enableListeners();
     endpoints[1].enableListeners();
@@ -274,7 +274,7 @@ OSM.Directions = function (map) {
 
     $("#sidebar .sidebar-close-controls button").off("click", closeButtonListener);
     $("#map").off("dragend dragover drop");
-    map.off("locationfound", sendstartinglocation);
+    map.off("locationfound", sendStartingLocation);
 
     endpoints[0].disableListeners();
     endpoints[1].disableListeners();
