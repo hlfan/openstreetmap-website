@@ -1832,6 +1832,7 @@ en:
       title: OpenStreetMap
     logo:
       alt_text: OpenStreetMap logo
+    main_navigation: Main
     layer_info: "Layer Info"
     start_mapping: Start Mapping
     intro_header: Welcome to OpenStreetMap!
