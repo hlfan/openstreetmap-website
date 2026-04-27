@@ -266,6 +266,8 @@ kab:
         legale_names:
           france: Fṛansa
           italy: Ṭelyan
+      terms_declined_flash:
+        terms_declined_link: asebter-a n uwiki
     pd_declarations:
       show:
         confirm: Sentem
@@ -501,6 +503,8 @@ kab:
   errors:
     internal_server_error:
       title: Tuccḍa n usnas
+    not_found:
+      title: Afaylu ur yettwaf ara
   follows:
     show:
       follow:
@@ -907,6 +911,7 @@ kab:
       hi: Azul %{to_user},
       see_their_profile: 'Tzemred ad twaliḍ amaɣnu-is dagi : %{userurl}.'
     gpx_details:
+      details: 'Talqayt n ufaylu-inek⋅inem:'
       filename: Isem n ufaylu
       url: Tansa URL
       description: Aglam
@@ -1238,6 +1243,9 @@ kab:
         editor: amaẓrag
       rules:
         title: Ilugan!
+      start_mapping: Bdu asgertel
+    add_a_note:
+      the_map: takarḍa
     communities:
       title: Timɣiwanin
   legend_panes:
@@ -1347,6 +1355,8 @@ kab:
   oauth:
     permissions:
       missing: Ur teǧǧiḍ ara asnas akken ad yeqqen ar usebdded-agi
+    scopes:
+      write_api: Ẓreg takarḍa
   oauth2_applications:
     application:
       edit: Ẓreg
@@ -1519,20 +1529,35 @@ kab:
     close: Mdel
     share:
       title: Bḍu
+      filename: takarḍa
     map:
+      map:
+        title: Takarḍa
+        marker:
+          title: Aseddag ɣef tkarḍa
+      popup:
+        close: Mdel
       navigation_control:
         zoom_in: Semɣeṛ
         zoom_out: Simẓi
       geolocate_control:
         find_my_location: Sken adig-iw
+      base:
+        standard: Aslugan
+        cycle_map: Takarḍa n tesnasɣalt
+        transport_map: Takarḍa n umesni
       layers:
         header: Tissa n tkarḍa
         notes: Tizmilin n tkarḍa
         data: Isefka n tkarḍa
         gps: Idsilen GPS izuyaz
         title: Tissa
+      make_a_donation: Mudd tawsa
+      osm_france: OpenStreetMap Fransa
+      andy_allan: Andy Allan
     site:
       edit_tooltip: Ẓreg takarḍa
+      edit_disabled_tooltip: Semɣeṛ akken ad tẓergeḍ takarḍa
       createnote_tooltip: Rnu tazmilt ar tkarḍa
       queryfeature_tooltip: Isitar ɣef tmahilin
     directions:
@@ -1548,15 +1573,25 @@ kab:
       instructions:
         continue_without_exit: Kemmel ɣef %{name}
         slight_right_without_exit: Bren am acemma ɣer tama tayeffust ɣef %{name}
-        endofroad_right_without_exit: Am ara ifakk ubrid, bref ɣer tama tayeffust
+        offramp_right: Awi ufuɣ i yellan ar tama tayeffust
+        offramp_right_with_name: Awi ufuɣ i yellan ar tama tayeffust ɣef %{name}
+        offramp_right_with_directions: Awi ufuɣ i yellan ar tama tayeffust twal %{directions}
+        offramp_right_with_name_directions: Awi ufuɣ i yellan ar tama tayeffust ɣef
+          %{name}, twal %{directions}
+        endofroad_right_without_exit: Mi ara ifakk ubrid, bren ɣer tama tayeffust
           ɣef %{name}
         fork_right_without_exit: Ar ger iberdan, bren ɣer tama tayeffust ɣef %{name}
         turn_right_without_exit: Bren ɣer tama tayeffust ɣef %{name}
         sharp_right_without_exit: Bren mliḥ ɣer tama tayeffust ɣef %{name}
         sharp_left_without_exit: Bren mliḥ ɣer tama taẓelmaḍt ɣef %{name}
         turn_left_without_exit: Bren ɣer tama taẓelmaḍt ɣef %{name}
+        offramp_left: Awi ufuɣ i yellan ar tama taẓelmaḍt
         offramp_left_with_exit: Ṭṭef tuffɣa %{exit} ɣef tama taẓemaḍt
-        endofroad_left_without_exit: Am ara ifakk ubrid, bref ɣer tama taẓelmaḍt ɣef
+        offramp_left_with_name: Awi ufuɣ i yellan ar tama taẓelmaḍt ɣef %{name}
+        offramp_left_with_directions: Awi ufuɣ i yellan ar tama taẓelmaḍt twal %{directions}
+        offramp_left_with_name_directions: Awi ufuɣ i yellan ar tama taẓelmaḍt ɣef
+          %{name}, twal %{directions}
+        endofroad_left_without_exit: Mi ara ifakk ubrid, bren ɣer tama taẓelmaḍt ɣef
           %{name}
         fork_left_without_exit: Ar ger iberdan, bren ɣer tama taẓelmaḍt ɣef %{name}
         slight_left_without_exit: Bren am acemma ɣer tama taẓelmaḍt ɣef %{name}

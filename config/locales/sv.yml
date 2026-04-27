@@ -132,7 +132,7 @@ sv:
       relation: Relation
       relation_member: Relationsmedlem
       relation_tag: Relationstagg
-      report: Rapportera
+      report: Rapport
       session: Session
       trace: Spår
       tracepoint: Spårpunkt
@@ -1552,7 +1552,7 @@ sv:
           pet: Djuraffär
           pet_grooming: Husdjursfrisör
           photo: Fotoaffär
-          seafood: Skaldjur
+          seafood: Fisk och skaldjur
           second_hand: Second hand-butik
           sewing: Sybutik
           shoes: Skoaffär
@@ -1940,6 +1940,9 @@ sv:
       %{partners}.
     partners_corpmembers: OSMF-företagsmedlemmar
     partners_partners: partners
+    welcome_tou_notice_html: Genom att använda denna webbplats eller annan infrastruktur
+      som tillhandahålls av OpenStreetMap Foundation, godkänner du %{terms_link}.
+    terms_of_use: Användarvillkor
     tou: Användarvillkor
     nothing_to_preview: Ingenting att förhandsvisa.
     learn_more: Läs mer
@@ -2301,6 +2304,7 @@ sv:
         image: Bild
         company: Företag
         location: Plats
+        contribution_calendar: Bidragskalender
     descriptions:
       show:
         title: Redigera profil
@@ -2360,12 +2364,13 @@ sv:
         failure: Kunde inte uppdatera profilens plats.
     heatmaps:
       show:
-        title: Konfigurera värmekarta
-        save: Uppdatera värmekartakonfiguration
+        title: Konfigurera bidragskalender
+        show_contribution_calendar_in_public: Viss bidragskalendern på din profilsida
+        save: Uppdatera bidragskalenderns konfiguration
         cancel: Avbryt
       update:
-        success: Värmekartan uppdaterad.
-        failure: Kunde inte uppdatera värmekartan.
+        success: Bidragskalendern uppdaterad.
+        failure: Bidragskalendern kunde inte uppdateras.
   sessions:
     new:
       tab_title: Logga in
@@ -2573,7 +2578,7 @@ sv:
           skapat en bläddrbar karta, en utskriven karta eller en statisk bild.
           Mer information finns i avsnittet %{attribution_guidelines_link} i %{licensing_requirements_link}.
         credit_3_v2025_requirements_on_how_displayed: krav på hur detta ska visas
-        credit_3_v2025_attribution_guidelines: erkännande riktlinjer
+        credit_3_v2025_attribution_guidelines: erkännanderiktlinjer
         credit_3_v2025_licensing_requirements: licenskraven
         credit_4_v2025_html: |-
           Generellt sett,
@@ -2587,7 +2592,7 @@ sv:
         credit_5_v2025_html: 'I det här exemplet visas erkännande i hörnet av kartan:'
         attribution_example:
           alt: Exempel på hur en webbsida kan ange OpenStreetMap som källa
-          title: Exempel på attribuering.
+          title: Exempel på erkännande
         infringement_title_html: Upphovsrättsintrång
         infringement_1_html: |-
           Bidragsgivare till OSM påminns om att aldrig lägga till data från
@@ -3360,6 +3365,7 @@ sv:
       change_image: Ändra bild
       edit_company: Redigera företag
       edit_location: Redigera plats
+      edit_contribution_calendar: Konfigurera bidragskalender
       contributions:
         one: '%{count} bidrag under det senaste året'
         other: '%{count} bidrag under det senaste året'
@@ -3701,6 +3707,10 @@ sv:
       tooltip: Teckenförklaring
       tooltip_disabled: Teckenförklaring finns inte för detta lager
     map:
+      map:
+        title: Karta
+        marker:
+          title: Kortmarkör
       popup:
         close: Stäng
       navigation_control:
@@ -3715,6 +3725,8 @@ sv:
         feetPopup:
           one: Du är inom %{count} fot av denna punkt
           other: Du är inom %{count} fot av denna punkt
+      attribution_control:
+        toggle_attribution: Aktivera/inaktivera erkännande
       base:
         standard: Standard
         cycle_map: Cykelkarta

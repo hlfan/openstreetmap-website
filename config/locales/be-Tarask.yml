@@ -676,8 +676,8 @@ be-Tarask:
       title: Няма такога допісу ў дзёньніку
       heading: 'Няма допісу з ідэнтыфікатарам: %{id}'
       body: На жаль, няма допісу ў дзёньніку ці камэнтара з ідэнтыфікатарам %{id}.
-        Калі ласка, праверце дакладнасьць напісаньня, ці, магчыма, спасылка па якой
-        Вы перайшлі, няслушная.
+        Калі ласка, спраўдзіце напісаньне, ці, магчыма, спасылка па якой Вы перайшлі,
+        няслушная.
     diary_entry:
       posted_by_html: Дасланы %{link_user} %{created} на %{language_link}.
       updated_at_html: Апошняе абнаўленьне %{updated}.
@@ -2216,10 +2216,10 @@ be-Tarask:
       title: Скінуць пароль
       heading: Скінуць пароль для %{user}
       reset: Скінуць пароль
-      flash token bad: Немагчыма знайсьці такі ключ, можа праверце URL-адрас?
+      flash token bad: Немагчыма знайсьці такі ключ, спраўдзіце URL-адрас.
     update:
       flash changed: Ваш пароль быў зьменены.
-      flash token bad: Не знаходзіцца гэты токен, можа праверце URL-адрас?
+      flash token bad: Немагчыма знайсьці такі ключ, спраўдзіце URL-адрас.
   preferences:
     preferences:
       update:
@@ -2454,7 +2454,7 @@ be-Tarask:
         пазначаць атрыбут OpenStreetMap як аўтара — \nстаронка %{attribution_guidelines_link}
         з падрабязнай інфармацыяй."
       legal_attribution_guidelines_title: Правілаў атрыбуцыі
-      legal_attribution_guidelines_url: https://wiki.osmfoundation.org/wiki/Licence/Attribution_Guidelines
+      legal_attribution_guidelines_url: https://osmfoundation.org/wiki/Licence/Attribution_Guidelines
       legal_1_3_html: 'Датычна ўжываньня скрыншотаў з OpenStreetMap наўпрост у кнізе,
         публікацыі, кіно ці ў тэлевізыі: не патрабуецца запыт дазолу да зьвестак OpenStreetMap
         - яны вольныя для ўжываньня задарма. Старонка %{attribution_guidelines_link}
