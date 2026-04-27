@@ -101,6 +101,7 @@
 # Author: S.kozyr
 # Author: Sanail
 # Author: Santacloud
+# Author: Shabe
 # Author: Sikmir
 # Author: Silovan
 # Author: Sobloku
@@ -896,7 +897,7 @@ ru:
   doorkeeper:
     errors:
       messages:
-        account_selection_required: Сервер авторизации требует выбора учетной записи
+        account_selection_required: Сервер авторизации требует выбора учётной записи
           конечного пользователя.
         consent_required: Сервер авторизации требует согласия конечного пользователя
         interaction_required: Сервер авторизации требует взаимодействия  с конечным

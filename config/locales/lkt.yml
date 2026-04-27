@@ -135,11 +135,14 @@ lkt:
         company: Okȟólakičhiye
         home_lat: Oglákiŋyaŋ
         home_lon: Makȟáiphiyake Oíyutȟe
+        home_location_name: Tuktél Yathí Kiŋ Čhažé
         languages: Iyápi Iyótaŋwakila kiŋ
         preferred_editor: Mas'yútȟokeča Iyótaŋyakila
         pass_crypt: Iyówiƞkhiya-wičhóiye
         pass_crypt_confirmation: Iyówiƞkhiya-wičhóiye kiƞ yasúta yo/ye
     help:
+      doorkeeper/application:
+        redirect_uri: URI ogná, óhiye waŋžíla uŋ wo/we
       trace:
         tagstring: yukhíŋnuŋkȟala delimited
       user:
@@ -188,8 +191,11 @@ lkt:
         commented_at_by_html: '%{when} he eháŋ %{user} yutȟókeča'
       rss:
         title: OpenStreetMap Wówapi čístila
+        opened: wówapi čístila tȟéča (%{place} khiléya)
+        commented: wóeye tȟéča (%{place} khiléya)
       entry:
         comment: Wówapi
+        full: Wówapi čístila átaya
   accounts:
     show:
       title: Čhažé-oyáŋke glutȟókeča yo/ye
@@ -205,13 +211,19 @@ lkt:
       delete_account: Čhažé-oyáŋke Iháŋgya yo/ye...
     go_public:
       heading: Owíčhotaya yutȟókečapi
+      make_edits_public_button: Wóyutȟokča owíčhotaya kpazó yo/ye
     destroy:
       success: Čhažé-oyáŋke iháŋgyaye.
     deletions:
       show:
         title: Čhažé-oyáŋke Iháŋgkiya yo/ye
+        warning: Wóiwaktaye! Čhažé-oyáŋke iháŋgyakiya ihakab, he yaglúkini oyákihi
+          kte šni.
         delete_account: Čhažé-oyáŋke Iháŋgya yo/ye
+        delete_introduction: 'Čheškíkȟaŋ kiŋ le ogná OpenStreetMap čhažé-oyáŋke iháŋgyakiya
+          oyákihi. Wíhoši kiŋ lená iyúkčaŋ yo/ye:'
         retain_traces: Waóye waŋkál oyékšu kiŋ égnake kte.
+        retain_email: Wakȟáƞgli wóyakapi makȟóčhažeyate nitȟáwa égnake kte.
         recent_editing_html: Leháŋl čhažé-oyáŋke yaglutȟókeča, he uŋ he iháŋgyakiya
           oyákihi šni. %{time} kiŋháŋ, he iháŋgyakiya oyákihi kte.
         confirm_delete: Lečh́anuŋ yačhíŋ he?
@@ -297,9 +309,12 @@ lkt:
     tag_details:
       tags: Ihóši
       wikidata_link: Wikidata ektá %{page} táku waŋží kiŋ
+      wikidata_preview:
+        other: Wikidata táku kiŋ hená owáŋyaŋke-íȟaŋhaŋ
       wikipedia_link: Wikipedia ektá %{page} wówapi kiŋ
       wikimedia_commons_link: Wikimedia Commons ektá %{page} táku waŋzí kiŋ
       telephone_link: '%{phone_number} mas’ákipȟA yo/ye'
+      colour_preview: Wíyuƞpi %{colour_value} owáŋyaŋke-íȟaŋhaŋ
       email_link: Wakȟáƞgli wóyakapi %{email}
     versions_navigation:
       node: Makȟá-owáŋka
@@ -389,8 +404,14 @@ lkt:
       title: Wóyutȟokča-opȟáȟte
       title_user: '%{user} wóyutȟokča-opȟáȟte káǧe'
       title_user_link_html: '%{user_link} wóyutȟokča-opȟáȟte káǧe'
+      title_followed: Tuwá otȟáwičhayapȟa kiŋ wóyutȟokča-opȟáȟte káǧapi
+      title_nearby: Tuwá nikhíyela kiŋ wóyutȟokča-opȟáȟte káǧapi
       empty: Wóyutȟokča-opȟáȟte waníča.
+      empty_area: Léčhiya wóyutȟokča-opȟáȟte waníča.
+      empty_user: Tuwá uŋ kiŋ le wóyutȟokča-opȟáȟte káǧe šni.
       no_more: Wóyutȟokča-opȟáȟte sáƞpȟa waníča.
+      no_more_area: Léčhiya wóyutȟokča-opȟáȟte sáŋpȟa waníča.
+      no_more_user: Tuwá uŋ kiŋ le wóyutȟokča-opȟáȟte sáŋpȟa káǧe šni.
       older_changesets: Wóyutȟokča-opȟáȟte Isáƞm Káƞ
       newer_changesets: Wóyutȟokča-opȟáȟte Isáƞm Théča
       feed:
@@ -408,6 +429,7 @@ lkt:
       created_ago_by_html: '%{time_ago} he eháŋ %{user} káǧe'
       closed_ago_by_html: '%{time_ago} he eháŋ %{user} ečhél iyéye'
       discussion: Wóakhiye
+      join_discussion: Wóakhiye óyapȟa yačhiŋ eháŋtaŋš, čhaž'óigwa yo/ye
       subscribe: Le otȟápȟa yo/ye
       unsubscribe: Le otȟápȟa-ayúštaƞ yo/ye
       comment_by_html: '%{time_ago} he eháŋ, %{user} wóeye waƞ káǧe'
@@ -427,6 +449,8 @@ lkt:
       range: '%{count} etáŋhaŋ %{x}-%{y}'
     not_found_message:
       sorry: Wóyutȟokča-opȟáȟte %{id} iyéwaya owákihi šni.
+    timeout:
+      sorry: Eháš tȟéhaŋ wóyutȟokča-opȟáȟte tȟačhášowapi oyále. He iyáču oyákihi šni.
   changeset_subscriptions:
     show:
       subscribe:
@@ -447,6 +471,7 @@ lkt:
       view_changeset_details: Wóyutȟokča-opȟáȟte wíhoši-sáŋpȟa waŋyáŋka yo/ye
     popup:
       your location: Tuktél yauŋ
+      nearby mapper: Tuwá nikhíyela makȟówa kiŋ
       following: Tuwá otȟáyapȟe kiŋ
     show:
       no_home_location_html: '%{edit_profile_link} na tuktél yathí kiŋ ékignaka kiŋháŋ,
@@ -458,6 +483,8 @@ lkt:
       no nearby users: Héčhena tuwéni khiyéla uŋ šni, s'eléčheča.
       followed_changesets: wóyutȟokča-opȟáȟte
       followed_diaries: aŋpél'okigwapi wówapi
+      nearby_changesets: tuwá nikhíyela uŋ kiŋ tȟawóyutȟokča-opȟáȟte
+      nearby_diaries: tuwá nikhíyela uŋ kiŋ tȟaáŋpel'okigwapi wówapi
   diary_entries:
     new:
       title: Aŋpél'okigwapi Wówapi Théča
@@ -482,8 +509,12 @@ lkt:
       discussion: Wóakhiye
       subscribe: Aŋpél'okigwapi otȟápȟa yo/ye
       unsubscribe: Aŋpél'okigwapi otȟápȟa-ayúštaƞ yo/ye
-      login: Čhaž'óigwa
+      leave_a_comment: Wóeye waŋ owá yo/ye
+      login_to_leave_a_comment_html: Wóeye waŋ oyáwa eháŋtaŋš, %{login_link} yo/ye
+      login: čhaž'óigwa
     diary_entry:
+      comment_count:
+        other: wóeye %{count}
       no_comments: Wóeye waníča
       edit_link: Wówapi kiŋ le yutȟókeča yo/ye
       hide_link: Wówapi kiŋ le naȟmá yo/ye
@@ -491,9 +522,12 @@ lkt:
       confirm: Yasúta yo/ye
       report: Wówapi kiŋ le el iglé yo/ye
     diary_comment:
+      comment_from_html: '%{comment_created_at} he eháŋ, %{link_user} wóeye kiŋ le
+        káǧe'
       hide_link: Wóeye kiŋ le naȟma yo/ye
       unhide_link: Wóeye kiŋ le yuátȟaƞiƞ yo/ye
       confirm: Yasúta yo/ye
+      report: Wóeye kiŋ le el iglé yo/ye
     location:
       location: 'Tuktél:'
     subscribe:

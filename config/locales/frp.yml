@@ -1821,6 +1821,7 @@ frp:
         ku-Latn: Kurdo (latin)
         lv: Lèton
         lb: Luxemborgês
+        lkt: Lakota
         lt: Lituanien
         hu: Hongrouès
         fit: Meänkieli
@@ -1905,6 +1906,9 @@ frp:
       et d'ôtros %{partners}.
     partners_corpmembers: de membros de l'entreprêsa OSMF
     partners_partners: partenèros
+    welcome_tou_notice_html: En utilisant ceti sito de malyâjo ou ben una ôtra enfrastructura
+      fornia per la Fondacion OpenStreetMap, vos accèptâd les %{terms_link}
+    terms_of_use: Condicions d’usâjo
     tou: Condicions d’usâjo
     nothing_to_preview: É y at ren a prè-vêre.
     learn_more: Nen savêr més
@@ -2266,6 +2270,7 @@ frp:
         image: Émâge
         company: Entreprêsa
         location: Emplacement
+        contribution_calendar: Calendriér de contribucions
     descriptions:
       show:
         title: Changiér lo profil
@@ -2327,12 +2332,14 @@ frp:
         failure: Lo luè du profil at pas povu étre betâ a jorn.
     heatmaps:
       show:
-        title: Configurar la mapa de chalor
-        save: Betar a jorn la configuracion de la mapa de chalor
+        title: Configurar lo calendriér de contribucions
+        show_contribution_calendar_in_public: Montrar lo calendriér de contribucions
+          dens voutra pâge de profil
+        save: Betar a jorn la configuracion du calendriér de contribucions
         cancel: Anular
       update:
-        success: Mapa de chalor betâye a jorn.
-        failure: La mapa de chalor at pas povu étre betâye a jorn.
+        success: Calendriér de contribucions betâ a jorn.
+        failure: Lo calendriér de contribucions at pas povu étre betâ a jorn.
   sessions:
     new:
       tab_title: Sè branchiér
@@ -2618,6 +2625,8 @@ frp:
         contributors_hr_croatia: Croacie
         contributors_hr_dgu: Administracion Gèodèsica de l'Ètât de Croacie
         contributors_hr_open_data_portal: Portâl nacionâl des balyês uvèrtes
+        contributors_nl_credit_new_html: '%{netherlands} : contint de balyês &copy;
+          AND, 2007'
         contributors_nl_netherlands: Payis-Bâs
         contributors_nz_credit_html: |-
           %{new_zealand} : contint de balyês venent du %{linz_data_service_link}
@@ -3033,13 +3042,13 @@ frp:
       points: 'Pouents :'
       start_coordinates: 'Coordonâyes de dèpârt :'
       coordinates_html: '%{latitude} ; %{longitude}'
-      map: mapa
-      edit: changiér
+      map: Afichiér l'emplacement sur la mapa
+      edit: Uvrir dens l'èditor
       owner: 'Propriètèro :'
       description: 'Dèscripcion :'
       tags: 'Balises :'
       none: Nion
-      edit_trace: Changiér ceta trace
+      edit_trace: Modifiar los dètalys de la mârca
       delete_trace: Suprimar ceta trace
       trace_not_found: Trace pas trovâye !
       visibility: Visibilitât
@@ -3051,8 +3060,8 @@ frp:
         other: '%{count} pouents'
       more: més
       trace_details: Vêre los dètalys de la trace
-      view_map: Vêre la mapa
-      edit_map: Changiér la mapa
+      view_map: Afichiér l'emplacement sur la mapa
+      edit_map: Uvrir dens l'èditor
       public: PUBLICA
       identifiable: IDENTIFIÂBLA
       private: PRIVÂYE
@@ -3262,6 +3271,7 @@ frp:
           por més d'enformacions.
       or: ou ben
       use external auth: ou sè branchiér avouéc un sèrviço tièrs
+      verify_human: Vèrifiâd que vos étes un humen
     no_such_user:
       title: Cét(a) usanciér(e) ègziste pas
       heading: L'usanciér(e) « %{user} » ègziste pas
@@ -3320,6 +3330,7 @@ frp:
       change_image: Changiér l'émâge
       edit_company: Changiér l'entreprêsa
       edit_location: Changiér lo luè
+      edit_contribution_calendar: Configurar lo calendriér de contribucions
       contributions:
         one: Una contribucion pendent l'an passâ
         other: '%{count} contribucions pendent l''an passâ'
@@ -3663,6 +3674,10 @@ frp:
       tooltip: Lègenda
       tooltip_disabled: La lègenda est pas disponibla por ceta cuche
     map:
+      map:
+        title: Mapa
+        marker:
+          title: Repèro sur la mapa
       popup:
         close: Cllôre
       navigation_control:
