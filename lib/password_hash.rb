@@ -4,7 +4,6 @@ require "argon2"
 require "base64"
 require "digest/md5"
 require "openssl"
-require "securerandom"
 
 module PasswordHash
   FORMAT = Argon2::HashFormat.new(Argon2::Password.create(""))
