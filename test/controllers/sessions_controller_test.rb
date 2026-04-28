@@ -97,6 +97,14 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_equal(I18n.t("sessions.new.auth failure"), flash[:error])
   end
 
+  def test_login_expired_password
+    user = create(:user, :pass_crypt => "expired password")
+
+    post login_path, :params => { :username => user.display_name, :password => "s3cr3t", :remember_me => "0" }
+    assert_redirected_to user_forgot_password_path
+    assert_equal(I18n.t("sessions.new.reset_to_login"), flash[:warning])
+  end
+
   def test_logout_without_referer
     post logout_path
     assert_redirected_to root_path

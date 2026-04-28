@@ -2228,6 +2228,7 @@ en:
       login_button: "Log in"
       with external: "or log in with a third party"
       or: "or"
+      reset_to_login: "Sorry, your password has been expired. Please reset your password to login."
       auth failure: "Sorry, could not log in with those details."
     destroy:
       title: "Logout"

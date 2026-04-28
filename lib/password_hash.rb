@@ -39,6 +39,10 @@ module PasswordHash
     true
   end
 
+  def self.valid?(hash, salt)
+    Argon2::HashFormat.valid_hash?(hash) || salt&.include?("!") || hash =~ /^[0-9A-Z]{32}$/i
+  end
+
   def self.pbkdf2(password, salt, iterations, size, algorithm)
     digest = OpenSSL::Digest.new(algorithm)
     pbkdf2 = OpenSSL::PKCS5.pbkdf2_hmac(password, salt, iterations, size, digest)
