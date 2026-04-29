@@ -2,7 +2,6 @@
 
 require "argon2"
 require "base64"
-require "digest/md5"
 require "openssl"
 
 module PasswordHash
@@ -16,14 +15,10 @@ module PasswordHash
   def self.check(hash, salt, candidate)
     if Argon2::HashFormat.valid_hash?(hash)
       Argon2::Password.verify_password(candidate, hash)
-    elsif salt.nil?
-      ActiveSupport::SecurityUtils.secure_compare(hash, Digest::MD5.hexdigest(candidate))
-    elsif salt.include?("!")
+    elsif salt&.include?("!")
       algorithm, iterations, salt = salt.split("!")
       size = Base64.strict_decode64(hash).length
       ActiveSupport::SecurityUtils.secure_compare(hash, pbkdf2(candidate, salt, iterations.to_i, size, algorithm))
-    else
-      ActiveSupport::SecurityUtils.secure_compare(hash, Digest::MD5.hexdigest(salt + candidate))
     end
   end
 
@@ -40,7 +35,7 @@ module PasswordHash
   end
 
   def self.valid?(hash, salt)
-    Argon2::HashFormat.valid_hash?(hash) || salt&.include?("!") || hash =~ /^[0-9A-Z]{32}$/i
+    Argon2::HashFormat.valid_hash?(hash) || salt&.include?("!")
   end
 
   def self.pbkdf2(password, salt, iterations, size, algorithm)

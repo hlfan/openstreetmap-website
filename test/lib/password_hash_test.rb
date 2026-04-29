@@ -4,18 +4,18 @@ require "test_helper"
 
 class PasswordHashTest < ActiveSupport::TestCase
   def test_md5_without_salt
-    assert PasswordHash.check("5f4dcc3b5aa765d61d8327deb882cf99", nil, "password")
+    assert_not PasswordHash.check("5f4dcc3b5aa765d61d8327deb882cf99", nil, "password")
     assert_not PasswordHash.check("5f4dcc3b5aa765d61d8327deb882cf99", nil, "wrong")
     assert PasswordHash.upgrade?("5f4dcc3b5aa765d61d8327deb882cf99", nil)
-    assert PasswordHash.valid?("5f4dcc3b5aa765d61d8327deb882cf99", nil)
+    assert_not PasswordHash.valid?("5f4dcc3b5aa765d61d8327deb882cf99", nil)
   end
 
   def test_md5_with_salt
-    assert PasswordHash.check("67a1e09bb1f83f5007dc119c14d663aa", "salt", "password")
+    assert_not PasswordHash.check("67a1e09bb1f83f5007dc119c14d663aa", "salt", "password")
     assert_not PasswordHash.check("67a1e09bb1f83f5007dc119c14d663aa", "salt", "wrong")
     assert_not PasswordHash.check("67a1e09bb1f83f5007dc119c14d663aa", "wrong", "password")
     assert PasswordHash.upgrade?("67a1e09bb1f83f5007dc119c14d663aa", "salt")
-    assert PasswordHash.valid?("67a1e09bb1f83f5007dc119c14d663aa", "salt")
+    assert_not PasswordHash.valid?("67a1e09bb1f83f5007dc119c14d663aa", "salt")
   end
 
   def test_pbkdf2_1000_32_sha512

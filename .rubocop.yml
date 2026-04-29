@@ -70,6 +70,7 @@ Rails/ReflectionClassName:
 Rails/SkipsModelValidations:
   Exclude:
     - 'db/migrate/*.rb'
+    - 'lib/tasks/expire_md5_passwords.rake'
 
 Style/CollectionQuerying:
   Exclude:
