@@ -20,7 +20,8 @@ OSM.DirectionsEndpoint = function Endpoint(map, input, marker, dragCallback, cha
   };
 
   function markerDragListener(e) {
-    const latlng = L.latLng(OSM.cropLocation(e.target.getLatLng(), map.getZoom()));
+    const { lat, lng } = OSM.cropLocation(e.target.getLatLng(), map.getZoom());
+    const latlng = L.latLng(lat, lng);
 
     if (endpoint.geocodeRequest) endpoint.geocodeRequest.abort();
     delete endpoint.geocodeRequest;
