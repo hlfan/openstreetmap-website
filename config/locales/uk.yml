@@ -1992,6 +1992,7 @@ uk:
   layouts:
     logo:
       alt_text: Логотип OpenStreetMap
+    main_navigation: Головна
     layer_info: Інфо про шар
     start_mapping: Почати мапити
     intro_header: Ласкаво просимо до OpenStreetMap!

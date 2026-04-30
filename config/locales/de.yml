@@ -2020,6 +2020,7 @@ de:
   layouts:
     logo:
       alt_text: OpenStreetMap Logo
+    main_navigation: Start
     layer_info: Ebeneninfo
     start_mapping: Mit dem Kartieren anfangen
     intro_header: Willkommen bei OpenStreetMap!
