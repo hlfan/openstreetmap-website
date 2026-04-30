@@ -1908,6 +1908,7 @@ zh-CN:
   layouts:
     logo:
       alt_text: OpenStreetMap 标志
+    main_navigation: 主导航
     layer_info: 图层信息
     start_mapping: 开始绘制地图
     intro_header: 欢迎访问 OpenStreetMap！

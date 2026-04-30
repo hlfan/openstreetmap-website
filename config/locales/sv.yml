@@ -1931,6 +1931,7 @@ sv:
   layouts:
     logo:
       alt_text: OpenStreetMaps logotyp
+    main_navigation: Huvudsida
     layer_info: Lagerinformation
     start_mapping: Börja kartlägga
     intro_header: Välkommen till OpenStreetMap!

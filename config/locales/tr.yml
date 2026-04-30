@@ -1929,6 +1929,7 @@ tr:
   layouts:
     logo:
       alt_text: OpenStreetMap logosu
+    main_navigation: Ana
     layer_info: Katman Bilgisi
     start_mapping: Haritacılığa Başla
     intro_header: OpenStreetMap'e hoş geldiniz!

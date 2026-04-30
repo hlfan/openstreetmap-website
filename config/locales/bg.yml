@@ -1184,6 +1184,9 @@ bg:
     create:
       successful_report: Вашия сигнал е регистриран успешно
       provide_details: Моля допълнете с необходимите подробности
+  languages_panes:
+    select_language_list:
+      search_language: Търсене...
   layouts:
     logo:
       alt_text: Лого на OpenStreetMap
@@ -1917,6 +1920,7 @@ bg:
       show:
         title: Потребители
         heading: Потребители
+        search: Търсене
       page:
         empty: Не са открити съвпадащи профили
       user:

@@ -1906,6 +1906,7 @@ gl:
   layouts:
     logo:
       alt_text: Logotipo do OpenStreetMap
+    main_navigation: Principal
     layer_info: Información da capa
     start_mapping: Comezar a cartografar
     intro_header: Dámosche a benvida ó OpenStreetMap!
@@ -2486,7 +2487,7 @@ gl:
         de atribuír ao OpenStreetMap; consulta as %{attribution_guidelines_link} para
         obter máis información.
       legal_attribution_guidelines_title: directrices de recoñecemento
-      legal_attribution_guidelines_url: https://wiki.osmfoundation.org/wiki/Licence/Attribution_Guidelines
+      legal_attribution_guidelines_url: https://osmfoundation.org/wiki/Licence/Attribution_Guidelines
       legal_1_3_html: Para empregar especificamente unha captura de pantalla do OpenStreetMap
         directamente no teu libro, publicación, película ou programa de televisión,
         non necesitas pedir permiso, xa que os datos do OpenStreetMap son abertos

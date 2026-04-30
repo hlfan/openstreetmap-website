@@ -938,7 +938,7 @@ be-Tarask:
           village_hall: Кіраўніцтва вёскі
           waste_basket: Сьметніца
           waste_disposal: Сьметнік
-          waste_dump_site: Куча сьмецьця
+          waste_dump_site: Купа сьмецьця
           watering_place: Вада для жывёлы
           water_point: Пітная вада
           weighbridge: Вагавая плятформа
@@ -1893,6 +1893,7 @@ be-Tarask:
   layouts:
     logo:
       alt_text: Ляґатып OpenStreetMap
+    main_navigation: Галоўная
     layer_info: Пра пласт
     start_mapping: Пачаць мапіць
     intro_header: Сардэчна запрашаем у OpenStreetMap!

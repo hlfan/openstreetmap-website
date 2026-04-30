@@ -339,6 +339,7 @@ kab:
     versions_navigation:
       node: Tikerrist
       way: Abrid
+      relation: Assaɣ
       history: Amazray
       version: 'Lqem #%{version}'
       versions_label: 'Ileqman:'
@@ -673,6 +674,7 @@ kab:
           secondary: Abrid asnawan
           secondary_link: Abrid asnawan
           service: Abrid n umeẓlu
+          services: Tanfiwin n iberdan imazzalen
           speed_camera: Aṛadaṛ n tazzla
           steps: Sellum
           street_lamp: Tasafut n ubrid
@@ -836,6 +838,12 @@ kab:
   issues:
     index:
       search: Nadi
+      states:
+        open: Yeldi
+    page:
+      status: Addad
+      states:
+        open: Yeldi
     helper:
       reportable_title:
         note: 'Tazmilt #%{note_id}'
@@ -865,6 +873,7 @@ kab:
   layouts:
     logo:
       alt_text: Alugu n OpenStreetMap
+    main_navigation: Agejdan
     start_mapping: Bdu asgertel
     intro_header: Anṣuf ar OpenStreetMap!
     intro_text: OpenStreetMap d takarḍa n umadal, rnna-tt yemdanen am kečč d tilellit
@@ -1055,6 +1064,7 @@ kab:
         preferences: Ismenyifen
     basic_preferences:
       show:
+        title: Imenyifen-iw
         preferred_language: Tutlayt tebɣiḍ
         site_color_schemes:
           auto: Awurman
@@ -1121,20 +1131,32 @@ kab:
     new:
       tab_title: Qqen
       email or username: 'Tansa imayl neɣ isem n useqdac:'
-      password: 'Awal uffir:'
+      password: Awal n uɛeddi
       remember: Cfu fell-i
       lost password link: Tweddreḍ awal-ik uffir?
       login_button: Qqen
       with external: neɣ qqen s tanfa taberranit
+      or: neɣ
     destroy:
       title: Tuffɣa
       heading: Tuffɣa si OpenStreetMap
       logout_button: Tuffɣa
   shared:
+    markdown_help:
+      link: Aseɣwen
+      text: Aḍris
+      image: Tugna
+      alt: Aḍris amlellay
+      url: URL
     richtext_field:
       edit: Ẓreg
       preview: Taskant
+      help: Tallalt
     pagination:
+      changeset_comments:
+        newer: Iwenniten ineggura
+        oldest: Iwenniten iqbuṛen
+        newest: Iwenniten ineggura
       diary_comments:
         older: Iwenniten iqbuṛen
         newer: Iwenniten ineggura
@@ -1144,10 +1166,16 @@ kab:
       traces:
         older: Lǧerrat tiqburin
         newer: Lǧerrat timaynutin
+      users:
+        newest: Iseqdacen imaynuten
   site:
     about_section:
+      community_driven_osm_blog: Ablug n OpenStreetMap
       open_data_title: Isefka ilelliyen
       legal_title: Asaḍuf
+      legal_1_1_terms_of_use: Tiwtilin n useqdec
+      legal_1_1_privacy_policy: Tasertit n tbaḍnit
+      legal_attribution_example_film_title: Asaru
       partners_title: Imendiden
     copyright:
       title: Izerfan n umeskar d turagt
@@ -1167,6 +1195,11 @@ kab:
           alt: Amedɣa ɣef wamek ara tettekkiḍ di OpenStreetMap s usebter web
           title: Amedya n uttekki
         contributors_title_html: Iwiziwen-nneɣ
+        contributors_au_australia: Ustralya
+        contributors_ca_canada: Kanada
+        contributors_fr_france: Fransa
+        contributors_es_spain: Spanya
+        contributors_za_south_africa: Tafrikt n Wenẓul
     not_public_flash:
       user_page_link: asebter n useqdac
     export:
@@ -1193,6 +1226,9 @@ kab:
           title: Iɣbula-nniḍen
           description: Ibula-nniḍen yettwabedren deug uwiki OpenStreetMap
       export_button: Sifeḍ
+      confirmation:
+        cancel: Sefsex
+        download: Sader-d
     fixthemap:
       how_to_help:
         title: Amek ara d-muddeḍ afus
@@ -1207,7 +1243,7 @@ kab:
         neɣ ad teɣreḍ tasemlit ɣef isental n tira n tkarḍiwin d iseqdacen nniḍen.
       welcome:
         url: /welcome
-        title: Anɣuf ar OSM
+        title: Ansuf ɣer OpenStreetMap
         description: Bdu s uminir-agi arurad yettmeslayen ɣef udasil n OpenStreetMap.
       beginners_guide:
         title: Amnir n ulemad
@@ -1241,6 +1277,8 @@ kab:
         title: Ayen yellan di tkarḍa
       basic_terms:
         editor: amaẓrag
+        node: tikerrist
+        way: abrid
       rules:
         title: Ilugan!
       start_mapping: Bdu asgertel
@@ -1248,13 +1286,25 @@ kab:
       the_map: takarḍa
     communities:
       title: Timɣiwanin
+  social_links:
+    show:
+      website: asmel web
   legend_panes:
     show:
       entries:
+        motorway: Abrid amazzal
+        main_road: Abrid agejdan
+        primary: Abrid ameqqran
+        secondary: Abrid asnawan
+        footway: Abrid uḍar
+        rail: Abrid n tmacint
+        capital: Tamanaɣt
+        city: Tiɣremt
         forest: Tiẓgi
         lake: Amdun
         school: Aɣerbaz
         university: Tasdawit
+        hospital: Asegnaf
   share_panes:
     show:
       link: Aseɣwen neq HTML
@@ -1267,6 +1317,9 @@ kab:
       format: 'Amasal:'
       scale: 'Sellum:'
       download: Sider
+  webgl_error_panes:
+    show:
+      read_more_about_webgl: Ɣeṛ ugar
   traces:
     new:
       visibility_help: D acu i d-yeqqar wannect-a?
@@ -1311,6 +1364,7 @@ kab:
       description: Snirem lǧerrat GPS tineggura i yulin
       tagged_with: yettwaṛekkez s %{tags}
       empty_title: Ulac d acu i yellan da, tura
+      wiki_page: asebter wiki
       upload_trace: Azen lǧerra
       my_traces: Lǧerrat-iw
     destroy:
@@ -1336,15 +1390,19 @@ kab:
       blocked_zero_hour: Ɣur-k izen utrib ɣef usmel Web OpenStreetMap. Yessef ad t-ɣreḍ-t
         send ad tizmireḍ ad teskelseḍ asnifel-ik.
       blocked: Anekcum-ik API yewḥel. Qqen ar ugrudem Web i ugar n isallen.
+    settings_menu:
+      account_settings: Iɣewwaren n umiḍan
     auth_providers:
       google:
         title: Qqen s Google
         alt: Qqen s Google OpenID
+      apple:
+        title: Qqen s Apple
       facebook:
         title: Qqen s Facebook
         alt: Qqen s umidan Facebook
       microsoft:
-        title: Qqen s Windows Live
+        title: Qqen s Microsoft
         alt: Qqen s umiḍan Windows Live
       github:
         title: Qqen s GitHub
@@ -1352,12 +1410,19 @@ kab:
       wikipedia:
         title: Qqen s Wikipedia
         alt: qqes s umiḍan Wikipedia
+    share:
+      share:
+        title: Bḍu
+      mastodon:
+        title: Bḍu-t deg Mastodon
   oauth:
     permissions:
       missing: Ur teǧǧiḍ ara asnas akken ad yeqqen ar usebdded-agi
     scopes:
       write_api: Ẓreg takarḍa
   oauth2_applications:
+    index:
+      name: Isem
     application:
       edit: Ẓreg
       delete: Kkes
@@ -1367,6 +1432,9 @@ kab:
     show:
       edit: Ẓreg
       delete: Kkes
+  oauth2_authorized_applications:
+    index:
+      application: Asnas
   users:
     new:
       title: Jerred
@@ -1447,6 +1515,7 @@ kab:
           active: D urmid
           deleted: Yettwakkes
         name_or_email: Isem neɣ Imayl
+        ip_address: Tansa IP
         search: Nadi
       page:
         confirm: Sentem iseqdacen yettwafernen
@@ -1506,7 +1575,10 @@ kab:
       description: Aglam
       created_at: Yettwarna di
       last_changed: Asnifel aneggaru
+      apply: Snes
+      all: Akk
       closed: Tefra
+      status: Addad
     show:
       title: 'Tazmilt: %{id}'
       description: Aglam
@@ -1514,6 +1586,7 @@ kab:
       closed_title: 'Yefra tazmilt #%{note_name}'
       hidden_title: 'Tazmilt yeffren #%{note_name}'
       description_when_author_is_deleted: yettwakkes
+      description_when_there_is_no_opening_comment: arussin
       report: Sillef tazmilt agi
       hide: Ffer
       resolve: Fru
@@ -1525,6 +1598,7 @@ kab:
       add: Rnu tazmilt
     notes_paging_nav:
       showing_page: Asebter %{page}
+      next: Uḍfir
   javascripts:
     close: Mdel
     share:
@@ -1572,17 +1646,19 @@ kab:
           body: Ur ufiɣ ara '%{place}'.
       instructions:
         continue_without_exit: Kemmel ɣef %{name}
-        slight_right_without_exit: Bren am acemma ɣer tama tayeffust ɣef %{name}
+        slight_right_without_exit: Bren am wacemma ɣer tama tayeffust ɣef %{name}
         offramp_right: Awi ufuɣ i yellan ar tama tayeffust
+        offramp_right_with_exit: Ṭṭef tuffɣa %{exit} ɣef tama tayeffust
         offramp_right_with_name: Awi ufuɣ i yellan ar tama tayeffust ɣef %{name}
         offramp_right_with_directions: Awi ufuɣ i yellan ar tama tayeffust twal %{directions}
         offramp_right_with_name_directions: Awi ufuɣ i yellan ar tama tayeffust ɣef
           %{name}, twal %{directions}
         endofroad_right_without_exit: Mi ara ifakk ubrid, bren ɣer tama tayeffust
           ɣef %{name}
-        fork_right_without_exit: Ar ger iberdan, bren ɣer tama tayeffust ɣef %{name}
+        fork_right_without_exit: Ar gar yiberdan, bren ɣer tama tayeffust ɣef %{name}
         turn_right_without_exit: Bren ɣer tama tayeffust ɣef %{name}
         sharp_right_without_exit: Bren mliḥ ɣer tama tayeffust ɣef %{name}
+        uturn_without_exit: Uɣal ansa i d-tekkiḍ ɣef %{name}
         sharp_left_without_exit: Bren mliḥ ɣer tama taẓelmaḍt ɣef %{name}
         turn_left_without_exit: Bren ɣer tama taẓelmaḍt ɣef %{name}
         offramp_left: Awi ufuɣ i yellan ar tama taẓelmaḍt
@@ -1593,12 +1669,18 @@ kab:
           %{name}, twal %{directions}
         endofroad_left_without_exit: Mi ara ifakk ubrid, bren ɣer tama taẓelmaḍt ɣef
           %{name}
-        fork_left_without_exit: Ar ger iberdan, bren ɣer tama taẓelmaḍt ɣef %{name}
-        slight_left_without_exit: Bren am acemma ɣer tama taẓelmaḍt ɣef %{name}
+        fork_left_without_exit: Ar gar yiberdan, bren ɣer tama taẓelmaḍt ɣef %{name}
+        slight_left_without_exit: Bren am wacemma ɣer tama taẓelmaḍt ɣef %{name}
         via_point_without_exit: (ekk taneqqiḍt)
         follow_without_exit: Ḍfer %{name}
+        roundabout_without_exit: Deg unezzi, ṭṭef tuffɣa %{name}
+        leave_roundabout_without_exit: Ffeɣ seg unezzi - %{name}
+        stay_roundabout_without_exit: Qqim deg unezzi - %{name}
         start_without_exit: Bdu seg %{name}
         destination_without_exit: Ad tawḍeḍ ɣer wanda i tettedduḍ
+        roundabout_with_exit: Deg unezzi, ṭṭef tuffɣa %{exit} ɣef %{name}
+        roundabout_with_exit_ordinal: Deg unezzi, ṭṭef tuffɣa %{exit} ɣef %{name}
+        exit_roundabout: Ffeɣ seg unezzi ɣef %{name}
         unnamed: abrid ur nesɛi isem
         exit_counts:
           first: tamezwarut
@@ -1618,6 +1700,8 @@ kab:
       nothing_found: Ulac taɣawsa yettwafen
       error: 'Tuccḍa deg unermes n %{server} : %{error}'
       timeout: Tanzagt tezri deg unermes n %{server}
+    element:
+      wikipedia: Wikipidya
     context:
       directions_from: Tinilwin sya
       directions_to: Tinilwin ɣer da
@@ -1630,4 +1714,6 @@ kab:
       description: 'Aglam:'
       user: 'Amernay:'
       confirm: Tebɣiḍ?
+    update:
+      flash: Ttwaseklsen ibeddilen.
 ...

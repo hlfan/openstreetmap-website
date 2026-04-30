@@ -1941,6 +1941,7 @@ el:
   layouts:
     logo:
       alt_text: Λογότυπο OpenStreetMap
+    main_navigation: Αρχική
     layer_info: Πληροφορίες επιπέδου
     start_mapping: Ξεκινήστε τη χαρτογράφηση
     intro_header: Καλώς ήρθατε στο OpenStreetMap!

@@ -1939,6 +1939,7 @@ sl:
   layouts:
     logo:
       alt_text: OpenStreetMap logotip
+    main_navigation: Glavno
     layer_info: Informacije o sloju
     start_mapping: Začnite kartirati
     intro_header: Pozdravljeni v OpenStreetMap!
@@ -3733,6 +3734,8 @@ sl:
       tooltip: Legenda
       tooltip_disabled: Legende za ta sloj ni na voljo
     map:
+      map:
+        title: Zemljevid
       popup:
         close: Zapri
       navigation_control:

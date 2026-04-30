@@ -1953,6 +1953,7 @@ nl:
   layouts:
     logo:
       alt_text: Logo OpenStreetMap
+    main_navigation: Startpagina
     layer_info: Laaginformatie
     start_mapping: Begin met mappen
     intro_header: Welkom bij OpenStreetMap!
@@ -2530,7 +2531,7 @@ nl:
         er dan voor dat u OpenStreetMap als bron vermeldt. Raadpleeg %{attribution_guidelines_link}
         voor meer informatie.
       legal_attribution_guidelines_title: Richtlijnen voor naamsvermelding
-      legal_attribution_guidelines_url: https://wiki.osmfoundation.org/wiki/Licence/Attribution_Guidelines
+      legal_attribution_guidelines_url: https://osmfoundation.org/wiki/Licence/Attribution_Guidelines
       legal_1_3_html: U geen toestemming te vragen voor het opnemen van een schermafbeelding
         van OpenStreetMap in uw boek, publicatie, film of tv-programma, aangezien
         OpenStreetMap-gegevens voor iedereen vrij te gebruiken zijn. Raadpleeg wel
