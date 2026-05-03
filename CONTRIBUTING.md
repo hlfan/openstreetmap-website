@@ -23,7 +23,7 @@ This guide covers our development workflow, coding standards, and how to get you
 
 > [!NOTE]
 > We don't assign issues to individual contributors. You are welcome to work on any issue, and there's no need to ask first.
-> For more details see [our FAQ](doc/FAQ.md)
+> For more details see [our FAQ](FAQ.md)
 
 We welcome the community to contribute to this repository in any form:
 
