@@ -545,14 +545,14 @@ be-Tarask:
         few: '%{count} зьмены'
         other: '%{count} зьменаў'
       n_elements_created:
-        one: '%{count} аб''ект створаны'
-        other: '%{count} аб''ектаў створана'
+        one: '%{count} элемэнт створаны'
+        other: '%{count} элемэнтаў створана'
       n_elements_modified:
-        one: '%{count} аб''ект выпраўлены'
-        other: '%{count} аб''ектаў выпраўлена'
+        one: '%{count} элемэнт зьменены'
+        other: '%{count} элемэнтаў зьменена'
       n_elements_deleted:
-        one: '%{count} аб''ект выдалены'
-        other: '%{count} аб''ектаў выдалена'
+        one: '%{count} элемэнт выдалены'
+        other: '%{count} элемэнтаў выдалена'
     index:
       title: Наборы зьменаў
       title_user: Наборы зьменаў %{user}
@@ -2347,6 +2347,8 @@ be-Tarask:
       login_button: Увайсьці
       with external: альбо вайсьці праз вонкавы сэрвіс
       or: ці
+      reset_to_login: На жаль, ваш пароль састарэў. Калі ласка, скіньце пароль каб
+        увайсьці.
       auth failure: Прабачце, немагчыма ўвайсьці з такім адрасам і паролем.
     destroy:
       title: Выйсьці

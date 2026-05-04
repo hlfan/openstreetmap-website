@@ -2038,7 +2038,7 @@ nl:
     gpx_details:
       details: 'Details van je bestand:'
       filename: Bestandsnaam
-      url: URL
+      url: Url
       description: Beschrijving
       tags: Labels
       total_points: Totaal aantal punten
@@ -2421,6 +2421,8 @@ nl:
       login_button: Inloggen
       with external: of meld u aan via een derde
       or: of
+      reset_to_login: Uw wachtwoord is verlopen. Stel uw wachtwoord opnieuw in om
+        aan te melden.
       auth failure: Met deze gegevens kunt u helaas niet aanmelden.
     destroy:
       title: Afmelden
@@ -2444,7 +2446,7 @@ nl:
       text: Tekst
       image: Afbeelding
       alt: Alternatieve tekst
-      url: URL
+      url: Url
       codeblock: Codeblok
     richtext_field:
       edit: Bewerken

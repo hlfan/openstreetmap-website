@@ -325,6 +325,7 @@ tr:
       only_public_can_edit: 0.6 API geçişinden bu yana yalnızca genel kullanıcılar
         harita verilerini düzenleyebilir.
       find_out_why: neden olduğunu bul
+      find_out_why_url: https://wiki.openstreetmap.org/wiki/Tr:Anonymous_edits
       email_not_revealed: E-posta adresiniz herkese açık hale getirilerek gösterilmeyecektir.
       not_reversible: Bu işlem geri alınamaz ve tüm yeni kullanıcılar artık varsayılan
         olarak herkese açıktır.
@@ -2398,6 +2399,8 @@ tr:
       login_button: Oturum Aç
       with external: veya üçüncü bir parti uygulaması kullanarak kaydolun
       or: veya
+      reset_to_login: Üzgünüz, şifrenizin süresi doldu. Giriş yapmak için lütfen şifrenizi
+        sıfırlayın.
       auth failure: Üzgünüz, bu giriş ile oturum açılamadı.
     destroy:
       title: Oturumu kapat
@@ -2509,7 +2512,7 @@ tr:
         lütfen OpenStreetMap'e atıfta bulunduğunuzdan emin olun. Daha fazla bilgi
         için %{attribution_guidelines_link} adresine bakın.
       legal_attribution_guidelines_title: Atıf Yönergeleri
-      legal_attribution_guidelines_url: https://wiki.osmfoundation.org/wiki/Licence/Attribution_Guidelines
+      legal_attribution_guidelines_url: https://osmfoundation.org/wiki/Licence/Attribution_Guidelines
       legal_1_3_html: Özellikle OpenStreetMap'ten aldığınız bir ekran görüntüsünü
         doğrudan kitabınızda, yayınınızda, filminizde veya TV programınızda kullanmak
         için izin almanıza gerek yoktur. OpenStreetMap'teki veriler herkesin kullanımına
@@ -2551,6 +2554,7 @@ tr:
           Yerel %{osm_community_link} topluluğunuzdaki diğer haritacıları bulun.
           %{osm_foundation_link} ve %{making_donation_link}'e katılarak projeyi destekleyin.
         lead_2_learn_more_about_osm: OpenStreetMap hakkında daha fazla bilgi edinin
+        lead_2_learn_more_about_osm_url: https://wiki.openstreetmap.org/wiki/Tr:About_OpenStreetMap
         lead_2_get_started_mapping: haritalamaya başla
         lead_2_osm_blog: OpenStreetMap Blogu
         lead_2_osm_community: OSM topluluğu

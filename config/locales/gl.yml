@@ -2371,6 +2371,8 @@ gl:
       login_button: Acceder ao sistema
       with external: ou accede cun servizo de terceiros
       or: ou
+      reset_to_login: Sentímolo, o teu contrasinal caducou. Restablece o contrasinal
+        para iniciar sesión.
       auth failure: Sentímolo, non se puido acceder ó sistema con eses datos.
     destroy:
       title: Pechar a sesión

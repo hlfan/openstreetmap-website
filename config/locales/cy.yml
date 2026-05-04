@@ -1958,6 +1958,7 @@ cy:
   layouts:
     logo:
       alt_text: Logo OpenStreetMap
+    main_navigation: Prif
     layer_info: Gwybodaeth Haen
     start_mapping: Dechrau Mapio
     intro_header: Croeso i OpenStreetMap!
@@ -1967,6 +1968,7 @@ cy:
       a %{partners} eraill.
     partners_corpmembers: Aelodau corfforaethol OSMF
     partners_partners: phartneriaid
+    terms_of_use: Telerau Defnydd
     tou: Telerau Defnydd
     nothing_to_preview: Dim rhagolwg.
     learn_more: Dysgu Rhagor
@@ -3651,6 +3653,10 @@ cy:
       tooltip: Allwedd
       tooltip_disabled: Nid yw'r allwedd ar gael ar gyfer yr haen hon
     map:
+      map:
+        title: Map
+        marker:
+          title: Marciwr map
       popup:
         close: Cau
       navigation_control:
@@ -3673,6 +3679,8 @@ cy:
           few: Rydych chi o fewn %{count} throedfedd i'r pwynt hwn
           many: Rydych chi o fewn %{count} troedfedd i'r pwynt hwn
           other: Rydych chi o fewn %{count} troedfedd i'r pwynt hwn
+      attribution_control:
+        toggle_attribution: Toglo Priodoliad
       base:
         standard: Safonol
         cycle_map: Map Beicio

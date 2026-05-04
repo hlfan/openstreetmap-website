@@ -1901,6 +1901,7 @@ eo:
   layouts:
     logo:
       alt_text: Emblemo de OpenStreetMap
+    main_navigation: Ĉefa
     layer_info: Informoj pri tavolo
     start_mapping: Ekigi mapigadon
     intro_header: Bonvenon al OpenStreetMap!
@@ -2343,6 +2344,8 @@ eo:
       login_button: Ensaluti
       with external: 'ensaluti per ekstera liveranto:'
       or: aŭ
+      reset_to_login: Bedaŭrinde via pasvorto senvalidiĝis. Restarigu vian pasvorton
+        por ensaluti.
       auth failure: Bedaŭrinde ne povas ensaluti kun ĉi tiuj informoj.
     destroy:
       title: Elsaluti

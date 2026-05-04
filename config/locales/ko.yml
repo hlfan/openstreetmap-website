@@ -15,6 +15,7 @@
 # Author: CHK2605
 # Author: CYAN
 # Author: Cerulean
+# Author: Changwoo
 # Author: Codenstory
 # Author: Cubbe
 # Author: D6283
@@ -1631,6 +1632,7 @@ ko:
       title: 이슈
       select_status: 상태 선택
       select_type: 유형 선택
+      select_last_managed_by: 마지막 관리한 사용자로 선택
       reported_user: 사용자 신고함
       not_managed: 관리되지 않음
       search: 검색
@@ -1859,6 +1861,7 @@ ko:
       title: 오픈스트리트맵
     logo:
       alt_text: 오픈스트리트맵 로고
+    main_navigation: 메인
     layer_info: 레이어 정보
     start_mapping: 매핑 시작
     intro_header: 오픈스트리트맵에 오신 것을 환영합니다!
@@ -2270,6 +2273,7 @@ ko:
       login_button: 로그인
       with external: 또는 서드 파티로 로그인
       or: 혹은
+      reset_to_login: 죄송합니다. 비밀번호가 만료되었습니다. 로그인하려면 비밀번호를 재설정하세요.
       auth failure: 죄송합니다, 입력한 정보로 로그인할 수 없습니다.
     destroy:
       title: 로그아웃
@@ -2370,7 +2374,12 @@ ko:
       legal_1_1_terms_of_use: 이용 약관
       legal_1_1_aup: 사용 범위 정책
       legal_1_1_privacy_policy: 개인정보처리방침
+      legal_1_2_html: 오픈스트리트맵 지도 또는 데이터를 사용하려면 반드시 오픈스트리트맵을 저작자로 명시해 주세요. 자세한 내용은
+        %{attribution_guidelines_link}를 참조하세요.
       legal_attribution_guidelines_title: 기여 지침
+      legal_1_3_html: 특히 오픈스트리트맵의 스크린샷을 책, 출판물, 영화 또는 TV 프로그램에 직접 사용하는 경우, 오픈스트리트맵의
+        데이터는 누구나 사용할 수 있도록 공개되어 있으므로 허가를 요청할 필요가 없습니다. %{attribution_guidelines_link}을
+        참조하고 %{attribution_example_film} 및 %{attribution_example_tv}의 기존 예시를 확인하세요.
       legal_attribution_example_film_title: 영화
       legal_attribution_example_film_url: https://wiki.openstreetmap.org/wiki/Films
       legal_attribution_example_tv_title: TV
@@ -2427,11 +2436,21 @@ ko:
         licensing_4_osmf_license_page: OSMF 라이선스 페이지
         credit_title_html: 오픈스트리트맵의 기여진을 밝히는 방법
         credit_1_html: 오픈스트리트맵 데이터를 이용하려면 다음 두 가지를 해야 합니다.
+        credit_2_attribution: OpenStreetMap의 출처를 명시하려면 저희의 저작권 표시를 함께 표시해 주세요.
         credit_2_license: 데이터 활용 시 오픈 데이터베이스 라이선스 (Open Database License)에 따른 것임을
           밝혀 주시기 바랍니다.
+        credit_3_v2025_html: |-
+          저작권 표시와 관련하여, 데이터 사용 방식에 따라 서로 다른 %{requirements_on_how_displayed_link}이 적용됩니다.
+          예를 들어, 탐색 가능한 지도, 인쇄된 지도 또는 정적 이미지를 제작했는지에 따라 저작권 표시를 표시하는 방식에 다른 규칙이 적용됩니다.
+          자세한 내용은 %{licensing_requirements_link} 섹션의 %{attribution_guidelines_link}에서 확인할 수 있습니다.
+        credit_3_v2025_requirements_on_how_displayed: (이것이 어떻게 표시되어야 하는지에 대한) 요구 사항
         credit_3_v2025_attribution_guidelines: 저작자 표기 지침
         credit_3_v2025_licensing_requirements: 라이선스 요구 사항
+        credit_4_v2025_html: '일반적으로, 데이터가 오픈 데이터베이스 라이선스에 따라 제공된다는 것을 명확히 하기 위해 %{this_copyright_page_link}로의
+          링크를 걸 수 있습니다. OSM을 데이터 형태로 배포하는 경우, 라이선스를 명시하고 직접 링크해 주세요. 링크를 걸 수 없는 매체(예:
+          인쇄물)에서는 페이지의 전체 URL을 포함시켜 주세요(예: %{copyright_page_url}).'
         credit_4_v2025_this_copyright_page: 이 저작권 페이지
+        credit_5_v2025_html: '이 예시에서는 크레딧이 지도 모서리에 표시됩니다:'
         attribution_example:
           alt: 웹페이지에 오픈스트리트맵를 표시하는 방법의 예시
           title: 권리 표시 보기
@@ -2526,6 +2545,10 @@ ko:
           저작권은 남아프리카 공화국 정부에 있습니다.'
         contributors_za_south_africa: 남아프리카 공화국
         contributors_za_ngi: 국가 지리공간 정보국
+        contributors_gb_credit_html: |-
+          %{united_kingdom}: 육지 측량 데이터
+          &copy; Crown 저작권 및 데이터베이스 권리
+          2010-2023를 포함합니다.
         contributors_gb_united_kingdom: 영국
         contributors_2_html: 이러한 정보와 오픈스트리트맵의 개선에 도움이 되는 기타 자료에 대한 자세한 내용은 오픈스트리트맵
           위키의 %{contributors_page_link}를 참조하십시오.
@@ -2828,6 +2851,8 @@ ko:
   webgl_error_panes:
     show:
       compact_message: 이 맵을 사용하려면 WebGL이 필요합니다.
+      description_html: 죄송하지만, %{your_browser_does_not_support_webgl}. 이는 웹에서 3D 그래픽을
+        렌더링하기 위한 기술입니다.
       your_browser_does_not_support_webgl: 사용하는 브라우저는 WebGL을 지원하지 않습니다
       webgl_is_required_for_this_map: 이 맵을 표시하려면 WebGL이 필요합니다.
       read_more_about_webgl: 더 읽어보기
@@ -3084,6 +3109,8 @@ ko:
       or: 혹은
       use external auth: 다른 제3자 로그인 방식 사용하기
       verify_human: 사람인지 확인하기
+    create:
+      not_human: 죄송하지만, 현재로서는 당신이 사람인지 확인할 수 없습니다. 새 계정을 생성하려면 이것이 필수입니다.
     no_such_user:
       title: 이러한 사용자는 없습니다
       heading: '%{user} 사용자는 존재하지 않습니다'
@@ -3143,7 +3170,7 @@ ko:
       edit_location: 위치 편집
       edit_contribution_calendar: 기여 달력 구성
       contributions:
-        other: '%{count} 작년 기부금'
+        other: 지난 한해 %{count}개 기여
       title:
         administrator: 이 사용자는 관리자입니다
         moderator: 이 사용자는 운영자입니다
@@ -3416,6 +3443,8 @@ ko:
         받고 매퍼가 문제를 해결할 수 있도록 도와주세요.
       anonymous_warning_log_in: 로그인
       anonymous_warning_sign_up: 가입하기
+      counter_warning_html: '%{x_anonymous_notes}개의 익명 메모를 게시해 주셔서 감사합니다. 커뮤니티에 큰
+        도움이 됩니다! 이제 %{contribute_by_yourself}를 권장합니다. 어렵지 않으며 %{community_can_help}.'
       x_anonymous_notes:
         other: '%{count} 익명 참고'
       counter_warning_guide_link:
@@ -3463,6 +3492,8 @@ ko:
           other: 이 지점까지 %{count}미터 이내
         feetPopup:
           other: 이 지점까지 %{count}미터 이내
+      attribution_control:
+        toggle_attribution: 저작자표시 전환
       base:
         standard: 표준
         cycle_map: 사이클 지도
@@ -3603,7 +3634,9 @@ ko:
       not_set: 이 계정에서는 내 집 위치가 설정되지 않았습니다.
     contribution_calendar:
       tooltip:
-        no_contributions: '%{date}에느 기여가 없습니다'
+        no_contributions: '%{date}에는 기여가 없습니다'
+        contributions:
+          other: '%{date}에 %{count}개 기여'
     remote_edit:
       failed:
         title: 편집 실패
