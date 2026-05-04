@@ -1648,13 +1648,14 @@ kab:
         continue_without_exit: Kemmel ɣef %{name}
         slight_right_without_exit: Bren am wacemma ɣer tama tayeffust ɣef %{name}
         offramp_right: Awi ufuɣ i yellan ar tama tayeffust
-        offramp_right_with_exit: Ṭṭef tuffɣa %{exit} ɣef tama tayeffust
+        offramp_right_with_exit: Ṭṭef uffuɣ %{exit} ɣef tama tayeffust
         offramp_right_with_name: Awi ufuɣ i yellan ar tama tayeffust ɣef %{name}
         offramp_right_with_directions: Awi ufuɣ i yellan ar tama tayeffust twal %{directions}
         offramp_right_with_name_directions: Awi ufuɣ i yellan ar tama tayeffust ɣef
           %{name}, twal %{directions}
         endofroad_right_without_exit: Mi ara ifakk ubrid, bren ɣer tama tayeffust
           ɣef %{name}
+        merge_right_without_exit: Jbed ɣer tama tayeffust ɣef %{name}
         fork_right_without_exit: Ar gar yiberdan, bren ɣer tama tayeffust ɣef %{name}
         turn_right_without_exit: Bren ɣer tama tayeffust ɣef %{name}
         sharp_right_without_exit: Bren mliḥ ɣer tama tayeffust ɣef %{name}
@@ -1662,13 +1663,14 @@ kab:
         sharp_left_without_exit: Bren mliḥ ɣer tama taẓelmaḍt ɣef %{name}
         turn_left_without_exit: Bren ɣer tama taẓelmaḍt ɣef %{name}
         offramp_left: Awi ufuɣ i yellan ar tama taẓelmaḍt
-        offramp_left_with_exit: Ṭṭef tuffɣa %{exit} ɣef tama taẓemaḍt
+        offramp_left_with_exit: Ṭṭef uffuɣ %{exit} ɣef tama taẓemaḍt
         offramp_left_with_name: Awi ufuɣ i yellan ar tama taẓelmaḍt ɣef %{name}
         offramp_left_with_directions: Awi ufuɣ i yellan ar tama taẓelmaḍt twal %{directions}
         offramp_left_with_name_directions: Awi ufuɣ i yellan ar tama taẓelmaḍt ɣef
           %{name}, twal %{directions}
         endofroad_left_without_exit: Mi ara ifakk ubrid, bren ɣer tama taẓelmaḍt ɣef
           %{name}
+        merge_left_without_exit: Jbed ɣer tama taẓelmaḍt ɣef %{name}
         fork_left_without_exit: Ar gar yiberdan, bren ɣer tama taẓelmaḍt ɣef %{name}
         slight_left_without_exit: Bren am wacemma ɣer tama taẓelmaḍt ɣef %{name}
         via_point_without_exit: (ekk taneqqiḍt)

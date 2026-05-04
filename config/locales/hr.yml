@@ -1911,6 +1911,7 @@ hr:
   layouts:
     logo:
       alt_text: OpenStreetMap logotip
+    main_navigation: Glavni
     layer_info: Informacije o sloju
     start_mapping: Počnite kartirati
     intro_header: Dobrodošli na OpenStreetMap!
@@ -2373,6 +2374,8 @@ hr:
       login_button: Prijavite se
       with external: ili koristite prijavu treće strane
       or: ili
+      reset_to_login: Žao nam je, vaša je zaporka istekla. Molimo vas resetirajte
+        vašu lozinku za prijavu.
       auth failure: Nažalost, ne mogu se prijaviti s ovim detaljima.
     destroy:
       title: Odjava

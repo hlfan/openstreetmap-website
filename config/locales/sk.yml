@@ -1233,7 +1233,7 @@ sk:
           reservoir_watershed: Povodie nádrže
           residential: Obytná oblasť
           retail: Maloobchodná zóna
-          village_green: Verejná zeleň
+          village_green: Centrálna zeleň osídlenia
           vineyard: Vinica
           "yes": Využitie krajiny
         leisure:
@@ -1417,9 +1417,9 @@ sk:
         place:
           allotments: Záhradkárska osada
           archipelago: Súostrovie
-          city: Mesto nad 100 tis.
+          city: Veľkomesto nad 100 tis.
           city_block: Mestský blok
-          country: Štát
+          country: Krajina
           county: Okres
           farm: Farma
           hamlet: Osada do 200
@@ -1429,8 +1429,8 @@ sk:
           islet: Ostrovček
           isolated_dwelling: Samota
           locality: Oblasť
-          municipality: Obecný úrad
-          neighbourhood: Štvrť
+          municipality: Obec
+          neighbourhood: Miestna časť
           plot: Pozemok
           postcode: PSČ
           quarter: Štvrť
@@ -1439,9 +1439,9 @@ sk:
           square: Námestie
           state: Štát
           subdivision: Pododdelenie
-          suburb: Mestský obvod
+          suburb: Mestská časť
           town: Mesto 10 tis.-100 tis.
-          village: Obec 200-10 tis.
+          village: Dedina 200-10 tis.
           "yes": Miesto
         railway:
           abandoned: Zrušená železničná trať
@@ -1661,13 +1661,13 @@ sk:
         arrondissement: Hranica arrondissementu
         borough: Hranica mestskej časti
         cercle: Hranica kruhu
-        city: Hranica mesta
+        city: Hranica veľkomesta
         comarca: Hranica komarky
         county: Hranica okresu
         departement: Hranica oddelenia
         department: Hranica oddelenia
-        district: Hranica okresu
-        distrito: Hranica okresu
+        district: Hranica správneho okruhu
+        distrito: Hranica správneho okruhu
         freguesia: Hranica Freguesie
         local_authority: Hranice miestnej samosprávy
         municipality: Hranice obce
@@ -1675,15 +1675,15 @@ sk:
         município: Hranice obce
         nation: Štátna hranica
         national: Štátna hranica
-        neighbourhood: Hranica susedstva
+        neighbourhood: Hranica miestnej časti
         parish: Hranica farnosti
         province: Hranica provincie
         região: Hranica regiónu
         region: Hranica regiónu
-        state: Hranica kraja (state)
+        state: Hranica štátu
         town: Hranica mesta
         township: Hranica mesta
-        village: Hranica obce
+        village: Hranica dediny
   searches:
     show:
       title:
@@ -1894,6 +1894,7 @@ sk:
   layouts:
     logo:
       alt_text: Logo OpenStreetMap
+    main_navigation: Hlavný
     layer_info: Informácie o vrstve
     start_mapping: Začať mapovať
     intro_header: Vitajte v OpenStreetMap!
@@ -2352,6 +2353,8 @@ sk:
       login_button: Prihlásiť
       with external: alebo použite na prihlásenie služby tretích strán
       or: alebo
+      reset_to_login: Ospravedlňujeme sa, vášmu heslu skončila platnosť. Prosím vykonajte
+        reset hesla pre prihlásenie.
       auth failure: Ľutujeme, s uvedenými údajmi sa nie je možné prihlásiť.
     destroy:
       title: Odhlásenie
@@ -2908,7 +2911,7 @@ sk:
         apron: Letisková odbavovacia plocha
         admin: Administratívne hranice
         capital: Hlavné mesto
-        city: Mesto
+        city: Veľkomesto
         orchard: Sad
         vineyard: Vinica
         forest: Les (udržiavaný)

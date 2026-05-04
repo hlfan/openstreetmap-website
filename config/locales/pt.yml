@@ -1963,6 +1963,7 @@ pt:
   layouts:
     logo:
       alt_text: Logotipo do OpenStreetMap
+    main_navigation: Principal
     layer_info: Informações da camada
     start_mapping: Começar a Mapear
     intro_header: Bem-vindo(a) ao OpenStreetMap!
@@ -3334,7 +3335,7 @@ pt:
         paragraph_1: Ao contrário de outros mapas, OpenStreetMap é completamente criado
           por pessoas como vocé, e qualquer um pode repará-lo, atualizá-lo, baixá-lo
           e usá-lo de forma gratuita.
-        paragraph_2: Registre-se para começar a contruibuir.
+        paragraph_2: Registre-se para começar a contribuir.
         welcome: Bem-vindo(a) ao OpenStreetMap
       duplicate_social_email: Se você já possui uma conta OpenStreetMap e deseja usar
         um provedor de identidade terceirizado, faça login usando sua senha e modifique

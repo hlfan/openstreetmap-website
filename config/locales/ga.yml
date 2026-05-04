@@ -2480,6 +2480,8 @@ ga:
       login_button: Logáil isteach
       with external: nó logáil isteach le tríú páirtí
       or: nó
+      reset_to_login: Ár leithscéal, tá do phasfhocal imithe in éag. Athshocraigh
+        do phasfhocal le logáil isteach.
       auth failure: Ár leithscéil, níorbh fhéidir logáil isteach leis na sonraí sin.
     destroy:
       title: Logáil amach

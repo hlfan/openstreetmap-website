@@ -1878,6 +1878,7 @@ mk:
   layouts:
     logo:
       alt_text: Лого на OpenStreetMap
+    main_navigation: Главна
     layer_info: Инфо за слојот
     start_mapping: Почнете да ги работите картите
     intro_header: Добре дојдовте на OpenStreetMap!
@@ -2333,6 +2334,7 @@ mk:
       login_button: Најава
       with external: или најавете преку надворешно место
       or: или
+      reset_to_login: За жал, вашата лозинка е истечена. Ставете друга за да се најавите.
       auth failure: Жалиме, не можевме да ве најавиме со тие податоци.
     destroy:
       title: Одјава
