@@ -80,26 +80,25 @@ class UserMailerTest < ActionMailer::TestCase
 
   def test_gpx_failure
     trace = build(:trace, :tags => build_list(:tracetag, 2))
+    tag_strings = trace.tags.map(&:tag)
     email = UserMailer.with(
       :trace_name => trace.name,
       :trace_description => trace.description,
-      :trace_tags => trace.tags,
+      :trace_tags => tag_strings,
       :error => "some error",
       :recipient => trace.user
     ).gpx_failure
 
-    tags = trace.tags.map(&:tag)
     assert_match trace.name, email.html_part.body.to_s
     assert_match trace.description, email.html_part.body.to_s
-    assert_match tags[0], email.html_part.body.to_s
-    assert_match tags[1], email.html_part.body.to_s
+    assert_match tag_strings[0], email.html_part.body.to_s
+    assert_match tag_strings[1], email.html_part.body.to_s
     assert_match "some error", email.html_part.body.to_s
 
-    tags = trace.tags.map(&:tag)
     assert_match trace.name, email.text_part.body.to_s
     assert_match trace.description, email.text_part.body.to_s
-    assert_match tags[0], email.text_part.body.to_s
-    assert_match tags[1], email.text_part.body.to_s
+    assert_match tag_strings[0], email.text_part.body.to_s
+    assert_match tag_strings[1], email.text_part.body.to_s
     assert_match "some error", email.text_part.body.to_s
   end
 
