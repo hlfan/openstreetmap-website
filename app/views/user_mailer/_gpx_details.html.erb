@@ -15,7 +15,7 @@
   <dd><%= trace_description %></dd>
   <% if trace_tags.length > 0 %>
     <dt><%= t ".tags" %></dt>
-    <dd><%= trace_tags.map(&:tag).join(", ") %></dd>
+    <dd><%= trace_tags.join(", ") %></dd>
   <% end %>
   <% if possible_points %>
     <dt><%= t ".total_points" %></dt>

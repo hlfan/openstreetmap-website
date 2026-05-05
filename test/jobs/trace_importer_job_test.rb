@@ -6,7 +6,7 @@ require "minitest/mock"
 class TraceImporterJobTest < ActiveJob::TestCase
   def test_success_notification
     # Check that the user gets a success notification when the trace has valid points
-    trace = create(:trace)
+    trace = create(:trace, :tags => build_list(:tracetag, 2))
 
     gpx = Minitest::Mock.new
     def gpx.actual_points
@@ -28,7 +28,7 @@ class TraceImporterJobTest < ActiveJob::TestCase
 
   def test_failure_notification
     # Check that the user gets a failure notification when the trace has no valid points
-    trace = create(:trace)
+    trace = create(:trace, :tags => build_list(:tracetag, 2))
 
     gpx = Minitest::Mock.new
     def gpx.actual_points
