@@ -294,6 +294,10 @@ class User < ApplicationRecord
     preference.update!(:v => language)
   end
 
+  def notification_preferences
+    @notification_preferences ||= UserNotificationPreferences.new(self)
+  end
+
   def home_location?
     home_lat && home_lon
   end

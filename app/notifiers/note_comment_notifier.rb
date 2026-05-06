@@ -8,5 +8,6 @@ class NoteCommentNotifier < ApplicationNotifier
   deliver_by :email do |config|
     config.mailer = "UserMailer"
     config.method = "note_comment_notification"
+    config.if = -> { recipient.notification_preferences.note_comment.include?("email") }
   end
 end

@@ -8,5 +8,6 @@ class DirectMessageNotifier < ApplicationNotifier
   deliver_by :email do |config|
     config.mailer = "UserMailer"
     config.method = "message_notification"
+    config.if = -> { recipient.notification_preferences.direct_message.include?("email") }
   end
 end
