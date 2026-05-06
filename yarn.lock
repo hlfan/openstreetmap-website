@@ -1396,10 +1396,10 @@ kind-of@^6.0.3:
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-6.0.3.tgz#07c05034a6c349fa06e24fa35aa76db4580ce4dd"
   integrity sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==
 
-leaflet.locatecontrol@^0.89.0:
-  version "0.89.1"
-  resolved "https://registry.yarnpkg.com/leaflet.locatecontrol/-/leaflet.locatecontrol-0.89.1.tgz#738600d190c566d9f6cf83582cd9bd9c20b2c3a6"
-  integrity sha512-okZEUsGa8955vjoaeG/tkqALRxpaiRkpUOiuk+C99g8aK9kKjWMHWXREdepFzFQUR1KAKTZHCS36MferLAKUvA==
+leaflet.locatecontrol@^0.90.0:
+  version "0.90.0"
+  resolved "https://registry.yarnpkg.com/leaflet.locatecontrol/-/leaflet.locatecontrol-0.90.0.tgz#8a126b69e0ba81c8f96e34ef25e15033674b5206"
+  integrity sha512-yzgKyOXVRgALmo38ZhPf+2QgYE3pA/rrVSE0CyZhsSAzlnwPTZ1sfZLOFXTH20XLNNw1SX7AuMRLu0LZkWNakg==
 
 leaflet@^1.8.0:
   version "1.9.4"
@@ -2017,9 +2017,9 @@ supports-preserve-symlinks-flag@^1.0.0:
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
 
 tag2link@^2026.1.21:
-  version "2026.3.21"
-  resolved "https://registry.yarnpkg.com/tag2link/-/tag2link-2026.3.21.tgz#d1ef3f1ccbc31b51f207804635551f1f9ec40ab2"
-  integrity sha512-PLa9LpNYMtnvP7wtXzGysKojsmCK2yOCXCggKFvcfBkm3sRaYFcNJIAn/xJMZdc6Qtf9C4FzJCcjLf9F5OiEmQ==
+  version "2026.5.6"
+  resolved "https://registry.yarnpkg.com/tag2link/-/tag2link-2026.5.6.tgz#38e309c40b77b77d090de64ee90c47967eb96a5c"
+  integrity sha512-lbgH92yQof2CZ3Xdbsc4dphVy06ts8kIoU4l3HChJgqFqJcQScAZQTmn7r5UDeCYEr8218xDDbPhkM3ONMuQqg==
 
 tinybench@^2.9.0:
   version "2.9.0"
