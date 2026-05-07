@@ -4,7 +4,7 @@
 pr_number = github.pr_json["number"]
 
 # Report if number of changed lines is > 500
-if git.lines_of_code > 500
+if git.lines_of_code > 500 && github.pr_author != "translatewiki"
   warn("Number of updated lines of code is too large to be in one PR. Perhaps it should be separated into two or more?")
   auto_label.set(pr_number, "big-pr", "FBCA04")
 else
