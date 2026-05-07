@@ -927,11 +927,11 @@ PLATFORMS
 
 DEPENDENCIES
   aasm
-  actionpack-page_caching (>= 1.2.0)
+  actionpack-page_caching
   active_record_union
   activerecord-import
   activerecord-postgis
-  addressable (~> 2.8)
+  addressable
   annotaterb
   argon2
   autoprefixer-rails
@@ -939,17 +939,17 @@ DEPENDENCIES
   benchmark
   better_errors
   binding_of_caller
-  bootsnap (>= 1.4.2)
-  bootstrap (~> 5.3.2)
-  bootstrap_form (~> 5.0)
+  bootsnap
+  bootstrap
+  bootstrap_form
   brakeman
   bzip2-ffi
   cancancan
   canonical-rails!
-  capybara (>= 2.15)
+  capybara
   config
-  connection_pool (< 4.0.0)
-  dalli (< 6.0.0)
+  connection_pool
+  dalli
   danger
   danger-auto_label
   dartsass-sprockets
@@ -970,52 +970,51 @@ DEPENDENCIES
   gd2-ffij!
   herb
   htmlentities
-  http_accept_language (~> 2.1.1)
-  i18n-js (~> 4.2.3)
+  http_accept_language
+  i18n-js
   i18n-tasks
   image_optim!
   image_optim_rails
   image_processing
   inline_svg
-  jbuilder (~> 2.7)
+  jbuilder
   jquery-rails
   jwt
   kramdown
-  libxml-ruby (>= 2.0.5)
+  libxml-ruby
   listen
   marcel
   maxminddb
-  mini_racer (~> 0.21.0)
   minitest
   minitest-focus
   minitest-mock
-  noticed (~> 3.0.0)
-  omniauth (~> 2.1.3)
+  noticed
+  omniauth
   omniauth-apple
   omniauth-facebook
   omniauth-github
-  omniauth-google-oauth2 (>= 0.6.0)
-  omniauth-mediawiki (>= 0.0.4)
+  omniauth-google-oauth2
+  omniauth-mediawiki
   omniauth-microsoft_graph
-  omniauth-rails_csrf_protection (~> 2.0)
+  omniauth-rails_csrf_protection
   open3
-  openstreetmap-deadlock_retry (>= 1.3.1)
+  openstreetmap-deadlock_retry
   opentelemetry-exporter-otlp
   opentelemetry-instrumentation-all
   opentelemetry-sdk
   overcommit
   pg
-  puma (~> 8.0)
-  quad_tile (~> 1.0.1)
+  puma
+  quad_tile
   rack-cors
   rack-uri_sanitizer
   rackup
   rails (~> 8.1.0)
   rails-controller-testing
-  rails-i18n (~> 8.1.0)
+  rails-i18n
   rails_param
   rexml
-  rinku (>= 2.0.6)
+  rinku
   rotp
   rtlcss
   rubocop
@@ -1033,16 +1032,16 @@ DEPENDENCIES
   sprockets-exporters_pack
   strong_migrations
   teaspoon
-  teaspoon-mocha (~> 2.3.3)
+  teaspoon-mocha
   terser
   timeout
   turbo-rails
   unicode-display_width
   uri (< 1.0.0)
-  validates_email_format_of (>= 1.5.1)
+  validates_email_format_of
   vendorer
   webmock
   webrick
 
 BUNDLED WITH
-   4.0.10
+  4.0.10
