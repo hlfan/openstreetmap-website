@@ -1912,6 +1912,7 @@ uk:
         ia: Інтерлінгва
         is: Ісландська
         it: Італійська
+        kw: Корнська
         gcf: Гваделупська креольська
         ku-Latn: Курдська (латиниця)
         lv: Латиська
@@ -2338,8 +2339,9 @@ uk:
       update_success_flash:
         message: Налаштування збережено.
       navigation:
-        preferences: Налаштування
-        advanced_preferences: Розширені налаштування
+        preferences: Інтерфейс
+        notification_preferences: Сповіщення
+        advanced_preferences: Розширені
     basic_preferences:
       show:
         title: Налаштування
@@ -2360,6 +2362,19 @@ uk:
           light: Світла
           dark: Темна
         save: Зберегти налаштування
+    notification_preferences:
+      show:
+        title: Налаштування сповіщень
+        changeset_comment: Коментарі до набору змін
+        diary_comment: Коментарі щоденнику
+        direct_message: Прямі повідомлення
+        gpx_import_failure: 'Імпорт GPS-треку: помилка'
+        gpx_import_success: 'Імпорт GPX-треку: успішно'
+        new_follower: Нові підписники
+        note_comment: Коментарі до приміток
+        save: Оновлення налаштувань
+        delivery_mechanisms:
+          email: Електронна пошта
     advanced_preferences:
       show:
         title: Розширені налаштування
@@ -2459,6 +2474,8 @@ uk:
       login_button: Увійти
       with external: Або використовуйте, облікові записи з інших ресурсів
       or: або
+      reset_to_login: На жаль, термін дії вашого пароля минув. Будь ласка, скиньте
+        пароль, щоб увійти.
       auth failure: Вибачте, вхід з цими ім’ям або паролем неможливий.
     destroy:
       title: Вийти

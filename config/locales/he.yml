@@ -597,6 +597,16 @@ he:
         two: נוצרו שני רכיבים
         many: נוצרו %{count}רכיבים
         other: נוצרו %{count} רכיבים
+      n_elements_modified:
+        one: רכיב נערך
+        two: שני רכיבים נערכו
+        many: '%{count} רכיבים נערכו'
+        other: '%{count} רכיבים נערכו'
+      n_elements_deleted:
+        one: רכיב נמחק
+        two: שני רכיבים נמחקו
+        many: '%{count} רכיבים נמחקו'
+        other: '%{count} רכיבים נמחקו'
     index:
       title: ערכות שינויים
       title_user: ערכות שינויים מאת %{user}
@@ -1255,7 +1265,7 @@ he:
           sports_centre: מרכז ספורט
           stadium: אצטדיון
           swimming_pool: ברֵכת שחייה
-          track: מסלול ריצה
+          track: מסלול מרוצים (לא ממונע)
           water_park: פארק מים
           "yes": נופש
         lock:
@@ -1852,6 +1862,7 @@ he:
         ia: אינטרלינגואה
         is: איסלנדית
         it: איטלקית
+        kw: קורנית
         gcf: קריאולית גואדלופית
         ku-Latn: כורדית (לטינית)
         lv: לטבית
@@ -1931,6 +1942,7 @@ he:
   layouts:
     logo:
       alt_text: הלוגו של OpenStreetMap
+    main_navigation: ראשי
     layer_info: פרטי שכבה
     start_mapping: להתחיל למפות
     intro_header: ברוכים הבאים ל־OpenStreetMap!
@@ -1941,6 +1953,7 @@ he:
     partners_fastly: פאסטלי
     partners_corpmembers: חברים תאגידיים אחרים ב־OSMF
     partners_partners: שותפים
+    terms_of_use: תנאי שימוש
     tou: תנאי השימוש
     nothing_to_preview: אין מה להראות בתצוגה מקדימה.
     learn_more: מידע נוסף
@@ -2358,6 +2371,7 @@ he:
       login_button: כניסה
       with external: לחלופין, אפשר להשתמש בצד שלישי כדי להיכנס
       or: או
+      reset_to_login: תוקף הסיסמה שלך פג. נא לאפס אותה כדי להיכנס, עמך הסליחה.
       auth failure: מצטערים, לא ניתן להיכנס עם הפרטים האלה.
     destroy:
       title: יציאה
@@ -2496,9 +2510,15 @@ he:
         native_link: גרסה העברית
         mapping_link: להתחיל למפות
       legal_babble:
+        lead_2_html: |-
+          %{learn_more_about_osm_link} ואפשר %{get_started_mapping_link}!
+          אפשר לקרוא עוד ב%{osm_blog_link}, ולהירשם ל־ %{weeklyosm_link}.
+          למצוא ממפים נוספים ב%{osm_community_link}.
+          לתמוך במיזם על ידי הצטרפות ל%{osm_foundation_link} ולהגיש %{making_donation_link}.
         lead_2_learn_more_about_osm: מידע נוסף על OpenStreetMap
         lead_2_get_started_mapping: להתחיל למפות
         lead_2_osm_blog: בלוג OpenStreetMap
+        lead_2_weeklyosm: OSM השבועי
         lead_2_osm_community: קהילת OSM
         lead_2_osm_foundation: קרן OSM
         lead_2_making_donation: תרומה
@@ -2554,7 +2574,11 @@ he:
           ר׳ את %{trademark_policy_link} שלנו.
         trademarks_1_1_trademark_policy: מדיניות הסימנים המסחריים
         services_title_html: שירותים נוספים
-        services_1_api_usage_policy: מדינית השימוש ב־API
+        services_1_html: |-
+          אף ש־OpenStreetMap היא נתונים פתוחים, איננו יכולים לספק
+          API של מפות ללא תשלום עבור גורמי צד שלישי.
+          נא לעיין ב%{api_usage_policy_link}, ב%{tile_usage_policy_link} וב%{nominatim_usage_policy_link} שלנו.
+        services_1_api_usage_policy: מדיניות השימוש ב־API
         services_1_tile_usage_policy: מדיניות השימוש באריחים
         services_1_nominatim_usage_policy: מדיניות השימוש בנומינטים
         contributors_title_html: התורמים שלנו
@@ -3223,6 +3247,10 @@ he:
           נוסף.
       or: או
       use external auth: לחלופין, אפשר להשתמש בצד שלישי כדי להירשם
+      verify_human: נא לאמת שמדובר בבן אדם
+    create:
+      not_human: לרוע המזל, לא הצלחנו לאמת אם מדובר בבן אדם או לא. השלב הזה הכרחי
+        ליצירת חשבונות חדשים.
     no_such_user:
       title: אין משתמש כזה
       heading: המשתמש %{user} אינו קיים
@@ -3627,6 +3655,10 @@ he:
       tooltip: מקרא
       tooltip_disabled: אין מקרא זמין לשכבה הזאת
     map:
+      map:
+        title: מפה
+        marker:
+          title: סמן מפה
       popup:
         close: סגירה
       navigation_control:

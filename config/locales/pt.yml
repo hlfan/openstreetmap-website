@@ -1883,6 +1883,7 @@ pt:
         ia: Interlíngua
         is: Islandês
         it: Italiano
+        kw: Córnico
         gcf: Crioulo de Guadalupe
         ku-Latn: Curdo (Latim)
         lv: Letão
@@ -2302,8 +2303,9 @@ pt:
       update_success_flash:
         message: Preferências atualizadas.
       navigation:
-        preferences: Preferências
-        advanced_preferences: Preferências avançadas
+        preferences: Interface
+        notification_preferences: Notificações
+        advanced_preferences: Avançado
     basic_preferences:
       show:
         title: Minhas preferências
@@ -2324,6 +2326,18 @@ pt:
           light: Claro
           dark: Escuro
         save: Atualizar preferências
+    notification_preferences:
+      show:
+        title: Preferências de notificação
+        changeset_comment: Comentários do conjunto de alterações
+        diary_comment: Comentários do diário
+        direct_message: Mensagens dirtas
+        gpx_import_failure: 'Importação de trilha de GPS: falha'
+        gpx_import_success: 'Importação de trilha GPX: bem-sucedida'
+        new_follower: Novos seguidores
+        save: Atualizar preferências
+        delivery_mechanisms:
+          email: E-mail
     advanced_preferences:
       show:
         title: Minhas preferências avançadas
@@ -2421,6 +2435,8 @@ pt:
       login_button: Entrar
       with external: ou entre com um aplicativo de terceiros
       or: ou
+      reset_to_login: Desculpe, sua senha expirou. Por favor, redefina sua senha para
+        fazer login.
       auth failure: Impossível entrar com estas informações.
     destroy:
       title: Sair

@@ -1861,6 +1861,7 @@ el:
         ia: Ιντερλίνγκουα
         is: Ισλανδικά
         it: Ιταλικά
+        kw: Κορνουαλικά
         gcf: Κρεόλ Γουαδελούπης
         ku-Latn: Κουρδικά (Λατινικά)
         lv: Λετονικά
@@ -1868,7 +1869,7 @@ el:
         lkt: Λακότα
         lt: Λιθουανικά
         hu: Ουγγρικά
-        fit: Φινλανδικά Tornedalen
+        fit: Φινλανδικά Τορνεντάλεν
         nl: Ολλανδικά
         nb: Νορβηγικά Μποκμάλ
         nn: Νορβηγικά Νινόρσκ
@@ -1898,7 +1899,7 @@ el:
         el: Ελληνικά
         ba: Μπασκίρ
         be: Λευκορώσικα
-        be-Tarask: Λευκορωσικά (Tarašk.)
+        be-Tarask: Λευκορωσικά (Ταρασκ.)
         bg: Βουλγάρικα
         mk: Σλαβομακεδονικά
         mo: Μολδαβικά
@@ -2291,8 +2292,9 @@ el:
       update_success_flash:
         message: Οι προτιμήσεις ενημερώθηκαν.
       navigation:
-        preferences: Προτιμήσεις
-        advanced_preferences: Προηγμένες προτιμήσεις
+        preferences: Διεπαφή
+        notification_preferences: Ειδοποιήσεις
+        advanced_preferences: Προηγμένες
     basic_preferences:
       show:
         title: Οι προτιμήσεις μου
@@ -2313,6 +2315,19 @@ el:
           light: Φωτεινός
           dark: Σκοτεινός
         save: Ενημέρωση προτιμήσεων
+    notification_preferences:
+      show:
+        title: Προτιμήσεις ειδοποιήσεων
+        changeset_comment: Σχόλια συνόλου αλλαγών
+        diary_comment: Σχόλια ημερολογίου
+        direct_message: Άμεσα μηνύματα
+        gpx_import_failure: 'Εισαγωγή ιχνών GPS: αποτυχία'
+        gpx_import_success: 'Εισαγωγή ιχνών GPS: επιτυχία'
+        new_follower: Νέοι ακόλουθοι
+        note_comment: Σχόλια σημείωσης
+        save: Ενημέρωση προτιμήσεων
+        delivery_mechanisms:
+          email: Email
     advanced_preferences:
       show:
         title: Οι προηγμένες προτιμήσεις μου

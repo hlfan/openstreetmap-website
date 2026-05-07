@@ -1779,6 +1779,7 @@ ko:
         ia: 인테르링구아
         is: 아이슬란드어
         it: 이탈리아어
+        kw: 콘월어
         gcf: 과들루프 크리올어
         ku-Latn: 쿠르드어(라틴어)
         lv: 라트비아어
@@ -2157,8 +2158,9 @@ ko:
       update_success_flash:
         message: 환경 설정이 업데이트되었습니다
       navigation:
-        preferences: 환경 설정
-        advanced_preferences: 고급 환경 설정
+        preferences: 인터페이스
+        notification_preferences: 알림
+        advanced_preferences: 고급
     basic_preferences:
       show:
         title: 내 환경 설정
@@ -2179,6 +2181,19 @@ ko:
           light: 밝음
           dark: 어두움
         save: 환경 설정 업데이트
+    notification_preferences:
+      show:
+        title: 알림 환경 설정
+        changeset_comment: 변경집합 댓글
+        diary_comment: 일기 댓글
+        direct_message: 개인 메시지
+        gpx_import_failure: 'GPS 궤적 가져오기: 실패'
+        gpx_import_success: 'GPS 궤적 가져오기: 성공'
+        new_follower: 새 팔러워
+        note_comment: 메모 댓글
+        save: 환경 설정 업데이트
+        delivery_mechanisms:
+          email: 이메일
     advanced_preferences:
       show:
         title: 내 고급 환경 설정

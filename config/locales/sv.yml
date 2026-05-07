@@ -1851,6 +1851,7 @@ sv:
         ia: Interlingua
         is: Isländska
         it: Italienska
+        kw: Korniska
         gcf: Guadeloupe-kreolsk
         ku-Latn: Kurdiska (latin)
         lv: Lettiska
@@ -2389,6 +2390,8 @@ sv:
       login_button: Logga in
       with external: eller logga in med en tredje part
       or: eller
+      reset_to_login: Tyvärr men ditt lösenord har gått ut. Återställt ditt lösenord
+        för att logga in.
       auth failure: Kunde inte logga in med de uppgifterna.
     destroy:
       title: Logga ut

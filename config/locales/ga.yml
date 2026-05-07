@@ -1913,6 +1913,7 @@ ga:
         ia: Idirtheangach
         is: Íoslainnis
         it: Iodáilis
+        kw: Cornais
         gcf: Creole Guadalúip
         ku-Latn: Cúirdís (Laidin)
         lv: Laitvis
@@ -2358,8 +2359,9 @@ ga:
       update_success_flash:
         message: Nuashonraíodh na roghanna.
       navigation:
-        preferences: Roghanna
-        advanced_preferences: Roghanna Ardleibhéil
+        preferences: Comhéadan
+        notification_preferences: Fógraí
+        advanced_preferences: Ardleibhéil
     basic_preferences:
       show:
         title: Mo Roghanna

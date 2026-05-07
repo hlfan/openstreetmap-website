@@ -2292,8 +2292,9 @@ it:
       update_success_flash:
         message: Le preferenze sono state aggiornate.
       navigation:
-        preferences: Preferenze
-        advanced_preferences: Preferenze avanzate
+        preferences: Interfaccia
+        notification_preferences: Notifiche
+        advanced_preferences: Avanzate
     basic_preferences:
       show:
         title: Preferenze
@@ -2314,6 +2315,11 @@ it:
           light: Chiaro
           dark: Scuro
         save: Aggiorna preferenze
+    notification_preferences:
+      show:
+        direct_message: Messaggi diretti
+        delivery_mechanisms:
+          email: Email
     advanced_preferences:
       show:
         title: Le mie preferenze avanzate

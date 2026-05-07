@@ -1994,8 +1994,9 @@ lb:
       update_success_flash:
         message: Benotzerastellungen aktualiséiert.
       navigation:
-        preferences: Astellungen
-        advanced_preferences: Erweidert Astellungen
+        preferences: Interface
+        notification_preferences: Notifikatiounen
+        advanced_preferences: Erweidert
     basic_preferences:
       show:
         title: Meng Benotzerastellungen
@@ -2014,6 +2015,12 @@ lb:
           light: Hell
           dark: Däischter
         save: Benotzerastellungen aktualiséieren
+    notification_preferences:
+      show:
+        title: Notifikatiounsastellungen
+        save: Astellungen aktualiséieren
+        delivery_mechanisms:
+          email: E-Mail
     advanced_preferences:
       show:
         title: Meng erweidert Astellungen

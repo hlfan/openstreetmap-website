@@ -1246,7 +1246,7 @@ sk:
           bowling_alley: Bowlingová dráha
           common: Verejné priestranstvo
           dance: Tančiareň
-          dog_park: Psí park
+          dog_park: Psí park/výbeh
           firepit: Ohnisko
           fishing: Rybolov (športový)
           fitness_centre: Fitnescentrum
@@ -1417,12 +1417,12 @@ sk:
         place:
           allotments: Záhradkárska osada
           archipelago: Súostrovie
-          city: Veľkomesto nad 100 tis.
+          city: Veľkomesto
           city_block: Mestský blok
           country: Krajina
           county: Okres
           farm: Farma
-          hamlet: Osada do 200
+          hamlet: Osada
           house: Budova
           houses: Budovy
           island: Ostrov
@@ -1440,8 +1440,8 @@ sk:
           state: Štát
           subdivision: Pododdelenie
           suburb: Mestská časť
-          town: Mesto 10 tis.-100 tis.
-          village: Dedina 200-10 tis.
+          town: Mesto
+          village: Dedina
           "yes": Miesto
         railway:
           abandoned: Zrušená železničná trať
@@ -1666,8 +1666,8 @@ sk:
         county: Hranica okresu
         departement: Hranica oddelenia
         department: Hranica oddelenia
-        district: Hranica správneho okruhu
-        distrito: Hranica správneho okruhu
+        district: Hranica okresu
+        distrito: Hranica okresu
         freguesia: Hranica Freguesie
         local_authority: Hranice miestnej samosprávy
         municipality: Hranice obce
