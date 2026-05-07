@@ -985,7 +985,6 @@ DEPENDENCIES
   listen
   marcel
   maxminddb
-  mini_racer (~> 0.21.0)
   minitest
   minitest-focus
   minitest-mock
