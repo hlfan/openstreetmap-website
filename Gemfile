@@ -27,7 +27,7 @@ gem "jquery-rails"
 gem "jbuilder", "~> 2.7"
 
 # Reduces boot times through caching; required in config/boot.rb
-gem "bootsnap", ">= 1.4.2", :require => false
+gem "bootsnap", :require => false
 
 # Use rtlcss for RTL conversion
 gem "mini_racer", "~> 0.21.0"
@@ -51,7 +51,7 @@ gem "sprockets-exporters_pack"
 gem "benchmark"
 
 # Load rails plugins
-gem "actionpack-page_caching", ">= 1.2.0"
+gem "actionpack-page_caching"
 gem "activerecord-import"
 gem "active_record_union"
 gem "bootstrap", "~> 5.3.2"
@@ -63,13 +63,13 @@ gem "dry-validation"
 gem "frozen_record"
 gem "http_accept_language", "~> 2.1.1"
 gem "i18n-js", "~> 4.2.3"
-gem "openstreetmap-deadlock_retry", ">= 1.3.1", :require => "deadlock_retry"
+gem "openstreetmap-deadlock_retry", :require => "deadlock_retry"
 gem "rack-cors"
 gem "rails-i18n", "~> 8.1.0"
 gem "rails_param"
-gem "rinku", ">= 2.0.6", :require => "rails_rinku"
+gem "rinku", :require => "rails_rinku"
 gem "strong_migrations"
-gem "validates_email_format_of", ">= 1.5.1"
+gem "validates_email_format_of"
 
 # Native OSM extensions
 gem "quad_tile", "~> 1.0.1"
@@ -82,8 +82,8 @@ gem "omniauth", "~> 2.1.3"
 gem "omniauth-apple"
 gem "omniauth-facebook"
 gem "omniauth-github"
-gem "omniauth-google-oauth2", ">= 0.6.0"
-gem "omniauth-mediawiki", ">= 0.0.4"
+gem "omniauth-google-oauth2"
+gem "omniauth-mediawiki"
 gem "omniauth-microsoft_graph"
 gem "omniauth-rails_csrf_protection", "~> 2.0"
 
@@ -99,7 +99,7 @@ gem "kramdown"
 gem "aasm"
 
 # XML parsing and generation
-gem "libxml-ruby", ">= 2.0.5"
+gem "libxml-ruby"
 gem "rexml"
 
 # Use for HTML sanitisation
@@ -175,7 +175,7 @@ end
 # Gems needed for running tests
 group :test do
   gem "brakeman"
-  gem "capybara", ">= 2.15"
+  gem "capybara"
   gem "erb_lint", :require => false
   gem "jwt"
   gem "minitest"
