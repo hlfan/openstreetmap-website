@@ -24,7 +24,7 @@ gem "terser"
 gem "jquery-rails"
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem "jbuilder", "~> 2.7"
+gem "jbuilder"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", :require => false
@@ -53,38 +53,38 @@ gem "benchmark"
 gem "actionpack-page_caching"
 gem "activerecord-import"
 gem "active_record_union"
-gem "bootstrap", "~> 5.3.2"
-gem "bootstrap_form", "~> 5.0"
+gem "bootstrap"
+gem "bootstrap_form"
 gem "cancancan"
 gem "config"
 gem "delayed_job_active_record"
 gem "dry-validation"
 gem "frozen_record"
-gem "http_accept_language", "~> 2.1.1"
-gem "i18n-js", "~> 4.2.3"
+gem "http_accept_language"
+gem "i18n-js"
 gem "openstreetmap-deadlock_retry", :require => "deadlock_retry"
 gem "rack-cors"
-gem "rails-i18n", "~> 8.1.0"
+gem "rails-i18n"
 gem "rails_param"
 gem "rinku", :require => "rails_rinku"
 gem "strong_migrations"
 gem "validates_email_format_of"
 
 # Native OSM extensions
-gem "quad_tile", "~> 1.0.1"
+gem "quad_tile"
 
 # Sanitise URIs
-gem "addressable", "~> 2.8"
+gem "addressable"
 gem "rack-uri_sanitizer"
 
-gem "omniauth", "~> 2.1.3"
+gem "omniauth"
 gem "omniauth-apple"
 gem "omniauth-facebook"
 gem "omniauth-github"
 gem "omniauth-google-oauth2"
 gem "omniauth-mediawiki"
 gem "omniauth-microsoft_graph"
-gem "omniauth-rails_csrf_protection", "~> 2.0"
+gem "omniauth-rails_csrf_protection"
 
 # Doorkeeper for OAuth2
 gem "doorkeeper"
@@ -115,8 +115,8 @@ gem "maxminddb"
 gem "rotp"
 
 # Load memcache client in case we are using it
-gem "connection_pool", "< 4.0.0"
-gem "dalli", "< 6.0.0"
+gem "connection_pool"
+gem "dalli"
 
 # Load canonical-rails to generate canonical URLs
 gem "canonical-rails", :github => "commonlit/canonical-rails", :ref => "bump-rails-8-1"
@@ -155,7 +155,7 @@ gem "open3"
 gem "digest"
 
 # Notifications
-gem "noticed", "~> 3.0.0"
+gem "noticed"
 
 # Gems useful for development
 group :development do
@@ -180,7 +180,7 @@ group :test do
   gem "minitest"
   gem "minitest-focus", :require => false
   gem "minitest-mock"
-  gem "puma", "~> 8.0"
+  gem "puma"
   gem "rails-controller-testing"
   gem "rubocop"
   gem "rubocop-capybara"
@@ -201,7 +201,7 @@ group :development, :test do
   gem "factory_bot_rails"
   gem "rackup"
   gem "teaspoon"
-  gem "teaspoon-mocha", "~> 2.3.3"
+  gem "teaspoon-mocha"
   gem "webrick"
 
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
