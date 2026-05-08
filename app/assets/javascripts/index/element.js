@@ -92,7 +92,7 @@
   }
 
   function getLocalizedResponse(entity) {
-    const siteScheme = ({ light: "Q101608434", dark: "Q6545942" })[$("html").data("bs-theme")];
+    const siteScheme = OSM.isDark("bs") ? "Q6545942" : "Q101608434";
     const scheme = ({ qualifiers }) => qualifiers?.P8798?.some(q => q?.datavalue?.value?.id === siteScheme) ?? 0;
     const rank = ({ rank }) => ({ preferred: 2, normal: 0, deprecated: -2 })[rank] ?? 0;
     const toBestClaim = (out, claim) => (rank(claim) + scheme(claim) > rank(out) + scheme(out)) ? claim : out;

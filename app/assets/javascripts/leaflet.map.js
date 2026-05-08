@@ -17,7 +17,7 @@ L.OSM.Map = L.Map.extend({
       if (nameId) layerOptions.name = OSM.i18n.t(`javascripts.map.base.${nameId}`);
 
       let layerConstructor;
-      if (OSM.isDarkMap()) {
+      if (OSM.isDark("map")) {
         layerConstructor = L.OSM[leafletOsmDarkId] ?? L.OSM[leafletOsmId] ?? L.OSM.TileLayer;
         layerOptions.url = layerOptions.urlDark ?? layerOptions.url;
       } else {
@@ -30,7 +30,7 @@ L.OSM.Map = L.Map.extend({
       layer.on("add", () => {
         this.fire("baselayerchange", { layer: layer });
       });
-      layer.options.style = (OSM.isDarkMap() && styleDark) || style;
+      layer.options.style = (OSM.isDark("map") && styleDark) || style;
       return layer;
     });
 
@@ -400,9 +400,10 @@ L.OSM.Map = L.Map.extend({
   }
 });
 
-OSM.isDarkMap = function () {
-  const mapTheme = $("body").attr("data-map-theme");
-  if (mapTheme) return mapTheme === "dark";
+OSM.isDark = function (subject) {
+  const data = `${subject}-theme`,
+        theme = $(`[data-${data}]`).first().data(data);
+  if (theme) return theme === "dark";
   return window.matchMedia("(prefers-color-scheme: dark)").matches;
 };
 
