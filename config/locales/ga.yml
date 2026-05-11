@@ -2382,6 +2382,19 @@ ga:
           light: Solas
           dark: Dorcha
         save: Nuashonraigh Roghanna
+    notification_preferences:
+      show:
+        title: Roghanna Fógra
+        changeset_comment: Tráchtanna ar an athrú
+        diary_comment: Tráchtanna dialainne
+        direct_message: Teachtaireachtaí díreacha
+        gpx_import_failure: 'Allmhairiú rian GPS: teip'
+        gpx_import_success: 'Allmhairiú rian GPX: rathúil'
+        new_follower: Leantóirí nua
+        note_comment: Nótaí tráchta
+        save: Nuashonraigh Roghanna
+        delivery_mechanisms:
+          email: Ríomhphost
     advanced_preferences:
       show:
         title: Mo Roghanna Ardleibhéil

@@ -2301,8 +2301,9 @@ nl:
       update_success_flash:
         message: Voorkeuren bijgewerkt.
       navigation:
-        preferences: Voorkeuren
-        advanced_preferences: Geavanceerde voorkeuren
+        preferences: Interface
+        notification_preferences: Meldingen
+        advanced_preferences: Geavanceerd
     basic_preferences:
       show:
         title: Mijn voorkeuren
@@ -2323,6 +2324,19 @@ nl:
           light: Licht
           dark: Donker
         save: Voorkeuren bijwerken
+    notification_preferences:
+      show:
+        title: Meldingsvoorkeuren
+        changeset_comment: Opmerkingen bij de wijzigingsset
+        diary_comment: Dagboekreacties
+        direct_message: Directe berichten
+        gpx_import_failure: 'GPS-trace importeren: mislukt'
+        gpx_import_success: 'GPX-trace-import: succesvol'
+        new_follower: Nieuwe volgers
+        note_comment: Opmerkingen
+        save: Voorkeuren bijwerken
+        delivery_mechanisms:
+          email: E-mail
     advanced_preferences:
       show:
         title: Mijn geavanceerde voorkeuren
@@ -3522,7 +3536,7 @@ nl:
       invalid_credentials: Ongeldige verificatiereferenties
       no_authorization_code: Geen autorisatiecode
       unknown_signature_algorithm: Onbekend algoritme voor handtekening
-      invalid_scope: Ongeldig toepassingsgebied
+      invalid_scope: Onjuist toepassingsgebied
       unknown_error: Authenticatie mislukt
     auth_association:
       heading: Uw ID is nog niet gekoppeld aan een OpenStreetMap-account.

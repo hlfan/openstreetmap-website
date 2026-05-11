@@ -2229,8 +2229,9 @@ be-Tarask:
       update_success_flash:
         message: Налады абноўлены.
       navigation:
-        preferences: Налады
-        advanced_preferences: Пашыраныя налады
+        preferences: Інтэрфэйс
+        notification_preferences: Абвесткі
+        advanced_preferences: Дадаткова
     basic_preferences:
       show:
         title: Налады
@@ -2251,6 +2252,19 @@ be-Tarask:
           light: Сьветлае
           dark: Цёмнае
         save: Абнавіць налады
+    notification_preferences:
+      show:
+        title: Налады абвестак
+        changeset_comment: Камэнтары набору зьменаў
+        diary_comment: Камэнтары дзёньніку
+        direct_message: Прамыя паведамленьні
+        gpx_import_failure: 'Імпарт GPS-трэку: памылка'
+        gpx_import_success: 'Імпарт GPS-трэку: пасьпяхова'
+        new_follower: Новыя глядачы
+        note_comment: Камэнтары заўвагаў
+        save: Абнавіць налады
+        delivery_mechanisms:
+          email: Электронная пошта
     advanced_preferences:
       show:
         title: Пашыраныя налады

@@ -1828,6 +1828,7 @@ zh-CN:
         ia: 国际语
         is: 冰岛语
         it: 意大利语
+        kw: 康沃尔语
         gcf: 瓜德罗普克里奥尔语
         ku-Latn: 库尔德语（拉丁字母）
         lv: 拉脱维亚语
@@ -2180,8 +2181,9 @@ zh-CN:
       update_success_flash:
         message: 偏好已更新。
       navigation:
-        preferences: 参数设置
-        advanced_preferences: 高级设置
+        preferences: 界面
+        notification_preferences: 通知
+        advanced_preferences: 高级
     basic_preferences:
       show:
         title: 我的偏好
@@ -2202,6 +2204,19 @@ zh-CN:
           light: 浅色
           dark: 深色
         save: 更新首选项
+    notification_preferences:
+      show:
+        title: 通知设置
+        changeset_comment: 变更集评论
+        diary_comment: 日记评论
+        direct_message: 私信
+        gpx_import_failure: GPS轨迹导入：失败
+        gpx_import_success: GPX轨迹导入：成功
+        new_follower: 新关注者
+        note_comment: 注释评论
+        save: 更新偏好设置
+        delivery_mechanisms:
+          email: 电子邮件
     advanced_preferences:
       show:
         title: 我的高级偏好设置
@@ -2296,6 +2311,7 @@ zh-CN:
       login_button: 登录
       with external: 或使用第三方服务登录
       or: 或
+      reset_to_login: 抱歉，您的密码已过期。请重置密码以登录。
       auth failure: 对不起，凭这些信息您无法登录。
     destroy:
       title: 退出

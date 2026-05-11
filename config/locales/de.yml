@@ -2376,6 +2376,7 @@ de:
         message: Benutzereinstellungen aktualisiert.
       navigation:
         preferences: Einstellungen
+        notification_preferences: Benachrichtigungen
         advanced_preferences: Erweiterte Einstellungen
     basic_preferences:
       show:
@@ -2397,6 +2398,10 @@ de:
           light: Hell
           dark: Dunkel
         save: Benutzereinstellungen aktualisieren
+    notification_preferences:
+      show:
+        delivery_mechanisms:
+          email: E-Mail-Adresse
     advanced_preferences:
       show:
         title: Erweiterte Einstellungen
