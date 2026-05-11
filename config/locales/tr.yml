@@ -2280,8 +2280,9 @@ tr:
       update_success_flash:
         message: Tercihler güncellendi.
       navigation:
-        preferences: Tercihler
-        advanced_preferences: Gelişmiş Tercihler
+        preferences: Arayüz
+        notification_preferences: Bildirimler
+        advanced_preferences: Gelişmiş
     basic_preferences:
       show:
         title: Tercihlerim
@@ -2302,6 +2303,19 @@ tr:
           light: Açık
           dark: Koyu
         save: Tercihleri Güncelle
+    notification_preferences:
+      show:
+        title: Bildirim Tercihleri
+        changeset_comment: Değişiklik kümesi yorumları
+        diary_comment: Günlük yorumları
+        direct_message: Direkt mesajlar
+        gpx_import_failure: 'GPS izi içe aktarma: başarısız'
+        gpx_import_success: 'GPX izi içe aktarma: başarılı'
+        new_follower: Yeni takipçiler
+        note_comment: Not yorumları
+        save: Tercihleri Güncelle
+        delivery_mechanisms:
+          email: E-posta
     advanced_preferences:
       show:
         title: Gelişmiş Tercihlerim

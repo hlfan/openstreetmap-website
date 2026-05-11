@@ -2251,8 +2251,9 @@ gl:
       update_success_flash:
         message: Preferencias actualizadas.
       navigation:
-        preferences: Preferencias
-        advanced_preferences: Preferencias avanzadas
+        preferences: Interface
+        notification_preferences: Notificacións
+        advanced_preferences: Avanzadas
     basic_preferences:
       show:
         title: As miñas preferencias
@@ -2273,6 +2274,19 @@ gl:
           light: Claro
           dark: Escuro
         save: Actualizar as preferencias
+    notification_preferences:
+      show:
+        title: Preferencias de notificación
+        changeset_comment: Comentarios do conxunto de cambios
+        diary_comment: Comentarios do diario
+        direct_message: Mensaxes directas
+        gpx_import_failure: 'Importación da pista GPS: erro'
+        gpx_import_success: 'Importación da pista GPX: correcta'
+        new_follower: Novos seguidores
+        note_comment: Comentarios da nota
+        save: Actualizar as preferencias
+        delivery_mechanisms:
+          email: Correo electrónico
     advanced_preferences:
       show:
         title: As miñas preferencias avanzadas

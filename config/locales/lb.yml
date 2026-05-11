@@ -576,10 +576,10 @@ lb:
       title: Blogge vun de Benotzer
       title_nearby: Blogge vu Benotzer an dénger Noperschaft
       user_title: Blog vum %{user}
-      in_language_title: Blog-Anträg op %{language}
+      in_language_title: Blog-Ännerungen op %{language}
       no_entries: Keng Bloganträg
     page:
-      recent_entries: Neiest Anträg
+      recent_entries: Neist Ännerungen
     edit:
       title: Blogantrag beaarbechten
       marker_text: Plaz vum Blogantrag
@@ -2143,8 +2143,8 @@ lb:
       diary_entries:
         older: Eeler Anträg
         newer: Méi nei Anträg
-        oldest: Eelst Anträg
-        newest: Neist Anträg
+        oldest: Eelst Ännerungen
+        newest: Neist Ännerungen
       issues:
         older: Eeler Problemer
         newer: Méi nei Problemer
