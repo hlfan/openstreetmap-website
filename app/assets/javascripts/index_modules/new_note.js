@@ -132,7 +132,7 @@ export default function (map) {
 
     content.find("textarea")
       .on("input", updateControls)
-      .attr("readonly", "readonly")
+      .attr("readonly", "readonly") // avoid virtual keyboard popping up on focus
       .trigger("focus")
       .removeAttr("readonly");
 

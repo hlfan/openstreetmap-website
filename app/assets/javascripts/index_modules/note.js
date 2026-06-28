@@ -6,9 +6,8 @@ export default function (map) {
     OSM.loadSidebarContent(path, function () {
       const data = $(".details").data();
       if (!data) return;
-      const coords = data.coordinates.split(",");
-      const latLng = { lat: parseFloat(coords[0]), lng: parseFloat(coords[1]) };
-      initialize(path, id, map.getBounds().contains([latLng.lng, latLng.lat]));
+      const [lat, lng] = data.coordinates.split(",").map(parseFloat);
+      initialize(path, id, map.getBounds().contains({ lat, lng }));
     });
   };
 
@@ -66,8 +65,8 @@ export default function (map) {
 
     if (data) {
       const hashParams = OSM.parseHash();
-      const coords = data.coordinates.split(",");
-      const latLng = { lat: parseFloat(coords[0]), lng: parseFloat(coords[1]) };
+      const [lat, lng] = data.coordinates.split(",").map(parseFloat);
+      const latLng = { lat, lng };
       map.addObject({
         type: "note",
         id: parseInt(id, 10),

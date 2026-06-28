@@ -1,4 +1,3 @@
-/* exported ChangesetsLayer */
 // Color palettes mirror the .changeset-*-sidebar-viewport classes in common.scss.
 // Keyed by sidebarRelativePosition: 1 = above, 0 = in view, -1 = below.
 const ChangesetsLayer_OUTLINE_COLOR_EXPR = [
@@ -374,4 +373,3 @@ const ChangesetsLayer = class extends maplibregl.Evented {
     if (this._map.getSource(hsid)) this._map.removeSource(hsid);
   }
 };
-

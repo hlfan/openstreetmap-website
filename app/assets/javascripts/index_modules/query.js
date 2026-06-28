@@ -111,6 +111,7 @@ export default function (map) {
 
         $section.find(".loader").hide();
 
+        // Make Overpass-specific bounds to Leaflet compatible
         for (const element of elements) {
           if (!element.bounds) continue;
           if (element.bounds.maxlon >= element.bounds.minlon) continue;
@@ -175,6 +176,27 @@ export default function (map) {
     return (maxlon - minlon) * (maxlat - minlat);
   }
 
+
+  /*
+   * To find nearby objects we ask overpass for the union of the
+   * following sets:
+   *
+   *   node(around:<radius>,<lat>,<lng>)
+   *   way(around:<radius>,<lat>,<lng>)
+   *   relation(around:<radius>,<lat>,<lng>)
+   *
+   * to find enclosing objects we first find all the enclosing areas:
+   *
+   *   is_in(<lat>,<lng>)->.a
+   *
+   * and then return the union of the following sets:
+   *
+   *   relation(pivot.a)
+   *   way(pivot.a)
+   *
+   * In both cases we then ask to retrieve tags and the geometry
+   * for each object.
+   */
   function queryOverpass(latlng) {
     const { lng, lat } = latlng,
           bounds = map.getBounds(),

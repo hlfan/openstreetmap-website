@@ -38,6 +38,7 @@ function Endpoint(map, input, markerOpts, dragCallback, changeCallback) {
   }
 
   function inputChangeListener(e) {
+    // make text the same in both text boxes
     const value = e.target.value;
     endpoint.setValue(value);
   }
@@ -137,7 +138,7 @@ function Endpoint(map, input, markerOpts, dragCallback, changeCallback) {
   }
 
   function getReverseGeocode() {
-    const latlng = { ...endpoint.latlng };
+    const latlng = structuredClone(endpoint.latlng);
     const { lat, lng } = latlng;
     const reverseGeocodeUrl = OSM.NOMINATIM_URL + "reverse?" + new URLSearchParams({ lat, lon: lng, format: "json" });
 
@@ -166,7 +167,7 @@ function Endpoint(map, input, markerOpts, dragCallback, changeCallback) {
       .attr("data-lon", ll.lng);
     endpoint.latlng = ll;
     endpoint.marker
-      .setLngLat([ll.lng, ll.lat])
+      .setLngLat(ll)
       .addTo(map);
   }
 

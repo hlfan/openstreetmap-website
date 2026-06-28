@@ -52,6 +52,10 @@ OSM.initializeDataLayer = function (map) {
   }
 
   function getData() {
+    /*
+     * Modern browsers are quite happy showing far more than 100 features in
+     * the data browser, so increase the limit to 4000.
+     */
     const maxFeatures = 4000;
     const bounds = map.getBounds();
 

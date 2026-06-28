@@ -95,10 +95,10 @@ function RouteOutput(map) {
       row.on("click", function () {
         const ll = lineseg[0];
         popup
-          .setLngLat([ll.lng, ll.lat])
+          .setLngLat(ll)
           .setHTML(`<p><b>${i + 1}.</b> ${instruction}</p>`)
           .addTo(map);
-        map.panInside([ll.lng, ll.lat], { padding: [100, 100] });
+        map.panInside(ll, { padding: [100, 100] });
       });
 
       row

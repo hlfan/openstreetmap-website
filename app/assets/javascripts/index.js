@@ -227,7 +227,7 @@ $(function () {
             bottom: bbox.getSouth() - 0.0001
           });
 
-    if (object && object.type !== "note") query.set("select", object.type + object.id);
+    if (object && object.type !== "note") query.set("select", object.type + object.id); // can't select notes
     sendRemoteEditCommand(remoteEditHost + "/load_and_zoom?" + query)
       .then(() => {
         if (object && object.type === "note") {

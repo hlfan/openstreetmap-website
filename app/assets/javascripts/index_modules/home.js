@@ -16,8 +16,9 @@ export default function (map) {
       OSM.router.withoutMoveListener(function () {
         map.setView(OSM.home, 15, { reset: true });
       });
+      const homeLL = { lng: OSM.home.lon, lat: OSM.home.lat };
       marker = new OSM.MapLibre.Marker({ icon: "dot", color: "var(--marker-red)" })
-        .setLngLat([OSM.home.lon, OSM.home.lat])
+        .setLngLat(homeLL)
         .addTo(map);
       marker.getElement().title = OSM.i18n.t("javascripts.home.marker_title");
     } else {

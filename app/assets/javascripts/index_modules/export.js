@@ -59,20 +59,16 @@ export default function (map) {
   }
 
   function setBounds(bounds) {
-    const sw = bounds.getSouthWest();
-    const ne = bounds.getNorthEast();
     const zoom = map.getZoom() + OSM.ZOOM_OFFSET;
-    const { lat: swLat, lng: swLng } = OSM.cropLocation(sw, zoom);
-    const { lat: neLat, lng: neLng } = OSM.cropLocation(ne, zoom);
-
-    $("#minlon").val(swLng);
-    $("#minlat").val(swLat);
-    $("#maxlon").val(neLng);
-    $("#maxlat").val(neLat);
+    const sw = OSM.cropLocation(bounds.getSouthWest(), zoom);
+    $("#minlon").val(sw.lng);
+    $("#minlat").val(sw.lat);
+    const ne = OSM.cropLocation(bounds.getNorthEast(), zoom);
+    $("#maxlon").val(ne.lng);
+    $("#maxlat").val(ne.lat);
 
     $("#export_overpass").attr("href",
-                               "https://overpass-api.de/api/map?bbox=" +
-      [swLng, swLat, neLng, neLat].join());
+                               `https://overpass-api.de/api/map?bbox=${sw.lng},${sw.lat},${ne.lng},${ne.lat}`);
   }
 
   function validateControls() {
