@@ -234,18 +234,16 @@ nav.primary, nav.secondary {
     top: $headerHeight;
     bottom: 0;
     width: 100%;
+    @extend .d-flex;
+    @extend .flex-column;
+    @extend .flex-md-row;
   }
 
-  #sidebar, #map {
+  #sidebar, #map, #map-ui {
     position: relative;
-    height: 100%;
+    height: 50%;
     overflow-x: hidden;
     overflow-y: auto;
-  }
-
-  #sidebar {
-    float: left;
-    width: $sidebarWidth;
   }
 
   .overlay-sidebar #sidebar {
@@ -269,7 +267,6 @@ nav.primary, nav.secondary {
   }
 
   #map {
-    height: 100%;
     overflow: hidden;
 
     &.query-active {
@@ -295,40 +292,23 @@ nav.primary, nav.secondary {
 
   #map-ui {
     display: none;
-    position: relative;
-    float: right;
-    width: 250px;
-    height: 100%;
-    overflow: auto;
   }
-}
 
-@include media-breakpoint-down(md) {
-  body.map-layout {
-    #sidebar, #map {
-      position: relative;
-      overflow-x: hidden;
-      width: 100%;
-      height: 50%;
+  @include media-breakpoint-up(md) {
+    #sidebar, #map, #map-ui {
+      height: 100%;
+    }
+
+    #sidebar {
+      width: $sidebarWidth;
+    }
+
+    #map {
+      width: auto;
     }
 
     #map-ui {
-      width: 100%;
-      height: 50%;
-      overflow-y: scroll;
-    }
-
-    .overlay-sidebar.overlay-right-sidebar {
-      #sidebar {
-        position: absolute;
-        width: 350px;
-        height: auto;
-        overflow: hidden;
-      }
-
-      #map {
-        height: 100%;
-      }
+      width: 250px;
     }
   }
 }
