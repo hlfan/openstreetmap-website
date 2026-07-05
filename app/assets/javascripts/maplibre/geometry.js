@@ -153,16 +153,6 @@ OSM.MapLibre.rectangleGeoJSON = function (bounds, properties) {
   return feature;
 };
 
-OSM.MapLibre.polygonGeoJSON = function (coords) {
-  return {
-    type: "Feature",
-    geometry: {
-      type: "Polygon",
-      coordinates: [coords.map(c => [c.lng, c.lat])]
-    }
-  };
-};
-
 OSM.MapLibre.getGeoJSONBounds = function (geojson) {
   const bounds = new maplibregl.LngLatBounds();
 

@@ -33,10 +33,6 @@ OSM.MapLibre.setButtonTitle = function ($button, title) {
   }
 };
 
-OSM.MapLibre.styleForLayer = function (layer) {
-  return (OSM.isDark("map") && layer.styleDark) || layer.style;
-};
-
 OSM.MapLibre.Map = class extends maplibregl.Map {
   constructor({ allowRotation, ...options } = {}) {
     const rotationOptions = {};
