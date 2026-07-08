@@ -65,14 +65,15 @@ export default function (map) {
 
     if (data) {
       const hashParams = OSM.parseHash();
+      const [lat, lng] = data.coordinates.split(",").map(parseFloat);
+      const latLng = { lat, lng };
       map.addObject({
         type: "note",
         id: parseInt(id, 10),
-        latLng: L.latLng(data.coordinates.split(",")),
+        latLng: latLng,
         icon: OSM.noteMarkers[data.status]
       }, function () {
         if (!hashParams.center && !skipMoveToNote) {
-          const latLng = L.latLng(data.coordinates.split(","));
           OSM.router.withoutMoveListener(function () {
             map.setView(latLng, 15, { reset: true });
           });

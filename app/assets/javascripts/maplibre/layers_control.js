@@ -2,11 +2,11 @@
 //= require maplibre/map
 //= require maplibre/i18n
 
-L.OSM.layers = function (options) {
-  const control = L.OSM.sidebarPane(options, "layers", "javascripts.map.layers.title", "javascripts.map.layers.header");
+OSM.MapLibre.layers = function (options) {
+  const control = OSM.MapLibre.sidebarPane(options, "layers", "javascripts.map.layers.title", "javascripts.map.layers.header");
 
   control.onAddPane = function (map, button, $ui, toggle) {
-    const layers = options.layers;
+    const layers = map.baseLayers;
 
     control.onContentLoaded = function () {
       $ui.find(".base-layers>div").each(initBaseLayer);
@@ -16,10 +16,10 @@ L.OSM.layers = function (options) {
 
     function initBaseLayer() {
       const [container, input, item] = this.children;
-      const layer = layers.find(l => l.options.layerId === container.dataset.layer);
-      input.checked = map.hasLayer(layer);
+      const layer = layers.find(l => l.layerId === container.dataset.layer);
+      input.checked = map.getMapBaseLayerId() === layer.layerId;
 
-      map.whenReady(function () {
+      function initMiniMap() {
         let miniMap;
         $ui
           .on("show", shown)
@@ -30,19 +30,19 @@ L.OSM.layers = function (options) {
           try {
             miniMap = new OSM.MapLibre.Map({
               container,
-              style: layer.options.style,
+              style: layer.style,
               interactive: false,
               attributionControl: false,
               fadeDuration: 0,
-              zoomSnap: layer.options.isVectorStyle ? 0 : 1,
+              zoomSnap: layer.isVectorStyle ? 0 : 1,
               center: [center.lng, center.lat],
               zoom: getZoomForMiniMap()
             });
-          } catch (error) {
+          } catch {
             return;
           }
 
-          if (layer.options.layerId === "openmaptiles_osm") {
+          if (layer.layerId === "openmaptiles_osm") {
             OSM.MapLibre.setOMTMapLanguage(miniMap);
           }
 
@@ -50,7 +50,6 @@ L.OSM.layers = function (options) {
         }
 
         function hide() {
-          // miniMap can be falsy if webgl is not supported
           if (miniMap) {
             map.off("moveend", moved);
             miniMap.remove();
@@ -66,22 +65,25 @@ L.OSM.layers = function (options) {
         function getZoomForMiniMap() {
           return Math.max(Math.floor(map.getZoom() - 3), -1);
         }
-      });
+      }
+
+      if (map.loaded()) {
+        initMiniMap();
+      } else {
+        map.once("load", initMiniMap);
+      }
 
       $(input).on("click", function () {
-        for (const other of layers) {
-          if (other !== layer) {
-            map.removeLayer(other);
-          }
-        }
-        map.addLayer(layer);
+        map.updateLayers(layer.code);
       });
 
       $(item).on("dblclick", toggle);
 
-      map.on("baselayerchange", function () {
-        input.checked = map.hasLayer(layer);
-      });
+      const onBaselayerChange = function () {
+        input.checked = map.getMapBaseLayerId() === layer.layerId;
+      };
+      map.on("baselayerchange", onBaselayerChange);
+      control.registerCleanup(() => map.off("baselayerchange", onBaselayerChange));
     }
 
     function initOverlays() {
@@ -103,16 +105,19 @@ L.OSM.layers = function (options) {
             map.addLayer(layer);
           } else {
             map.removeLayer(layer);
-            $(`#layers-${name}-loading`).remove();
+            $(`#layers-${item.dataset.name}-loading`).remove();
           }
         });
 
-        map.on("overlayadd overlayremove", function () {
-          input.checked = map.hasLayer(layer);
-        });
+        const updateChecked = function () {
+          checked = map.hasLayer(layer);
+          input.checked = checked;
+        };
+        map.on("overlayadd", updateChecked);
+        map.on("overlayremove", updateChecked);
 
-        map.on("zoomend", function () {
-          const disabled = map.getBounds().getSize() >= item.dataset.maxArea;
+        const onZoomEnd = function () {
+          const disabled = OSM.MapLibre.boundsSize(map.getBounds()) >= item.dataset.maxArea;
           input.disabled = disabled;
 
           if (disabled && input.checked) {
@@ -124,6 +129,13 @@ L.OSM.layers = function (options) {
 
           item.classList.toggle("disabled", disabled);
           $(item).tooltip(disabled ? "enable" : "disable");
+        };
+        map.on("zoomend", onZoomEnd);
+
+        control.registerCleanup(() => {
+          map.off("overlayadd", updateChecked);
+          map.off("overlayremove", updateChecked);
+          map.off("zoomend", onZoomEnd);
         });
       });
     }

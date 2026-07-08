@@ -289,7 +289,22 @@ class ElementCurrentVersionTest < ApplicationSystemTestCase
 
     visit relation_path(relation)
 
-    assert_selector "#map .leaflet-overlay-pane path"
+    assert_selector "#map .maplibregl-canvas"
+
+    # MapLibre renders vector data to a WebGL canvas, so we can't assert on SVG
+    # paths. Instead verify that the element's DataLayer actually added style
+    # layers to the map — for a relation with a node member the renderer emits
+    # an "osm-data-nodes" layer. addObject is async (fetch + style.load), so
+    # poll within Capybara's default wait time.
+    deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + Capybara.default_max_wait_time
+    has_data_layer = false
+    until has_data_layer || Process.clock_gettime(Process::CLOCK_MONOTONIC) > deadline
+      has_data_layer = evaluate_script(
+        "(window.__map__?.getStyle()?.layers || []).some(l => l.id.startsWith('osm-data-'))"
+      )
+      sleep 0.1 unless has_data_layer
+    end
+    assert has_data_layer, "Expected map style to contain an osm-data-* layer for the relation member node"
   end
 
   test "map should center on a viewed node" do

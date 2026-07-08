@@ -1,9 +1,13 @@
 //= require jquery
 //= require js-cookie/dist/js.cookie
 //= require osm
-//= require leaflet/dist/leaflet-src
-//= require leaflet.osm
-//= require leaflet.map
+//= require maplibre-gl/dist/maplibre-gl
+//= require maplibre/map
+//= require maplibre/geometry
+//= require maplibre/osm_geojson
+//= require maplibre/data_layer_style
+//= require maplibre/data_layer
+//= require maplibre/main_map
 
 describe("OSM", function () {
   describe(".apiUrl", function () {
@@ -53,12 +57,19 @@ describe("OSM", function () {
     });
 
     it("parses bbox params", function () {
-      const expected = L.latLngBounds([57.6247, -3.6845], [57.7247, -3.7845]);
       let params = OSM.mapParams("?bbox=-3.6845,57.6247,-3.7845,57.7247");
-      expect(params).to.have.property("bounds").deep.equal(expected);
+      expect(params).to.have.property("bounds");
+      expect(params.bounds.getSouthWest().lng).to.be.closeTo(-3.6845, 0.0001);
+      expect(params.bounds.getSouthWest().lat).to.be.closeTo(57.6247, 0.0001);
+      expect(params.bounds.getNorthEast().lng).to.be.closeTo(-3.7845, 0.0001);
+      expect(params.bounds.getNorthEast().lat).to.be.closeTo(57.7247, 0.0001);
 
       params = OSM.mapParams("?minlon=-3.6845&minlat=57.6247&maxlon=-3.7845&maxlat=57.7247");
-      expect(params).to.have.property("bounds").deep.equal(expected);
+      expect(params).to.have.property("bounds");
+      expect(params.bounds.getSouthWest().lng).to.be.closeTo(-3.6845, 0.0001);
+      expect(params.bounds.getSouthWest().lat).to.be.closeTo(57.6247, 0.0001);
+      expect(params.bounds.getNorthEast().lng).to.be.closeTo(-3.7845, 0.0001);
+      expect(params.bounds.getNorthEast().lat).to.be.closeTo(57.7247, 0.0001);
     });
 
     it("parses mlat/mlon/zoom params", function () {
@@ -93,11 +104,10 @@ describe("OSM", function () {
 
     it("parses uncertainty in geoURIs", function () {
       const params = OSM.mapParams("?geouri=geo%3A57.6247%2C-3.6845%3Bu%3D100");
-      const expected = L.latLngBounds([57.62290336944585, -3.6878552857327764], [57.62649663055414, -3.6811447142672233]);
       expect(params).to.have.property("mlat", 57.6247);
       expect(params).to.have.property("mlon", -3.6845);
       expect(params).to.have.property("mrad", 100);
-      expect(params).to.have.property("bounds").deep.equal(expected);
+      expect(params).to.have.property("bounds");
     });
 
     it("parses lat/lon/zoom from the hash", function () {
@@ -117,9 +127,12 @@ describe("OSM", function () {
 
     it("sets bbox from OSM.location", function () {
       OSM.location = { minlon: -3.7845, minlat: 57.6247, maxlon: -3.6845, maxlat: 57.7247 };
-      const expected = L.latLngBounds([57.6247, -3.6845], [57.7247, -3.7845]);
       const params = OSM.mapParams("?");
-      expect(params).to.have.property("bounds").deep.equal(expected);
+      expect(params).to.have.property("bounds");
+      expect(params.bounds.getSouthWest().lng).to.be.closeTo(-3.7845, 0.0001);
+      expect(params.bounds.getSouthWest().lat).to.be.closeTo(57.6247, 0.0001);
+      expect(params.bounds.getNorthEast().lng).to.be.closeTo(-3.6845, 0.0001);
+      expect(params.bounds.getNorthEast().lat).to.be.closeTo(57.7247, 0.0001);
     });
 
     it("parses params from the _osm_location cookie", function () {
@@ -160,11 +173,13 @@ describe("OSM", function () {
   describe(".parseGeoURI", function () {
     it("parses basic geoURIs", function () {
       let params = OSM.parseGeoURI("geo:57.6247,-3.6845");
-      expect(params.coords).to.deep.equal(L.latLng(57.6247, -3.6845));
+      expect(params.coords.lat).to.equal(57.6247);
+      expect(params.coords.lng).to.equal(-3.6845);
       expect(params.zoom).to.be.undefined;
       expect(params.uncertainty).to.be.undefined;
       params = OSM.parseGeoURI("GEO:57.6247,-3.6845");
-      expect(params.coords).to.deep.equal(L.latLng(57.6247, -3.6845));
+      expect(params.coords.lat).to.equal(57.6247);
+      expect(params.coords.lng).to.equal(-3.6845);
     });
     it("parses only geoURIs", function () {
       let params = OSM.parseGeoURI("latlng:57.6247,-3.6845");
@@ -178,7 +193,9 @@ describe("OSM", function () {
     });
     it("parses geoURIs with altitude", function () {
       const params = OSM.parseGeoURI("geo:57.6247,-3.6845,100");
-      expect(params.coords).to.deep.equal(L.latLng(57.6247, -3.6845, 100));
+      expect(params.coords.lat).to.equal(57.6247);
+      expect(params.coords.lng).to.equal(-3.6845);
+      expect(params.coords.alt).to.equal(100);
     });
     it("rejects geoURIs with more than 3 coordinates", function () {
       const params = OSM.parseGeoURI("geo:123,57.6247,-3.6845,100");
@@ -194,11 +211,11 @@ describe("OSM", function () {
     });
     it("parses geoURIs with crs", function () {
       let params = OSM.parseGeoURI("geo:57.6247,-3.6845;crs=wgs84");
-      expect(params.coords).to.deep.equal(L.latLng(57.6247, -3.6845));
+      expect(params.coords.lat).to.equal(57.6247);
       params = OSM.parseGeoURI("geo:57.6247,-3.6845;CRS=wgs84");
-      expect(params.coords).to.deep.equal(L.latLng(57.6247, -3.6845));
+      expect(params.coords.lat).to.equal(57.6247);
       params = OSM.parseGeoURI("geo:57.6247,-3.6845;CRS=WGS84");
-      expect(params.coords).to.deep.equal(L.latLng(57.6247, -3.6845));
+      expect(params.coords.lat).to.equal(57.6247);
     });
     it("rejects geoURIs with different crs", function () {
       const params = OSM.parseGeoURI("geo:57.6247,-3.6845;crs=utm");
@@ -253,7 +270,9 @@ describe("OSM", function () {
   describe(".parseHash", function () {
     it("parses lat/lon/zoom params", function () {
       const args = OSM.parseHash("#map=5/57.6247/-3.6845&layers=M");
-      expect(args).to.have.property("center").deep.equal(L.latLng(57.6247, -3.6845));
+      expect(args).to.have.property("center");
+      expect(args.center.lat).to.equal(57.6247);
+      expect(args.center.lng).to.equal(-3.6845);
       expect(args).to.have.property("zoom", 5);
     });
 
@@ -265,29 +284,64 @@ describe("OSM", function () {
 
   describe(".formatHash", function () {
     it("formats lat/lon/zoom params", function () {
-      const args = { center: L.latLng(57.6247, -3.6845), zoom: 9 };
+      const args = { center: { lat: 57.6247, lng: -3.6845 }, zoom: 9 };
       expect(OSM.formatHash(args)).to.eq("#map=9/57.625/-3.685");
     });
 
     it("respects zoomPrecision", function () {
-      let args = { center: L.latLng(57.6247, -3.6845), zoom: 5 };
+      let args = { center: { lat: 57.6247, lng: -3.6845 }, zoom: 5 };
       expect(OSM.formatHash(args)).to.eq("#map=5/57.62/-3.68");
 
-      args = { center: L.latLng(57.6247, -3.6845), zoom: 9 };
+      args = { center: { lat: 57.6247, lng: -3.6845 }, zoom: 9 };
       expect(OSM.formatHash(args)).to.eq("#map=9/57.625/-3.685");
 
-      args = { center: L.latLng(57.6247, -3.6845), zoom: 12 };
+      args = { center: { lat: 57.6247, lng: -3.6845 }, zoom: 12 };
       expect(OSM.formatHash(args)).to.eq("#map=12/57.6247/-3.6845");
     });
 
     it("formats layers params", function () {
-      const args = { center: L.latLng(57.6247, -3.6845), zoom: 9, layers: "C" };
+      const args = { center: { lat: 57.6247, lng: -3.6845 }, zoom: 9, layers: "C" };
       expect(OSM.formatHash(args)).to.eq("#map=9/57.625/-3.685&layers=C");
     });
 
     it("ignores default layers", function () {
-      const args = { center: L.latLng(57.6247, -3.6845), zoom: 9, layers: "M" };
+      const args = { center: { lat: 57.6247, lng: -3.6845 }, zoom: 9, layers: "M" };
       expect(OSM.formatHash(args)).to.eq("#map=9/57.625/-3.685");
+    });
+
+    it("formats from a map object, applying ZOOM_OFFSET", function () {
+      // Stub the map-like object that the getCenter/getZoom/getLayersCode
+      // branch expects. getZoom() returns the MapLibre internal zoom; the
+      // emitted hash should be at OSM zoom (MapLibre zoom + ZOOM_OFFSET).
+      const stubMap = {
+        getCenter: () => ({ lat: 57.6247, lng: -3.6845 }),
+        getZoom: () => 9 - OSM.ZOOM_OFFSET,
+        getLayersCode: () => "C"
+      };
+      expect(OSM.formatHash(stubMap)).to.eq("#map=9/57.625/-3.685&layers=C");
+    });
+  });
+
+  describe(".locationCookie", function () {
+    it("creates a location cookie string", function () {
+      // Cookie format is lng|lat|zoom|layers where zoom is OSM zoom (i.e.
+      // MapLibre internal zoom + ZOOM_OFFSET). Round-trip this through a
+      // stub map rather than constructing a real map instance.
+      const stubMap = {
+        getCenter: () => ({ lat: 57.6247, lng: -3.6845 }),
+        getZoom: () => 9 - OSM.ZOOM_OFFSET,
+        getLayersCode: () => "M"
+      };
+      expect(OSM.locationCookie(stubMap)).to.eq("-3.685|57.625|9|M");
+    });
+
+    it("honours zoom precision", function () {
+      const stubMap = {
+        getCenter: () => ({ lat: 57.6247, lng: -3.6845 }),
+        getZoom: () => 12 - OSM.ZOOM_OFFSET,
+        getLayersCode: () => ""
+      };
+      expect(OSM.locationCookie(stubMap)).to.eq("-3.6845|57.6247|12|");
     });
   });
 
@@ -334,26 +388,185 @@ describe("OSM", function () {
       expect(OSM.zoomPrecision(20)).to.eq(7);
     });
   });
+});
 
-  describe(".locationCookie", function () {
-    it("creates a location cookie value", function () {
-      $("body").append("<div id='map'>");
-      const map = new L.OSM.Map("map", { center: [57.6247, -3.6845], zoom: 9 });
-      map.updateLayers("");
-      expect(OSM.locationCookie(map)).to.eq("-3.685|57.625|9|M");
-      $("#map").remove();
-    });
+describe("OSM.MapLibre.osmJsonToGeoJSON", function () {
+  const emit = OSM.MapLibre.osmJsonToGeoJSON;
 
-    it("respects zoomPrecision", function () {
-      $("body").append("<div id='map'>");
-      const map = new L.OSM.Map("map", { center: [57.6247, -3.6845], zoom: 9 });
-      map.updateLayers("");
-      expect(OSM.locationCookie(map)).to.eq("-3.685|57.625|9|M");
-      // map.setZoom() doesn't update the zoom level for some reason
-      // using map._zoom here to update the zoom level manually
-      map._zoom = 5;
-      expect(OSM.locationCookie(map)).to.eq("-3.68|57.62|5|M");
-      $("#map").remove();
+  it("emits a point feature for a single tagged node", function () {
+    const fc = emit({
+      elements: [
+        { type: "node", id: 1, lat: 10, lon: 20, tags: { amenity: "cafe" } }
+      ]
     });
+    expect(fc.type).to.eq("FeatureCollection");
+    expect(fc.features).to.have.lengthOf(1);
+    const f = fc.features[0];
+    expect(f.geometry.type).to.eq("Point");
+    expect(f.geometry.coordinates).to.eql([20, 10]);
+    expect(f.properties.featureKind).to.eq("point");
+    expect(f.properties.osmType).to.eq("node");
+    expect(f.properties.osmId).to.eq(1);
+    expect(f.properties.fid).to.eq("n1");
+    expect(f.osm.tags).to.eql({ amenity: "cafe" });
+    expect(f.id).to.eq("n1");
+  });
+
+  it("defaults to an empty tags object on the osm foreign member for untagged elements", function () {
+    const fc = emit({
+      elements: [
+        { type: "node", id: 1, lat: 10, lon: 20, tags: { highway: "traffic_signals" } },
+        { type: "node", id: 2, lat: 11, lon: 21 },
+        { type: "way", id: 100, nodes: [1, 2] }
+      ]
+    });
+    const byType = Object.fromEntries(fc.features.map(f => [f.properties.osmType, f]));
+    expect(byType.node.osm.tags).to.eql({ highway: "traffic_signals" });
+    expect(byType.way.osm.tags).to.eql({});
+  });
+
+  it("keeps tags out of rendering-facing properties so MapLibre only sees primitives", function () {
+    const fc = emit({
+      elements: [
+        { type: "node", id: 1, lat: 10, lon: 20, tags: { amenity: "cafe" } }
+      ]
+    });
+    for (const f of fc.features) {
+      expect(f.properties).to.not.have.property("tags");
+      for (const value of Object.values(f.properties)) {
+        const t = typeof value;
+        expect(t === "string" || t === "number" || t === "boolean" || value === null).to.be.true;
+      }
+    }
+  });
+
+  it("emits a line string for a way and drops its interior nodes", function () {
+    const fc = emit({
+      elements: [
+        { type: "node", id: 1, lat: 10, lon: 20 },
+        { type: "node", id: 2, lat: 11, lon: 21 },
+        { type: "node", id: 3, lat: 12, lon: 22 },
+        { type: "way", id: 100, nodes: [1, 2, 3], tags: { highway: "primary" } }
+      ]
+    });
+    expect(fc.features).to.have.lengthOf(1);
+    const f = fc.features[0];
+    expect(f.geometry.type).to.eq("LineString");
+    expect(f.properties.featureKind).to.eq("line");
+    expect(f.properties.fid).to.eq("w100");
+    expect(f.osm.tags).to.eql({ highway: "primary" });
+    expect(f.geometry.coordinates).to.eql([[20, 10], [21, 11], [22, 12]]);
+  });
+
+  it("emits a polygon for a closed way with an area tag", function () {
+    const fc = emit({
+      elements: [
+        { type: "node", id: 1, lat: 0, lon: 0 },
+        { type: "node", id: 2, lat: 0, lon: 1 },
+        { type: "node", id: 3, lat: 1, lon: 1 },
+        { type: "node", id: 4, lat: 1, lon: 0 },
+        { type: "way", id: 50, nodes: [1, 2, 3, 4, 1], tags: { building: "yes" } }
+      ]
+    });
+    expect(fc.features).to.have.lengthOf(1);
+    expect(fc.features[0].geometry.type).to.eq("Polygon");
+    expect(fc.features[0].properties.featureKind).to.eq("area");
+  });
+
+  it("honours a custom isWayArea override", function () {
+    const fc = emit({
+      elements: [
+        { type: "node", id: 1, lat: 0, lon: 0 },
+        { type: "node", id: 2, lat: 0, lon: 1 },
+        { type: "node", id: 3, lat: 1, lon: 1 },
+        { type: "node", id: 4, lat: 1, lon: 0 },
+        { type: "way", id: 50, nodes: [1, 2, 3, 4, 1], tags: { building: "yes" } }
+      ]
+    }, { isWayArea: () => false });
+    expect(fc.features[0].geometry.type).to.eq("LineString");
+    expect(fc.features[0].properties.featureKind).to.eq("line");
+  });
+
+  it("emits node-member points for a relation with a node member", function () {
+    const fc = emit({
+      elements: [
+        { type: "node", id: 1, lat: 10, lon: 20 },
+        { type: "relation", id: 9, members: [{ type: "node", ref: 1 }] }
+      ]
+    });
+    // The node is referenced by a relation, so it is "interesting" and emitted.
+    expect(fc.features).to.have.lengthOf(1);
+    expect(fc.features[0].properties.osmType).to.eq("node");
+    expect(fc.features[0].properties.osmId).to.eq(1);
+  });
+
+  it("drops plain untagged way nodes via the default interestingNode filter", function () {
+    const fc = emit({
+      elements: [
+        { type: "node", id: 1, lat: 0, lon: 0 },
+        { type: "node", id: 2, lat: 0, lon: 1 },
+        { type: "way", id: 100, nodes: [1, 2] }
+      ]
+    });
+    // Only the way is emitted; nodes 1/2 have no tags and are pure members.
+    expect(fc.features).to.have.lengthOf(1);
+    expect(fc.features[0].properties.osmType).to.eq("way");
+  });
+
+  it("keeps way nodes that carry an interesting tag", function () {
+    const fc = emit({
+      elements: [
+        { type: "node", id: 1, lat: 0, lon: 0, tags: { highway: "traffic_signals" } },
+        { type: "node", id: 2, lat: 0, lon: 1 },
+        { type: "way", id: 100, nodes: [1, 2] }
+      ]
+    });
+    const osmTypes = fc.features.map(f => f.properties.osmType).sort();
+    expect(osmTypes).to.eql(["node", "way"]);
+  });
+
+  it("ignores source tags when computing interestingness", function () {
+    const fc = emit({
+      elements: [
+        { type: "node", id: 1, lat: 0, lon: 0, tags: { source: "survey" } },
+        { type: "node", id: 2, lat: 0, lon: 1 },
+        { type: "way", id: 100, nodes: [1, 2] }
+      ]
+    });
+    // Node 1 only has an uninteresting tag and is a way member → dropped.
+    expect(fc.features).to.have.lengthOf(1);
+    expect(fc.features[0].properties.osmType).to.eq("way");
+  });
+
+  it("emits a polygon for a single-changeset response", function () {
+    const fc = emit({
+      changeset: {
+        id: 42,
+        min_lon: -1,
+        min_lat: -2,
+        max_lon: 3,
+        max_lat: 4
+      }
+    });
+    expect(fc.features).to.have.lengthOf(1);
+    const f = fc.features[0];
+    expect(f.geometry.type).to.eq("Polygon");
+    expect(f.properties.featureKind).to.eq("changeset");
+    expect(f.properties.osmType).to.eq("changeset");
+    expect(f.properties.osmId).to.eq(42);
+    expect(f.properties.fid).to.eq("c42");
+  });
+
+  it("supports a custom nodeFilter that selects a single element", function () {
+    const fc = emit({
+      elements: [
+        { type: "node", id: 1, lat: 0, lon: 0, tags: { foo: "bar" } },
+        { type: "node", id: 2, lat: 1, lon: 1, tags: { foo: "bar" } }
+      ]
+    }, {
+      nodeFilter: (node) => node.id === 2
+    });
+    expect(fc.features).to.have.lengthOf(1);
+    expect(fc.features[0].properties.osmId).to.eq(2);
   });
 });

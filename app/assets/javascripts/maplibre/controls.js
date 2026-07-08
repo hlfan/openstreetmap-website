@@ -60,6 +60,11 @@ OSM.MapLibre.GeolocateControl = class extends maplibregl.GeolocateControl {
       ...options
     });
   }
+
+  onAdd(map) {
+    this.setEventedParent(map);
+    return super.onAdd(map);
+  }
 };
 
 OSM.MapLibre.NavigationControl = class extends maplibregl.NavigationControl {

@@ -82,7 +82,7 @@ class SiteTest < ApplicationSystemTestCase
       find_field("Map Notes").hover # try to trigger disabled tooltip
     end
     within "#map" do
-      zoom_out = find_link("Zoom Out")
+      zoom_out = find_button("Zoom Out")
       zoom_out.hover # un-hover the tooltip that's being tested
       zoom_out.click(:shift)
     end

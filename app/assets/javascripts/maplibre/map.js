@@ -7,6 +7,13 @@ maplibregl.Map.prototype._getUIString = function (key) {
   return OSM.i18n.t(`javascripts.map.${snakeCaseKey}`);
 };
 
+// MODULE_PATHS is absent in the embed bundle, which doesn't need the RTL text plugin.
+// The status check avoids calling setRTLTextPlugin twice when a page loads multiple
+// bundles that require this file.
+if (OSM.MODULE_PATHS && maplibregl.getRTLTextPluginStatus() === "unavailable") {
+  maplibregl.setRTLTextPlugin(OSM.MODULE_PATHS.mapbox_rtl_text, true);
+}
+
 OSM.MapLibre.showWebGLError = function (container) {
   const containerElement =
     typeof container === "string" ? document.getElementById(container) : container;
@@ -15,6 +22,15 @@ OSM.MapLibre.showWebGLError = function (container) {
     fetch("/panes/webgl_error")
       .then(response => response.text())
       .then(html => containerElement.innerHTML = html);
+  }
+};
+
+OSM.MapLibre.setButtonTitle = function ($button, title) {
+  $button.attr("title", title);
+  $button.attr("data-bs-original-title", title);
+  const tooltipInstance = window.bootstrap?.Tooltip.getInstance($button[0]);
+  if (tooltipInstance) {
+    tooltipInstance.setContent({ ".tooltip-inner": title });
   }
 };
 
@@ -36,6 +52,7 @@ OSM.MapLibre.Map = class extends maplibregl.Map {
         // Style validation only affects debug output.
         // Style errors are usually reported to authors, who should validate the style in CI for better error messages.
         validateStyle: false,
+        attributionControl: false,
         ...rotationOptions,
         ...options
       });
@@ -53,6 +70,18 @@ OSM.MapLibre.Map = class extends maplibregl.Map {
     }
     return map;
   }
+
+  // isStyleLoaded() aggregates tile and image loading, so it flips back to false
+  // after style.load fires and can't tell us whether the style document itself is
+  // ready. The style's own _loaded flag is the latch we want: true once style.load
+  // has fired for the current style, reset when setStyle() swaps in a new one.
+  onceStyleReady(fn) {
+    if (this.style?._loaded) {
+      fn();
+      return;
+    }
+    this.once("style.load", fn);
+  }
 };
 
 OSM.MapLibre.SecondaryMap = class extends OSM.MapLibre.Map {
@@ -61,7 +90,6 @@ OSM.MapLibre.SecondaryMap = class extends OSM.MapLibre.Map {
     super({
       container: "map",
       style: OSM.LAYER_DEFINITIONS[0].style,
-      attributionControl: false,
       allowRotation: false,
       maxPitch: 0,
       center: OSM.home ? [OSM.home.lon, OSM.home.lat] : [0, 0],

@@ -1,12 +1,9 @@
 /* exported Endpoint */
-function Endpoint(map, input, marker, dragCallback, changeCallback) {
+function Endpoint(map, input, markerOpts, dragCallback, changeCallback) {
   const endpoint = {};
 
-  endpoint.marker = L.marker([0, 0], {
-    icon: OSM.getMarker(marker),
-    draggable: true,
-    autoPan: true
-  });
+  endpoint.marker = new OSM.MapLibre.Marker({ ...markerOpts, draggable: true, autoPan: true })
+    .setLngLat([0, 0]);
 
   endpoint.enableListeners = function () {
     endpoint.marker.on("drag", markerDragListener);
@@ -23,8 +20,8 @@ function Endpoint(map, input, marker, dragCallback, changeCallback) {
   };
 
   function markerDragListener(e) {
-    const { lat, lng } = OSM.cropLocation(e.target.getLatLng(), map.getZoom());
-    const latlng = L.latLng(lat, lng);
+    const { lat, lng } = OSM.cropLocation(endpoint.marker.getLngLat(), map.getZoom() + OSM.ZOOM_OFFSET);
+    const latlng = { lat: Number(lat), lng: Number(lng) };
 
     if (endpoint.geocodeRequest) endpoint.geocodeRequest.abort();
     delete endpoint.geocodeRequest;
@@ -52,9 +49,9 @@ function Endpoint(map, input, marker, dragCallback, changeCallback) {
     input.removeClass("is-invalid");
 
     const coordinatesMatch = value.match(/^\s*([+-]?\d+(?:\.\d*)?)(?:\s+|\s*[/,]\s*)([+-]?\d+(?:\.\d*)?)\s*$/);
-    const latlng = coordinatesMatch && L.latLng(coordinatesMatch[1], coordinatesMatch[2]);
+    const latlng = coordinatesMatch && { lat: parseFloat(coordinatesMatch[1]), lng: parseFloat(coordinatesMatch[2]) };
 
-    if (latlng && endpoint.cachedReverseGeocode && endpoint.cachedReverseGeocode.latlng.equals(latlng)) {
+    if (latlng && endpoint.cachedReverseGeocode && endpoint.cachedReverseGeocode.latlng.lat === latlng.lat && endpoint.cachedReverseGeocode.latlng.lng === latlng.lng) {
       setLatLng(latlng);
       if (endpoint.cachedReverseGeocode.notFound) {
         endpoint.value = value;
@@ -87,7 +84,7 @@ function Endpoint(map, input, marker, dragCallback, changeCallback) {
     removeLatLng();
     delete endpoint.value;
     input.val("");
-    map.removeLayer(endpoint.marker);
+    endpoint.marker.remove();
   };
 
   endpoint.swapCachedReverseGeocodes = function (otherEndpoint) {
@@ -111,8 +108,9 @@ function Endpoint(map, input, marker, dragCallback, changeCallback) {
   }
 
   function getGeocode() {
-    const viewbox = map.getBounds().toBBoxString(), // <sw lon>,<sw lat>,<ne lon>,<ne lat>
-          geocodeUrl = OSM.NOMINATIM_URL + "search?" + new URLSearchParams({ q: endpoint.value, format: "json", viewbox, limit: 1, entrances: 1 });
+    const bounds = map.getBounds();
+    const viewbox = OSM.MapLibre.boundsToBBoxString(bounds);
+    const geocodeUrl = OSM.NOMINATIM_URL + "search?" + new URLSearchParams({ q: endpoint.value, format: "json", viewbox, limit: 1, entrances: 1 });
 
     endpoint.geocodeRequest = new AbortController();
     fetch(geocodeUrl, { signal: endpoint.geocodeRequest.signal })
@@ -129,7 +127,8 @@ function Endpoint(map, input, marker, dragCallback, changeCallback) {
         return;
       }
 
-      setLatLng(L.latLng(findPreferredEntrance(json[0].entrances, ["main", "yes"]) || json[0]));
+      const place = findPreferredEntrance(json[0].entrances, ["main", "yes"]) || json[0];
+      setLatLng({ lat: parseFloat(place.lat), lng: parseFloat(place.lng ?? place.lon) });
 
       endpoint.value = json[0].display_name;
       input.val(json[0].display_name);
@@ -139,9 +138,9 @@ function Endpoint(map, input, marker, dragCallback, changeCallback) {
   }
 
   function getReverseGeocode() {
-    const latlng = endpoint.latlng.clone(),
-          { lat, lng } = latlng,
-          reverseGeocodeUrl = OSM.NOMINATIM_URL + "reverse?" + new URLSearchParams({ lat, lon: lng, format: "json" });
+    const latlng = structuredClone(endpoint.latlng);
+    const { lat, lng } = latlng;
+    const reverseGeocodeUrl = OSM.NOMINATIM_URL + "reverse?" + new URLSearchParams({ lat, lon: lng, format: "json" });
 
     endpoint.geocodeRequest = new AbortController();
     fetch(reverseGeocodeUrl, { signal: endpoint.geocodeRequest.signal })
@@ -168,7 +167,7 @@ function Endpoint(map, input, marker, dragCallback, changeCallback) {
       .attr("data-lon", ll.lng);
     endpoint.latlng = ll;
     endpoint.marker
-      .setLatLng(ll)
+      .setLngLat(ll)
       .addTo(map);
   }
 

@@ -31,6 +31,9 @@ OSM = {
 
   DEFAULT_LOCALE: <%= I18n.default_locale.to_json %>,
 
+  // Offset between MapLibre's raster tileSize:256 zoom and the tile-Z convention used everywhere OSM-facing.
+  ZOOM_OFFSET: 1,
+
   LAYER_DEFINITIONS: <%= MapLayers::full_definitions("config/layers.yml", :legends => "config/legend.yml").to_json %>,
 
   MODULE_PATHS: <%=
@@ -85,8 +88,11 @@ OSM = {
 
     const loc = OSM.cookies.get("_osm_location")?.split("|");
 
-    function bboxToLatLngBounds({ minlon, minlat, maxlon, maxlat }) {
-      return L.latLngBounds([minlat, minlon], [maxlat, maxlon]);
+    function bboxToBounds({ minlon, minlat, maxlon, maxlat }) {
+      return new maplibregl.LngLatBounds(
+        [parseFloat(minlon), parseFloat(minlat)],
+        [parseFloat(maxlon), parseFloat(maxlat)]
+      );
     }
 
     // Decide on a map starting position. Various ways of doing this.
@@ -94,15 +100,21 @@ OSM = {
       Object.assign(mapParams, hash);
     } else if (params.has("bbox")) {
       const [minlon, minlat, maxlon, maxlat] = params.get("bbox").split(",");
-      mapParams.bounds = bboxToLatLngBounds({ minlon, minlat, maxlon, maxlat });
+      mapParams.bounds = bboxToBounds({ minlon, minlat, maxlon, maxlat });
     } else if (params.has("minlon") && params.has("minlat") && params.has("maxlon") && params.has("maxlat")) {
-      mapParams.bounds = bboxToLatLngBounds(Object.fromEntries(params));
+      mapParams.bounds = bboxToBounds(Object.fromEntries(params));
     } else if (params.has("mlon") && params.has("mlat")) {
       mapParams.lon = params.get("mlon");
       mapParams.lat = params.get("mlat");
       mapParams.zoom = params.get("zoom") || 12;
     } else if (geoURI?.uncertainty > 0 && !("zoom" in geoURI)) {
-      mapParams.bounds = geoURI.coords.toBounds(geoURI.uncertainty * 4);
+      const earthRadius = 6371008.8;
+      const latDelta = (geoURI.uncertainty * 2) / earthRadius * (180 / Math.PI);
+      const lngDelta = latDelta / Math.cos(geoURI.coords.lat * Math.PI / 180);
+      mapParams.bounds = new maplibregl.LngLatBounds(
+        [geoURI.coords.lng - lngDelta, geoURI.coords.lat - latDelta],
+        [geoURI.coords.lng + lngDelta, geoURI.coords.lat + latDelta]
+      );
     } else if (geoURI) {
       mapParams.lon = geoURI.coords.lng;
       mapParams.lat = geoURI.coords.lat;
@@ -114,7 +126,7 @@ OSM = {
       mapParams.lat = OSM.home.lat;
       mapParams.zoom = 10;
     } else if (OSM.location) {
-      mapParams.bounds = bboxToLatLngBounds(OSM.location);
+      mapParams.bounds = bboxToBounds(OSM.location);
     } else {
       mapParams.lon = -0.1;
       mapParams.lat = 51.5;
@@ -142,11 +154,10 @@ OSM = {
     } catch (e) { return; }
     if (!url?.pathname || url.protocol !== "geo:") return;
     const [path, ...params] = url.pathname.split(";");
-    let coords;
-    try {
-      coords = L.latLng(path.split(","));
-    } catch (e) { return; }
-    if (!coords) return;
+    const parts = path.split(",").map(Number);
+    if (parts.length < 2 || parts.length > 3 || isNaN(parts[0]) || isNaN(parts[1])) return;
+    const coords = { lat: parts[0], lng: parts[1] };
+    if (parts.length === 3) coords.alt = parts[2];
     const searchParams = new URLSearchParams(params.join("&").toLowerCase());
     const crs = searchParams.get("crs");
     if (crs && crs !== "wgs84") return;
@@ -170,7 +181,7 @@ OSM = {
           args = {};
 
     if (!isNaN(zoom) && !isNaN(lat) && !isNaN(lon)) {
-      args.center = new L.LatLng(lat, lon);
+      args.center = { lat, lng: lon };
       args.lat = lat;
       args.lon = lon;
       args.zoom = zoom;
@@ -186,16 +197,21 @@ OSM = {
   formatHash: function (args) {
     let center, zoom, layers;
 
-    if (args instanceof L.Map) {
+    if (typeof args.getCenter === "function") {
       center = args.getCenter();
-      zoom = args.getZoom();
+      // Round to match Leaflet's `zoomSnap: 1` behavior — MapLibre's
+      // fitBounds/flyTo can produce fractional internal zooms, but OSM
+      // permalinks have always been integer-zoom.
+      zoom = Math.round(args.getZoom() + OSM.ZOOM_OFFSET);
       layers = args.getLayersCode();
     } else if (args instanceof URLSearchParams) {
-      center = args.get("center") || L.latLng(args.get("lat"), args.get("lon"));
+      const lat = args.get("lat"),
+            lon = args.get("lon");
+      center = args.get("center") || { lat: parseFloat(lat), lng: parseFloat(lon) };
       zoom = Number(args.get("zoom"));
       layers = args.get("layers") || "";
     } else {
-      center = args.center || L.latLng(args.lat, args.lon);
+      center = args.center || { lat: args.lat, lng: args.lon };
       zoom = Number(args.zoom);
       layers = args.layers || "";
     }
@@ -219,17 +235,19 @@ OSM = {
   },
 
   cropLocation: function (latLng, zoom) {
-    const precision = OSM.zoomPrecision(zoom),
-          wrapped = latLng.wrap();
+    const precision = OSM.zoomPrecision(zoom);
+    // Apply wrap unconditionally: skipping it changes toFixed rounding on in-range values and breaks existing permalinks.
+    const lngIn = Number(latLng.lng);
+    const lng = lngIn === 180 ? 180 : ((((lngIn + 180) % 360) + 360) % 360) - 180;
     return {
-      lat: wrapped.lat.toFixed(precision),
-      lng: wrapped.lng.toFixed(precision)
+      lng: lng.toFixed(precision),
+      lat: Number(latLng.lat).toFixed(precision)
     };
   },
 
   locationCookie: function (map) {
-    const zoom = map.getZoom(),
-          { lat, lng } = OSM.cropLocation(map.getCenter(), zoom);
+    const zoom = Math.round(map.getZoom() + OSM.ZOOM_OFFSET);
+    const { lat, lng } = OSM.cropLocation(map.getCenter(), zoom);
     return [lng, lat, zoom, map.getLayersCode()].join("|");
   },
 

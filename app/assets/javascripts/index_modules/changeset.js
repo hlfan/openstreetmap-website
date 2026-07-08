@@ -23,7 +23,7 @@ export default function (map) {
     const hashParams = OSM.parseHash();
     initialize();
     map.addObject(changesetData, function (bounds) {
-      if (!hashParams.center && bounds.isValid()) {
+      if (!hashParams.center && !bounds.isEmpty()) {
         OSM.router.withoutMoveListener(function () {
           map.fitBounds(bounds);
         });

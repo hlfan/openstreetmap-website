@@ -3,7 +3,7 @@ export default function (map) {
     .on("click", ".search_more a", clickSearchMore)
     .on("click", ".search_results_entry a.set_position", clickSearchResult);
 
-  const markers = L.layerGroup().addTo(map);
+  const markers = [];
   let processedResults = 0;
 
   function clickSearchMore(e) {
@@ -38,22 +38,27 @@ export default function (map) {
     const color = `hwb(${(index * inverseGoldenAngle) % 360}deg 5% 5%)`;
     listItem.css("--marker-color", color);
     const data = listItem.find("a.set_position").data();
-    const marker = L.marker([data.lat, data.lon], { icon: OSM.getMarker({ color, className: "activatable" }) });
-    marker.on("mouseover", () => listItem.addClass("bg-body-secondary"));
-    marker.on("mouseout", () => listItem.removeClass("bg-body-secondary"));
-    marker.on("click", function (e) {
-      OSM.router.click(e.originalEvent, listItem.find("a.set_position").attr("href"));
+    const marker = new OSM.MapLibre.Marker({ icon: "dot", color, className: "activatable" })
+      .setLngLat([data.lon, data.lat])
+      .addTo(map);
+    marker.getElement().addEventListener("mouseover", () => listItem.addClass("bg-body-secondary"));
+    marker.getElement().addEventListener("mouseout", () => listItem.removeClass("bg-body-secondary"));
+    marker.getElement().addEventListener("click", function (e) {
+      OSM.router.click(e, listItem.find("a.set_position").attr("href"));
     });
-    markers.addLayer(marker);
+    markers.push(marker);
     listItem.on("mouseover", () => $(marker.getElement()).addClass("active"));
     listItem.on("mouseout", () => $(marker.getElement()).removeClass("active"));
   }
 
   function panToSearchResult(data) {
     if (data.minLon && data.minLat && data.maxLon && data.maxLat) {
-      map.fitBounds([[data.minLat, data.minLon], [data.maxLat, data.maxLon]]);
+      map.fitBounds(new maplibregl.LngLatBounds(
+        [data.minLon, data.minLat],
+        [data.maxLon, data.maxLat]
+      ));
     } else {
-      map.setView([data.lat, data.lon], data.zoom);
+      map.setView({ lng: data.lon, lat: data.lat }, data.zoom);
     }
   }
 
@@ -100,7 +105,8 @@ export default function (map) {
   };
 
   page.unload = function () {
-    markers.clearLayers();
+    for (const marker of markers) marker.remove();
+    markers.length = 0;
     processedResults = 0;
   };
 
