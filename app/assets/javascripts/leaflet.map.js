@@ -137,7 +137,7 @@ L.OSM.Map = L.Map.extend({
     }
   },
 
-  getUrl: function (marker) {
+  getPath: function (marker) {
     const params = {};
 
     if (marker && this.hasLayer(marker)) {
@@ -146,17 +146,17 @@ L.OSM.Map = L.Map.extend({
       params.mlon = lng;
     }
 
-    let url = location.protocol + "//" + OSM.SERVER_URL + "/";
-    const query = new URLSearchParams(params),
+    let path = "/";
+    const query = new URLSearchParams(params).toString(),
           hash = OSM.formatHash(this);
 
-    if (query) url += "?" + query;
-    if (hash) url += hash;
+    if (query) path += "?" + query;
+    if (hash) path += hash;
 
-    return url;
+    return path;
   },
 
-  getShortUrl: function (marker) {
+  getShortPath: function (marker) {
     const zoom = this.getZoom(),
           latLng = marker && this.hasLayer(marker) ? marker.getLatLng().wrap() : this.getCenter().wrap(),
           char_array = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_~",
@@ -167,17 +167,17 @@ L.OSM.Map = L.Map.extend({
           // and drops the last 4 bits of the full 64 bit Morton code.
           c1 = interlace(x >>> 17, y >>> 17),
           c2 = interlace((x >>> 2) & 0x7fff, (y >>> 2) & 0x7fff);
-    let str = location.protocol + "//" + location.hostname.replace(/^www\.openstreetmap\.org/i, "osm.org") + "/go/";
+    let path = "/go/";
 
     for (let i = 0; i < Math.ceil((zoom + 8) / 3.0) && i < 5; ++i) {
       const digit = (c1 >> (24 - (6 * i))) & 0x3f;
-      str += char_array.charAt(digit);
+      path += char_array.charAt(digit);
     }
     for (let i = 5; i < Math.ceil((zoom + 8) / 3.0); ++i) {
       const digit = (c2 >> (24 - (6 * (i - 5)))) & 0x3f;
-      str += char_array.charAt(digit);
+      path += char_array.charAt(digit);
     }
-    for (let i = 0; i < ((zoom + 8) % 3); ++i) str += "-";
+    for (let i = 0; i < ((zoom + 8) % 3); ++i) path += "-";
 
     // Called to interlace the bits in x and y, making a Morton code.
     function interlace(x, y) {
@@ -211,10 +211,23 @@ L.OSM.Map = L.Map.extend({
 
     const query = params.toString();
     if (query) {
-      str += "?" + query;
+      path += "?" + query;
     }
 
-    return str;
+    return path;
+  },
+
+  getEmbedQuery: function (marker) {
+    const params = new URLSearchParams({
+      bbox: this.getBounds().toBBoxString(),
+      layer: this.getMapBaseLayerId()
+    });
+
+    if (this.hasLayer(marker)) {
+      const latLng = marker.getLatLng().wrap();
+      params.set("marker", latLng.lat + "," + latLng.lng);
+    }
+    return "?" + params;
   },
 
   getGeoUri: function (marker) {
