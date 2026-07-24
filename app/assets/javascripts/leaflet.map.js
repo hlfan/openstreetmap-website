@@ -146,14 +146,11 @@ L.OSM.Map = L.Map.extend({
       params.mlon = lng;
     }
 
-    let path = "/";
-    const query = new URLSearchParams(params).toString(),
-          hash = OSM.formatHash(this);
-
-    if (query) path += "?" + query;
-    if (hash) path += hash;
-
-    return path;
+    return {
+      pathname: "/",
+      search: new URLSearchParams(params).toString(),
+      hash: OSM.formatHash(this)
+    };
   },
 
   getShortPath: function (marker) {
@@ -209,12 +206,12 @@ L.OSM.Map = L.Map.extend({
       params.set(this._object.type, this._object.id);
     }
 
-    const query = params.toString();
+    let query = params.toString();
     if (query) {
-      path += "?" + query;
+      query = "?" + query;
     }
 
-    return path;
+    return { pathname: path, search: query };
   },
 
   getEmbedQuery: function (marker) {
