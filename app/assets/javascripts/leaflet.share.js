@@ -129,14 +129,11 @@ L.OSM.share = function (options) {
 
       // Link / Embed
 
-      const shortURL = location.protocol + "//" + location.hostname.replace(/^www\.openstreetmap\.org/i, "osm.org") + map.getShortPath(marker);
-      const longURL = location.protocol + "//" + OSM.SERVER_URL + map.getPath(marker);
-      const embedURL = OSM.SERVER_PROTOCOL + "://" + OSM.SERVER_URL + "/export/embed.html" + map.getEmbedQuery(marker);
-
-      $("#short_input").val(shortURL);
-      $("#long_input").val(longURL);
-      $("#short_link").attr("href", shortURL);
-      $("#long_link").attr("href", longURL);
+      $("#long_link").prop("href", $("#long_link").prop("origin") + map.getPath(marker));
+      $("#short_link").prop("href", $("#short_link").prop("origin") + map.getShortPath(marker));
+      $("#embed_link").prop("search", map.getEmbedQuery(marker));
+      $("#long_input").val($("#long_link").prop("href"));
+      $("#short_input").val($("#short_link").prop("href"));
 
       if (!canEmbed && $("#nav-embed").hasClass("active")) {
         bootstrap.Tab.getOrCreateInstance($("#long_link")).show();
@@ -148,9 +145,9 @@ L.OSM.share = function (options) {
 
       $("#embed_html").val(
         "<iframe width=\"425\" height=\"350\" src=\"" +
-          escapeHTML(embedURL) +
+          escapeHTML($("#embed_link").prop("href")) +
           "\" style=\"border: 1px solid black\"></iframe><br/>" +
-          "<small><a href=\"" + escapeHTML(longURL) + "\">" +
+          "<small><a href=\"" + escapeHTML($("#long_link").prop("href")) + "\">" +
           escapeHTML(OSM.i18n.t("javascripts.share.view_larger_map")) + "</a></small>");
 
       // Geo URI
