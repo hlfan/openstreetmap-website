@@ -20,4 +20,17 @@ jobs:
       - name: Build and run dev container task
         uses: devcontainers/ci@513af61f4de4f75d37e4438f184ba4358f0fc1ca # v0.3.1900000450
         with:
-          runCmd: stdbuf -oL -eL bin/rails test:all
+          runCmd: |
+            bin/rails test:all 2>&1 |
+            ruby -e '
+              buf = +""
+              STDIN.each_char do |c|
+                buf << c
+                if c == "\n"
+                  STDOUT.write(buf)
+                  STDOUT.flush
+                  buf.clear
+                end
+              end
+              STDOUT.write(buf) unless buf.empty?
+            '
