@@ -20,4 +20,17 @@ jobs:
       - name: Build and run dev container task
         uses: devcontainers/ci@513af61f4de4f75d37e4438f184ba4358f0fc1ca # v0.3.1900000450
         with:
-          runCmd: bin/rails test:all
+          runCmd: |
+            set -o pipefail
+            script -qec 'bin/rails test:all' /dev/null |
+            ruby -e '
+              buf = +""
+              while c = STDIN.read(4096)
+                buf << c
+                while (newline = buf.index("\n"))
+                  STDOUT.write(buf.slice!(0..newline))
+                  STDOUT.flush
+                end
+              end
+              STDOUT.write(buf) unless buf.empty?
+            '
