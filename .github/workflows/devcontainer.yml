@@ -20,4 +20,4 @@ jobs:
       - name: Build and run dev container task
         uses: devcontainers/ci@513af61f4de4f75d37e4438f184ba4358f0fc1ca # v0.3.1900000450
         with:
-          runCmd: ruby -e 'p STDOUT.tty?'
+          runCmd: script -qec 'bin/rails test:all' /dev/null
