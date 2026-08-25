@@ -22,7 +22,7 @@ jobs:
         with:
           runCmd: |
             set -o pipefail
-            bin/rails test:all |
+            script -qec 'bin/rails test:all' /dev/null |
             ruby -e '
               buf = +""
               while c = STDIN.read(4096)
