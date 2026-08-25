@@ -25,7 +25,7 @@ jobs:
             bin/rails test:all |
             ruby -e '
               buf = +""
-              while c = STDIN.readpartial(4096)
+              while c = STDIN.read(4096)
                 buf << c
                 while (newline = buf.index("\n"))
                   STDOUT.write(buf.slice!(0..newline))
