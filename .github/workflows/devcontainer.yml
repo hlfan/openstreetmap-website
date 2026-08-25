@@ -24,12 +24,11 @@ jobs:
             bin/rails test:all |
             ruby -e '
               buf = +""
-              STDIN.each_char do |c|
+              while c = STDIN.readpartial(4096)
                 buf << c
-                if c == "\n"
-                  STDOUT.write(buf)
+                while (newline = buf.index("\n"))
+                  STDOUT.write(buf.slice!(0..newline))
                   STDOUT.flush
-                  buf.clear
                 end
               end
               STDOUT.write(buf) unless buf.empty?
