@@ -6,33 +6,33 @@ export default function (map) {
     marker = null;
   }
 
-  const page = {};
+  return {
+    load() { this.init; },
 
-  page.load = page.init = function () {
-    map.setSidebarOverlaid(true);
-    clearMarker();
+    init() {
+      map.setSidebarOverlaid(true);
+      clearMarker();
 
-    if (OSM.home) {
-      OSM.router.withoutMoveListener(function () {
-        map.setView(OSM.home, 15, { reset: true });
-      });
-      marker = L.marker(OSM.home, {
-        icon: OSM.getMarker({}),
-        title: OSM.i18n.t("javascripts.home.marker_title")
-      }).addTo(map);
-    } else {
-      $("#browse_status").html(
-        $("<div class='m-2 alert alert-warning'>").text(
-          OSM.i18n.t("javascripts.home.not_set")
-        )
-      );
+      if (OSM.home) {
+        OSM.router.withoutMoveListener(function () {
+          map.setView(OSM.home, 15, { reset: true });
+        });
+        marker = L.marker(OSM.home, {
+          icon: OSM.getMarker({}),
+          title: OSM.i18n.t("javascripts.home.marker_title")
+        }).addTo(map);
+      } else {
+        $("#browse_status").html(
+          $("<div class='m-2 alert alert-warning'>").text(
+            OSM.i18n.t("javascripts.home.not_set")
+          )
+        );
+      }
+    },
+
+    unload() {
+      clearMarker();
+      $("#browse_status").empty();
     }
   };
-
-  page.unload = function () {
-    clearMarker();
-    $("#browse_status").empty();
-  };
-
-  return page;
 }
