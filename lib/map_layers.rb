@@ -37,6 +37,13 @@ module MapLayers
       .to_h { |entry| [entry["layerId"], entry.slice("style", "styleDark", "isVectorStyle", "credit").compact] }
   end
 
+  def self.hosts(layers_filename)
+    full_definitions(layers_filename)
+      .map { |entry| URI.parse((entry["url"] || entry["style"]).gsub(%r{[^/.]*{\w+}}, "*")) }
+      .map { |url| "#{url.scheme}://#{url.host}" }
+      .uniq
+  end
+
   def self.insert_api_key(layer, key)
     if layer[key].include?("{apikey}") && !Settings[layer["apiKeyId"]]
       raise "API key for #{layer['apiKeyId']} is required but not set in settings."
