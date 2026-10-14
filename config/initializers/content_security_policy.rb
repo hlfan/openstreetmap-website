@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "map_layers"
+
 # Be sure to restart your server when you modify this file.
 
 # Define an application-wide content security policy.
@@ -7,8 +9,9 @@
 # https://guides.rubyonrails.org/security.html#content-security-policy-header
 
 Rails.application.configure do
-  connect_src = [:self, "tile.openstreetmap.org", "api.thunderforest.com", "tile.tracestrack.com", "*.openstreetmap.fr", "vector.openstreetmap.org", "api.maptiler.com"]
-  img_src = [:self, :data, "www.gravatar.com", "*.wp.com", "tile.openstreetmap.org", "gps.tile.openstreetmap.org", "api.thunderforest.com", "tile.tracestrack.com", "*.openstreetmap.fr"]
+  tile_hosts = ["gps.tile.openstreetmap.org", *MapLayers.hosts("config/layers.yml")]
+  connect_src = [:self, *tile_hosts]
+  img_src = [:self, :data, "www.gravatar.com", *tile_hosts]
   script_src = [:self]
 
   connect_src << Settings.matomo["location"] if defined?(Settings.matomo)
