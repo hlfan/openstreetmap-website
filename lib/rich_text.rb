@@ -3,7 +3,7 @@
 module RichText
   DESCRIPTION_MAX_LENGTH = 500
   DESCRIPTION_WORD_BREAK_THRESHOLD_LENGTH = 450
-  URL_UNSAFE_CHARS = "[^\\w!#$%&'*+,./:;=?@_~^\\-]"
+  URL_UNSAFE_CHARS = "[^\\w!#$%&*+,./:;=?@_~^\\-]"
 
   def self.new(format, text)
     case format
@@ -110,17 +110,20 @@ module RichText
     end
 
     def linkify(text, mode = :urls, hosts: true, paths: true)
+      @link_map = {}
       html = ERB::Util.html_escape(text)
 
       html = expand_link_shorthands(html) if paths
       html = expand_host_shorthands(html) if hosts
+      html = expand_tag_shorthands(html) if paths
 
       RichText.auto_link(html, mode) do |url|
+        url = shorten_tag_link(url) if paths
         url = shorten_hosts(url) if hosts
         url = shorten_link(url) if paths
 
         url
-      end
+      end.delete(" ").html_safe
     end
 
     private
@@ -129,6 +132,40 @@ module RichText
       RichText
         .gsub_pairs_for_linkify_detection
         .reduce(text) { |text, (pattern, replacement)| text.gsub(pattern, replacement) }
+    end
+
+    def expand_tag_shorthands(text)
+      # Does the text look like it contains a key=* or key=value pattern?
+      wiki_safe_key_chars = "[\\wÀ-ʯ,.:-]"
+      wiki_safe_value_chars = "[\\p{Word},.:;+%/-]"
+      tag_pattern = /(?<=^|#{URL_UNSAFE_CHARS})\b(#{wiki_safe_key_chars}+) ?= ?(\*|#{wiki_safe_value_chars}+)/
+
+      match = text.match?(tag_pattern)
+
+      return text unless match
+
+      # Route each component through the tag_linker lib methods
+      text.gsub(tag_pattern) do
+        key = Regexp.last_match(1)
+        value = Regexp.last_match(2)
+
+        key_link = TagLinker.format_key(key) do |hash|
+          @link_map[hash[:url]] = hash[:text]
+          hash[:url] || hash[:text]
+        end
+
+        value_link = "*"
+        unless value == "*"
+          value_link = TagLinker.format_value(key, value) do |hash|
+            next if hash[:widget]
+
+            @link_map[hash[:url]] = hash[:text]
+            hash[:url] || hash[:text]
+          end
+        end
+
+        " #{key_link} = #{value_link.join(' ; ')} "
+      end
     end
 
     def expand_host_shorthands(text)
@@ -152,6 +189,12 @@ module RichText
       Array.wrap(Settings.linkify&.display_rules)
            .select { |rule| rule.pattern && rule.replacement }
            .reduce(url) { |url, rule| url.sub(Regexp.new(rule.pattern), rule.replacement) }
+    end
+
+    def shorten_tag_link(url)
+      return url unless @link_map.key?(url)
+
+      @link_map.fetch(url)
     end
 
     def shorten_host(url, rule)
