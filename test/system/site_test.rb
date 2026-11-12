@@ -82,13 +82,17 @@ class SiteTest < ApplicationSystemTestCase
       find_field("Map Notes").hover # try to trigger disabled tooltip
     end
     within "#map" do
-      zoom_out = find_link("Zoom Out")
+      zoom_out = find_button("Zoom Out")
       zoom_out.hover # un-hover the tooltip that's being tested
-      zoom_out.click(:shift)
+      3.times do |step|
+        page.execute_script("window.__map__.once('zoomend', () => document.querySelector('.maplibregl-ctrl-zoom-out').dataset.zoomStep = '#{step}')")
+        zoom_out.click
+        assert_selector ".maplibregl-ctrl-zoom-out[data-zoom-step='#{step}']"
+      end
     end
     within "#map-ui" do
       assert_field "Map Notes", :disabled => true
-      find_field("Map Notes", :disabled => true).hover
+      find(".form-check[data-name='notes']").hover
     end
     assert_selector ".tooltip", :text => "Zoom in to see"
   end

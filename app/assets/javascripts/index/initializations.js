@@ -72,7 +72,7 @@ OSM.initializations.push(function (map) {
   });
 
   function clickHandler(e) {
-    const { lat, lng } = OSM.cropLocation(e.latlng, map.getZoom());
+    const { lat, lng } = OSM.cropLocation(e.lngLat, map.getZoom());
 
     OSM.router.route("/query?" + new URLSearchParams({ lat, lon: lng }));
   }

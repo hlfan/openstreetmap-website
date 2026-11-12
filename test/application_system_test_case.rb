@@ -21,7 +21,13 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
 
   def self.driven_by_selenium(config_name = "default", opts = {})
     preferences = opts.fetch(:preferences, {}).reverse_merge(
-      "intl.accept_languages" => "en"
+      "intl.accept_languages" => "en",
+      # Force-enable WebGL so MapLibre can initialize under headless Firefox
+      # even when no GPU is detected (e.g. Docker containers without GPU
+      # access). Without this, map construction throws and every test that
+      # touches the map cascades to failure.
+      "webgl.force-enabled" => true,
+      "webgl.disable-fail-if-major-performance-caveat" => true
     )
 
     options = {

@@ -132,7 +132,7 @@ class HistoryTest < ApplicationSystemTestCase
     end
 
     within "#map" do
-      find_link("Zoom Out").click(:shift)
+      find_button("Zoom Out").click(:shift)
     end
 
     within_sidebar do

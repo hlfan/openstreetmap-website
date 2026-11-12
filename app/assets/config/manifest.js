@@ -15,8 +15,6 @@
 //= link_directory ../../../node_modules/@openstreetmap/id/dist/pannellum .js
 //= link_directory ../../../node_modules/@openstreetmap/id/dist/pannellum .css
 
-//= link_tree ../../../vendor/assets/leaflet .png
-
 //= link @mapbox/mapbox-gl-rtl-text/dist/mapbox-gl-rtl-text.js
 
 //= link make-plural/cardinals.js

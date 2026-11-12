@@ -26,7 +26,6 @@ export default [
         ...globals.jquery,
         Cookies: "readonly",
         I18n: "readonly",
-        L: "readonly",
         Matomo: "readonly",
         OSM: "writable",
         Popper: "readonly",

@@ -4,6 +4,15 @@
 
 @import "parameters";
 
+/* Location filter drag handles */
+div.location-filter.resize-marker {
+  background-image: image-url("location-filter/resize-handle.png");
+}
+
+div.location-filter.move-marker {
+  background-image: image-url("location-filter/move-handle.png");
+}
+
 .maplibregl-map .maplibregl-control-container {
   .maplibregl-ctrl {
     margin-right: 0;
@@ -43,6 +52,7 @@
 
   .maplibregl-ctrl-group {
     background-color: transparent;
+    box-shadow: none;
 
     button + button {
       border-top: 0;

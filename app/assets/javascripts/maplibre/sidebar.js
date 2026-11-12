@@ -1,4 +1,4 @@
-L.OSM.sidebar = function (selector) {
+OSM.MapLibre.sidebar = function (selector) {
   const control = {},
         sidebar = $(selector);
   let current = $(),
@@ -34,9 +34,9 @@ L.OSM.sidebar = function (selector) {
       $("#content").addClass("overlay-right-sidebar");
       current = currentButton = $();
       if (isMediumDevice) {
-        map.panBy([0, -$("#map").height() / 2], { animate: false });
+        map.panBy([0, -$("#map").height() / 2]);
       } else if ($("html").attr("dir") === "rtl") {
-        map.panBy([-paneWidth, 0], { animate: false });
+        map.panBy([-paneWidth, 0]);
       }
     } else {
       $(sidebar).show();
@@ -44,13 +44,13 @@ L.OSM.sidebar = function (selector) {
       current = pane;
       currentButton = button || $();
       if (isMediumDevice) {
-        map.panBy([0, $("#map").height()], { animate: false });
+        map.panBy([0, $("#map").height()]);
       } else if ($("html").attr("dir") === "rtl") {
-        map.panBy([paneWidth, 0], { animate: false });
+        map.panBy([paneWidth, 0]);
       }
     }
 
-    map.invalidateSize({ pan: false, animate: false });
+    map.resize();
 
     current
       .show()

@@ -68,6 +68,22 @@ class SearchTest < ApplicationSystemTestCase
     assert_field "Search", :with => "4.321, 9.876"
   end
 
+  test "coordinate search without a result zoom retains the current map zoom" do
+    visit "/#map=16/1/1"
+    assert_selector "#map .maplibregl-canvas"
+    page.execute_script(<<~JS)
+      window.mapErrors = [];
+      window.addEventListener("error", event => window.mapErrors.push(event.message));
+      OSM.router.route("/search?query=51.5%2C-0.1#map=16/1/1");
+    JS
+    assert_current_path search_path, :ignore_query => true
+    assert_selector "#map .maplibregl-marker"
+    assert_in_delta 16, page.evaluate_script("window.__map__.getZoom()"), 0.01
+    assert_in_delta 51.5, page.evaluate_script("window.__map__.getCenter().lat"), 0.00001
+    assert_in_delta(-0.1, page.evaluate_script("window.__map__.getCenter().lng"), 0.00001)
+    assert_empty page.evaluate_script("window.mapErrors")
+  end
+
   test "search adds viewbox param to Nominatim link" do
     visit "/"
 

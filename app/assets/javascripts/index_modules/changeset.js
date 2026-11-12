@@ -62,7 +62,7 @@ export default function (map) {
 
       content.find("textarea").val("").trigger("input");
       map.addObject(changesetData, function (bounds) {
-        if (!hashParams.center && bounds.isValid()) {
+        if (!hashParams.center && !bounds.isEmpty()) {
           OSM.router.withoutMoveListener(function () {
             map.fitBounds(bounds);
           });

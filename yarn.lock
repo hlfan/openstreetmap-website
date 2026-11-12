@@ -314,11 +314,6 @@
   dependencies:
     kdbush "^4.0.2"
 
-"@maplibre/maplibre-gl-leaflet@*":
-  version "0.1.4"
-  resolved "https://registry.yarnpkg.com/@maplibre/maplibre-gl-leaflet/-/maplibre-gl-leaflet-0.1.4.tgz#ff35ce64888e95e4095666992c345cfde430fc5a"
-  integrity sha512-k57wcndZIvq3m08g2je4pjUPGr43ffNW3j+gXbymt8Vi2l1lUERUi1UmdTZcTPN8LuDDYOMWRNBaSLwpAu02ew==
-
 "@maplibre/maplibre-gl-style-spec@^24.8.1":
   version "24.8.1"
   resolved "https://registry.yarnpkg.com/@maplibre/maplibre-gl-style-spec/-/maplibre-gl-style-spec-24.8.1.tgz#8d4d48591750529ce586f9ee5f836ed97870bce5"
@@ -503,13 +498,6 @@
   version "7.0.15"
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.15.tgz#596a1747233694d50f6ad8a7869fcb6f56cf5841"
   integrity sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==
-
-"@types/leaflet@*":
-  version "1.9.22"
-  resolved "https://registry.yarnpkg.com/@types/leaflet/-/leaflet-1.9.22.tgz#d46d501e5bcdf5a99374cf113ab33562cb887783"
-  integrity sha512-h3lhECYEKDasG7LFHu+GiHqAvsgLuQvlJvVZzJDGONo3sEL+wUOqSFLnwkZlK0qVxnxbuGFW8iBlJNYs5wgndA==
-  dependencies:
-    "@types/geojson" "*"
 
 "@types/minimist@^1.2.0":
   version "1.2.5"
@@ -1090,16 +1078,6 @@ kind-of@^6.0.3:
   version "6.0.3"
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-6.0.3.tgz#07c05034a6c349fa06e24fa35aa76db4580ce4dd"
   integrity sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==
-
-leaflet.locatecontrol@*:
-  version "0.90.1"
-  resolved "https://registry.yarnpkg.com/leaflet.locatecontrol/-/leaflet.locatecontrol-0.90.1.tgz#f15ad1d9a74b5415f1a43254764c6638f3ebbf7e"
-  integrity sha512-i8HsspXuYsjOTyDKQKyAgXKxIRjYeW/9FynXgYiVnVKH5mWojlJ1bF/S1S9Z++Qkl5cEKtba+kQdRLBP+HhPnQ==
-
-leaflet@*:
-  version "1.9.4"
-  resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-1.9.4.tgz#23fae724e282fa25745aff82ca4d394748db7d8d"
-  integrity sha512-nxS1ynzJOmOlHp+iL3FyWqK89GtNL8U8rvlMOsQdTTssxZwCXh8N2NB3GDQOL+YR3XnWyZAxwQixURb+FA74PA==
 
 levn@^0.4.1:
   version "0.4.1"

@@ -14,8 +14,6 @@ module MapLayers
               layer["styleDark"] = style_from_tile_url(layer, "tileUrlDark") if layer["tileUrlDark"]
               layer["url"] = insert_api_key(layer, "tileUrl")
               layer["urlDark"] = insert_api_key(layer, "tileUrlDark") if layer["tileUrlDark"]
-              layer.delete "leafletOsmId"
-              layer.delete "leafletOsmDarkId"
             end
           rescue StandardError => e
             Rails.logger.error "Error processing layer #{layer['layerId']}: #{e.message}"

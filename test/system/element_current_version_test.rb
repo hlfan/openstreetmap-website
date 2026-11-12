@@ -5,48 +5,78 @@ require "application_system_test_case"
 class ElementCurrentVersionTest < ApplicationSystemTestCase
   test "Wikidata previews skip deprecated logos and fall back to current claims" do
     node = create(:node, :lat => 60, :lon => 30)
-    create(:node_tag, :node => node, :k => "brand:wikidata", :v => "Q42;Q43")
+    create(:node_tag, :node => node, :k => "brand:wikidata", :v => "Q42;Q43;Q44;Q45")
+
+    visit node_path(node)
+    assert_selector "button.wdt-preview"
+    install_wikidata_preview_responses
+    click_button :class => "wdt-preview"
+
+    within_sidebar do
+      within("tr", :text => "Current brand") do
+        assert_selector "img[alt='Preferred.SVG'][height='32'][src='https://upload.wikimedia.org/Preferred.SVG']", :visible => :all
+        assert_no_selector "img[src*='Old.svg']", :visible => :all
+        assert_link :href => "#{Settings.wikimedia_commons_url}/wiki/File:Preferred.SVG?uselang=en"
+      end
+      within("tr", :text => "Deprecated-only brand") do
+        assert_no_selector "img", :visible => :all
+      end
+      within("tr", :text => "Raster brand") do
+        image = find("img[alt='Brand.png'][height='32']", :visible => :all)
+        assert_equal "https://thumb.wikimedia.org/64px-Brand.png", image["src"]
+        assert_equal "https://thumb.wikimedia.org/64px-Brand.png 64w, https://thumb.wikimedia.org/128px-Brand.png 128w", image["srcset"]
+        assert_equal "64px", image["sizes"]
+      end
+      within("tr", :text => "Missing brand") do
+        assert_no_selector "img", :visible => :all
+      end
+    end
+
+    requests = page.evaluate_script("window.commonsRequests")
+    assert_equal ["File:Brand.png", "File:Missing.png", "File:Preferred.SVG"], requests.pluck("title").sort
+    requests.each do |request|
+      assert_equal "#{Settings.wikimedia_commons_url}/w/api.php", request["url"]
+      assert_equal "32", request["height"]
+      assert_equal "*", request["origin"]
+      assert request["sameSignal"]
+      assert_match(/OSM-TagPreview/, request["userAgent"])
+    end
+  end
+
+  test "Wikidata thumbnail requests abort when leaving the element" do
+    node = create(:node, :lat => 60, :lon => 30)
+    create(:node_tag, :node => node, :k => "brand:wikidata", :v => "Q42")
 
     visit node_path(node)
     assert_selector "button.wdt-preview"
     page.execute_script(<<~JS)
       const originalFetch = window.fetch;
-      const claim = (rank, value) => ({ rank, mainsnak: { datavalue: { value } } });
-      const entity = (id, label, claims) => ({
-        id, labels: { en: { language: "en", value: label } }, descriptions: {}, sitelinks: {}, claims
-      });
       window.fetch = function (url, options) {
-        if (String(url).startsWith(OSM.WIKIMEDIA_COMMONS_URL)) {
-          const filename = new URL(url).searchParams.get("titles").replace(/^File:/, "");
-          const imageUrl = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E#" + encodeURIComponent(filename);
-          const query = { pages: { 1: { imageinfo: [{ url: imageUrl }] } } };
-          return Promise.resolve(new Response(JSON.stringify({ query }), { status: 200 }));
+        const request = new URL(url instanceof Request ? url.url : url, location.href);
+        if (request.href.startsWith(OSM.WIKIDATA_API_URL)) {
+          const entities = {
+            Q42: {
+              id: "Q42", labels: { en: { language: "en", value: "Brand" } }, descriptions: {}, sitelinks: {},
+              claims: { P8972: [{ rank: "normal", mainsnak: { datavalue: { value: "Brand.png" } } }] }
+            }
+          };
+          return Promise.resolve(new Response(JSON.stringify({ entities }), { status: 200 }));
         }
-        if (String(url).startsWith(OSM.WIKIDATA_API_URL)) {
-            const entities = {
-              Q42: entity("Q42", "Current brand", {
-                P8972: [claim("deprecated", "Old.svg")],
-                P154: [claim("normal", "Normal.svg"), claim("preferred", "Preferred.svg"), claim("deprecated", "Obsolete.svg")]
-              }),
-              Q43: entity("Q43", "Deprecated-only brand", { P8972: [claim("deprecated", "Only.svg")] })
-            };
-            return Promise.resolve(new Response(JSON.stringify({ entities }), { status: 200 }));
+        if (request.origin + request.pathname === OSM.WIKIMEDIA_COMMONS_URL + "/w/api.php") {
+          window.thumbnailSignal = options.signal;
+          return new Promise((resolve, reject) => {
+            options.signal.addEventListener("abort", () => reject(new DOMException("Aborted", "AbortError")), { once: true });
+          });
         }
         return originalFetch.call(this, url, options);
-
       };
     JS
     click_button :class => "wdt-preview"
+    Selenium::WebDriver::Wait.new(:timeout => 10).until { page.evaluate_script("Boolean(window.thumbnailSignal)") }
 
-    within_sidebar do
-      within("tr", :text => "Current brand") do
-        assert_selector "img[src*='Preferred.svg']", :visible => :all
-        assert_no_selector "img[src*='Old.svg']", :visible => :all
-      end
-      within("tr", :text => "Deprecated-only brand") do
-        assert_no_selector "img", :visible => :all
-      end
-    end
+    within_sidebar { click_link "History", :exact => true }
+    assert_current_path node_history_path(node), :ignore_query => true
+    assert page.evaluate_script("window.thumbnailSignal.aborted")
   end
 
   test "shows a node with one version" do
@@ -227,6 +257,7 @@ class ElementCurrentVersionTest < ApplicationSystemTestCase
     visit node_path(node)
 
     within_sidebar do
+      assert_selector "nav[aria-label='Node versions']"
       assert_link "History", :exact => true, :href => node_history_path(node)
       assert_no_link "Unredacted History"
     end
@@ -239,6 +270,7 @@ class ElementCurrentVersionTest < ApplicationSystemTestCase
     visit way_path(way)
 
     within_sidebar do
+      assert_selector "nav[aria-label='Way versions']"
       assert_link "History", :exact => true, :href => way_history_path(way)
       assert_no_link "Unredacted History"
     end
@@ -251,6 +283,7 @@ class ElementCurrentVersionTest < ApplicationSystemTestCase
     visit relation_path(relation)
 
     within_sidebar do
+      assert_selector "nav[aria-label='Relation versions']"
       assert_link "History", :exact => true, :href => relation_history_path(relation)
       assert_no_link "Unredacted History"
     end
@@ -335,7 +368,22 @@ class ElementCurrentVersionTest < ApplicationSystemTestCase
 
     visit relation_path(relation)
 
-    assert_selector "#map .leaflet-overlay-pane path"
+    assert_selector "#map .maplibregl-canvas"
+
+    # MapLibre renders vector data to a WebGL canvas, so we can't assert on SVG
+    # paths. Instead verify that the element's DataLayer actually added style
+    # layers to the map — for a relation with a node member the renderer emits
+    # an "osm-data-nodes" layer. addObject is async (fetch + style.load), so
+    # poll within Capybara's default wait time.
+    deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + Capybara.default_max_wait_time
+    has_data_layer = false
+    until has_data_layer || Process.clock_gettime(Process::CLOCK_MONOTONIC) > deadline
+      has_data_layer = evaluate_script(
+        "(window.__map__?.getStyle()?.layers || []).some(l => l.id.startsWith('osm-data-'))"
+      )
+      sleep 0.1 unless has_data_layer
+    end
+    assert has_data_layer, "Expected map style to contain an osm-data-* layer for the relation member node"
   end
 
   test "map should center on a viewed node" do
@@ -349,5 +397,60 @@ class ElementCurrentVersionTest < ApplicationSystemTestCase
 
     share_url = find_by_id("long_input").value
     assert_match %r{map=\d+/59\.\d+/29\.\d+}, share_url
+  end
+
+  private
+
+  def install_wikidata_preview_responses
+    page.execute_script(<<~JS)
+      const originalFetch = window.fetch;
+      window.commonsRequests = [];
+      const claim = (rank, value) => ({ rank, mainsnak: { datavalue: { value } } });
+      const entity = (id, label, claims) => ({
+        id, labels: { en: { language: "en", value: label } }, descriptions: {}, sitelinks: {}, claims
+      });
+      window.fetch = function (url, options) {
+        const request = new URL(url instanceof Request ? url.url : url, location.href);
+        if (request.href.startsWith(OSM.WIKIDATA_API_URL)) {
+          window.wikidataSignal = options.signal;
+          const entities = {
+            Q42: entity("Q42", "Current brand", {
+              P8972: [claim("deprecated", "Old.svg")],
+              P154: [claim("normal", "Normal.svg"), claim("preferred", "Preferred.SVG"), claim("deprecated", "Obsolete.svg")]
+            }),
+            Q43: entity("Q43", "Deprecated-only brand", { P8972: [claim("deprecated", "Only.svg")] }),
+            Q44: entity("Q44", "Raster brand", { P8972: [claim("normal", "Brand.png")] }),
+            Q45: entity("Q45", "Missing brand", { P8972: [claim("normal", "Missing.png")] })
+          };
+          return Promise.resolve(new Response(JSON.stringify({ entities }), { status: 200 }));
+        }
+        if (request.origin + request.pathname === OSM.WIKIMEDIA_COMMONS_URL + "/w/api.php") {
+          const title = request.searchParams.get("titles");
+          window.commonsRequests.push({
+            url: request.origin + request.pathname,
+            title,
+            height: request.searchParams.get("iiurlheight"),
+            origin: request.searchParams.get("origin"),
+            sameSignal: Boolean(options.signal) && options.signal === window.wikidataSignal,
+            userAgent: options.headers["Api-User-Agent"]
+          });
+          if (title === "File:Missing.png") return Promise.resolve(new Response("{}", { status: 503 }));
+          const imageInfo = {
+            "File:Preferred.SVG": { url: "https://upload.wikimedia.org/Preferred.SVG" },
+            "File:Brand.png": {
+              url: "https://upload.wikimedia.org/Brand.png",
+              thumburl: "https://thumb.wikimedia.org/64px-Brand.png",
+              thumbwidth: 64,
+              thumburls: {
+                64: { url: "https://thumb.wikimedia.org/64px-Brand.png" },
+                128: { url: "https://thumb.wikimedia.org/128px-Brand.png" }
+              }
+            }
+          }[title];
+          return Promise.resolve(new Response(JSON.stringify({ query: { pages: { 1: { imageinfo: [imageInfo] } } } }), { status: 200 }));
+        }
+        return originalFetch.call(this, url, options);
+      };
+    JS
   end
 end

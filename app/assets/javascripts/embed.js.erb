@@ -39,8 +39,11 @@ window.onload = function () {
     zoomSnap: layerConfig.isVectorStyle ? 0 : 1
   });
 
-  const bbox = (args.get("bbox") || "-180,-90,180,90").split(",");
-  map.fitBounds([[bbox[0], bbox[1]], [bbox[2], bbox[3]]], { animate: false });
+  const bbox = (args.get("bbox") || "-180,-90,180,90").split(",").map(parseFloat);
+  map.fitBounds(new maplibregl.LngLatBounds(
+    [bbox[0], bbox[1]],
+    [bbox[2], bbox[3]]
+  ), { animate: false });
 
   const position = document.documentElement.dir === "rtl" ? "left" : "right";
   const attribution = new OSM.MapLibre.AttributionControl({

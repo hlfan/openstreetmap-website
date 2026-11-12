@@ -37,11 +37,13 @@ export function mappedElement(type) {
       _addObject(type, id, version, keepViewport) {
         const hashParams = OSM.parseHash();
         map.addObject({ type: type, id: parseInt(id, 10), version: version && parseInt(version, 10) }, function (bounds) {
-          if (!hashParams.center && bounds.isValid() &&
-              (!keepViewport || !map.getBounds().contains(bounds))) {
-            OSM.router.withoutMoveListener(function () {
-              map.fitBounds(bounds);
-            });
+          if (!hashParams.center && !bounds.isEmpty()) {
+            const fullyVisible = OSM.MapLibre.boundsContainBounds(map.getBounds(), bounds);
+            if (!keepViewport || !fullyVisible) {
+              OSM.router.withoutMoveListener(function () {
+                map.fitBounds(bounds);
+              });
+            }
           }
         });
       },

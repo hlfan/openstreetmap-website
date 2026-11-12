@@ -3780,6 +3780,12 @@ en:
         feetPopup:
           one: You are within %{count} foot of this point
           other: You are within %{count} feet of this point
+      ScaleControl:
+        Feet: ft
+        Meters: m
+        Kilometers: km
+        Miles: mi
+        NauticalMiles: nm
       AttributionControl:
         ToggleAttribution: Toggle Attribution
       base:

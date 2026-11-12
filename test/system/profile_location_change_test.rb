@@ -76,6 +76,37 @@ class ProfileLocationChangeTest < ApplicationSystemTestCase
     end
   end
 
+  test "reverse geocoding failure preserves the home location name" do
+    stub_nominatim_reverse(:body => "<reversegeocode><result>Test Country</result></reversegeocode>")
+    user = create(:user)
+
+    sign_in_as(user)
+    visit profile_location_path
+    fill_in "Latitude", :with => "1"
+    fill_in "Longitude", :with => "2"
+    assert_field "Home Location Name", :with => "Test Country"
+
+    page.execute_script(<<~JS)
+      const fetch = window.fetch;
+      window.fetch = (...args) => fetch(...args).then(async response => {
+        if (args[0] !== "/search/nominatim_reverse_query") return response;
+        const data = await response.json();
+        setTimeout(() => {
+          document.querySelector("#home_location_name").dataset.reverseGeocodeStatus = response.status;
+        }, 0);
+        return { ok: response.ok, statusText: response.statusText, json: () => Promise.resolve(data) };
+      });
+    JS
+    stub_nominatim_reverse(:status => 400, :body => "Bad Request")
+    fill_in "Longitude", :with => "3"
+    assert_selector "#home_location_name[data-reverse-geocode-status='502']"
+    assert_field "Home Location Name", :with => "Test Country"
+
+    stub_nominatim_reverse(:body => "<reversegeocode><result>Other Country</result></reversegeocode>")
+    fill_in "Longitude", :with => "4"
+    assert_field "Home Location Name", :with => "Other Country"
+  end
+
   test "can select and restore a home location on the map" do
     user = create(:user, :home_lat => 51, :home_lon => 1)
     stub_request(:get, %r{^https://nominatim\.openstreetmap\.org/reverse\?})
@@ -104,6 +135,49 @@ class ProfileLocationChangeTest < ApplicationSystemTestCase
     assert_text "Profile location updated."
     assert_in_delta selected_lat.to_f, user.reload.home_lat, 0.00001
     assert_in_delta selected_lon.to_f, user.home_lon, 0.00001
+  end
+
+  test "showing a home location restores the default map zoom" do
+    user = create(:user, :home_lat => 51, :home_lon => 1)
+
+    sign_in_as(user)
+    visit profile_location_path
+    assert_selector "#map .maplibregl-canvas"
+
+    page.execute_script(<<~JS)
+      const zoomTo = OSM.MapLibre.Map.prototype.zoomTo;
+      OSM.MapLibre.Map.prototype.zoomTo = function (...args) {
+        window.profileMapForTest = this;
+        return zoomTo.apply(this, args);
+      };
+    JS
+    find_button("Zoom Out").click
+    page.execute_script("window.profileMapForTest.stop().jumpTo({ center: [2, 52], zoom: 5 })")
+    assert_selector "#home_show:not(:disabled)"
+    page.execute_script(<<~JS)
+      const map = window.profileMapForTest;
+      const flyTo = map.flyTo;
+      map.flyTo = function (options, ...args) {
+        window.profileRequestedZoom = options.zoom;
+        return flyTo.call(this, options, ...args);
+      };
+      map.once("moveend", () => map.getContainer().dataset.homeArrival = "true");
+    JS
+    find_by_id("home_show").click
+    assert_equal 11, page.evaluate_script("window.profileRequestedZoom")
+    assert_selector "#map[data-home-arrival='true']", :wait => 15
+    result = page.evaluate_script(<<~JS)
+      (() => {
+        const map = window.profileMapForTest;
+        const center = map.getCenter();
+        return { lat: center.lat, lon: center.lng, native: maplibregl.Map.prototype.getZoom.call(map), osm: map.getZoom() };
+      })()
+    JS
+
+    assert_in_delta 51, result["lat"], 0.00001
+    assert_in_delta 1, result["lon"], 0.00001
+    assert_in_delta 11, result["native"], 0.00001
+    assert_in_delta 12, result["osm"], 0.00001
   end
 
   private
