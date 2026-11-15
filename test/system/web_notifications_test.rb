@@ -69,7 +69,7 @@ class WebNotificationsTest < ApplicationSystemTestCase
     link = find(".web-notification h2 a", :text => "Changeset comment")
     assert_equal changeset_path(comment.changeset, :anchor => "c#{comment.id}"), URI.parse(link[:href]).request_uri + "##{URI.parse(link[:href]).fragment}"
     link.click
-    assert_selector "#map .leaflet-pane"
+    assert_selector "#map .maplibregl-canvas"
     assert_selector "article#c#{comment.id}", :text => comment.body
     page.go_back
     assert_current_path notifications_path

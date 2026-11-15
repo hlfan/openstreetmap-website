@@ -1,5 +1,10 @@
-L.OSM.sidebarPane = function (options, uiClass, buttonTitle, paneTitle) {
-  const control = L.control(options);
+OSM.MapLibre.sidebarPane = function (options, uiClass, buttonTitle, paneTitle) {
+  const control = {};
+  const cleanupFns = [];
+
+  control.registerCleanup = function (fn) {
+    cleanupFns.push(fn);
+  };
 
   control.onAdd = function (map) {
     const $container = $("<div>")
@@ -29,13 +34,13 @@ L.OSM.sidebarPane = function (options, uiClass, buttonTitle, paneTitle) {
 
     options.sidebar.addPane($ui);
 
-    this.loadContent = () =>
+    control.loadContent = () =>
       fetch("/panes/" + uiClass)
         .then(r => r.text())
         .then(html => { $(html).appendTo($ui); })
-        .then(this.onContentLoaded);
+        .then(control.onContentLoaded);
 
-    this.onAddPane(map, button, $ui, toggle);
+    control.onAddPane(map, button, $ui, toggle);
 
     function toggle(e) {
       e.stopPropagation();
@@ -43,14 +48,27 @@ L.OSM.sidebarPane = function (options, uiClass, buttonTitle, paneTitle) {
       if (!button.hasClass("disabled")) {
         options.sidebar.togglePane($ui, button);
       }
-      $(".leaflet-control .control-button").tooltip("hide");
+      $(".maplibregl-ctrl .control-button, .control-button").tooltip("hide");
     }
 
-    return $container[0];
+    const wrapper = document.createElement("div");
+    wrapper.className = "maplibregl-ctrl";
+    wrapper.appendChild($container[0]);
+    control._container = wrapper;
+
+    return wrapper;
   };
 
-  // control.onAddPane = function (map, button, $ui, toggle) {
-  // }
+  control.onRemove = function () {
+    while (cleanupFns.length) {
+      cleanupFns.pop()();
+    }
+    if (control._container) control._container.remove();
+  };
+
+  control.getContainer = function () {
+    return control._container;
+  };
 
   return control;
 };

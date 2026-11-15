@@ -3,6 +3,157 @@
 require "application_system_test_case"
 
 class QueryFeaturesSystemTest < ApplicationSystemTestCase
+  test "replacing a query removes visible result geometry" do
+    visit "/#map=15/1/1"
+    assert_selector "#map .maplibregl-canvas"
+    assert page.evaluate_async_script("const done = arguments[0]; window.__map__.onceStyleReady(() => done(true));")
+    stub_overpass :nearby_elements => [
+      { "type" => "node", "id" => 12, "lat" => 1, "lon" => 1, "tags" => { "name" => "First geometry" } },
+      { "type" => "node", "id" => 13, "lat" => 1.001, "lon" => 1.001, "tags" => { "name" => "Second geometry" } }
+    ]
+    page.execute_script("OSM.router.route('/query?lat=1&lon=1#map=15/1/1')")
+    assert_selector "#query-nearby a", :text => "First geometry"
+    assert_selector "#query-nearby a", :text => "Second geometry"
+
+    ids = page.evaluate_script(<<~JS)
+      (() => {
+        const links = $("#query-nearby a");
+        links.attr("data-previous-query", "yes").trigger("mouseover");
+        return links.map((_, link) => $(link).data("geometryId")).get();
+      })()
+    JS
+    assert_equal 2, ids.length
+    assert_equal 2, ids.uniq.length
+    assert(ids.all? { |id| id&.start_with?("query-geom-") })
+    assert page.evaluate_script("arguments[0].every(id => window.__map__.getSource(id) && window.__map__.getLayer(id))", ids)
+
+    page.execute_script("OSM.router.route('/query?lat=1.1&lon=1.2#map=15/1/1')")
+    assert_current_path "/query?lat=1.1&lon=1.2"
+    assert_no_selector "#query-nearby a[data-previous-query='yes']"
+    assert_selector "#query-nearby a", :text => "First geometry"
+    assert page.evaluate_script("arguments[0].every(id => !window.__map__.getSource(id) && !window.__map__.getLayer(id))", ids)
+    marker = page.evaluate_script(<<~JS)
+      (() => {
+        const map = window.__map__, source = map.getSource("query-marker");
+        if (!source) return null;
+        const coordinates = source.serialize().data.geometry.coordinates[0];
+        const center = [0, 1].map(axis => {
+          const values = coordinates.map(point => point[axis]);
+          return (Math.min(...values) + Math.max(...values)) / 2;
+        });
+        return { center, fill: !!map.getLayer("query-marker-fill"), line: !!map.getLayer("query-marker-line") };
+      })()
+    JS
+    assert marker
+    assert marker["fill"]
+    assert marker["line"]
+    assert_in_delta 1.2, marker["center"][0], 0.00001
+    assert_in_delta 1.1, marker["center"][1], 0.00001
+
+    next_id = page.evaluate_script(<<~JS)
+      (() => {
+        const link = $("#query-nearby a").first();
+        link.trigger("mouseover");
+        return link.data("geometryId");
+      })()
+    JS
+    assert_not_includes ids, next_id
+    assert page.evaluate_script("!!window.__map__.getSource(arguments[0])", next_id)
+    page.execute_script('$("#query-nearby a").first().trigger("mouseout").trigger("mouseout")')
+    assert_not page.evaluate_script("!!window.__map__.getSource(arguments[0])", next_id)
+    page.execute_script("OSM.router.route('/export#map=15/1/1')")
+    assert_selector "#sidebar_content h2", :text => "Export"
+    assert_not page.evaluate_script("!!window.__map__.getSource(arguments[0])", next_id)
+  end
+
+  test "deferred query result geometry cannot reappear after leaving a second query" do
+    visit "/#map=15/1/1"
+    assert_selector "#map .maplibregl-canvas"
+    assert page.evaluate_async_script("const done = arguments[0]; window.__map__.onceStyleReady(() => done(true));")
+    stub_overpass :nearby_elements => [
+      { "type" => "node", "id" => 12, "lat" => 1, "lon" => 1, "tags" => { "name" => "Test geometry" } }
+    ]
+    page.execute_script("OSM.router.route('/query?lat=1&lon=1#map=15/1/1')")
+    assert_selector "#query-nearby a", :text => "Test geometry"
+    page.execute_script(<<~JS)
+      const map = window.__map__;
+      window.savedStyleReady = map.onceStyleReady;
+      window.deferredStyleCallbacks = [];
+      map.onceStyleReady = callback => window.deferredStyleCallbacks.push(callback);
+      const link = $("#query-nearby a");
+      link.attr("data-previous-query", "yes");
+      const before = window.deferredStyleCallbacks.length;
+      link.trigger("mouseover");
+      window.geometryId = link.data("geometryId");
+      window.geometryCallback = window.deferredStyleCallbacks[before];
+      window.geometryCallbacksAdded = window.deferredStyleCallbacks.length - before;
+      OSM.router.route("/query?lat=1.1&lon=1.1#map=15/1/1");
+    JS
+    geometry_id = page.evaluate_script("window.geometryId")
+    assert_match(/\Aquery-geom-\d+\z/, geometry_id)
+    assert_equal 1, page.evaluate_script("window.geometryCallbacksAdded")
+    assert page.evaluate_script("typeof window.geometryCallback === 'function'")
+    assert_current_path "/query?lat=1.1&lon=1.1"
+    assert_no_selector "#query-nearby a[data-previous-query='yes']"
+    assert_selector "#query-nearby a", :text => "Test geometry"
+    result = page.evaluate_script(<<~JS, geometry_id)
+      ((id) => {
+        window.geometryCallback();
+        return [!!window.__map__.getSource(id), !!window.__map__.getLayer(id)];
+      })(arguments[0])
+    JS
+    assert_equal [false, false], result
+    page.execute_script("OSM.router.route('/export#map=15/1/1')")
+    assert_selector "#export_commit", :visible => :all
+    result = page.evaluate_script(<<~JS, geometry_id)
+      ((id) => {
+        const map = window.__map__;
+        map.onceStyleReady = window.savedStyleReady;
+        const errors = [];
+        for (const callback of window.deferredStyleCallbacks) {
+          try { callback(); } catch (error) { errors.push(error.message); }
+        }
+        return { errors, source: !!map.getSource(id), layer: !!map.getLayer(id) };
+      })(arguments[0])
+    JS
+    assert_empty result["errors"]
+    assert_not result["source"]
+    assert_not result["layer"]
+  end
+
+  test "deferred query marker cannot reappear after navigation" do
+    visit "/#map=15/1/1"
+    assert_selector "#map .maplibregl-canvas"
+    stub_overpass
+    page.execute_script(<<~JS)
+      const map = window.__map__;
+      window.savedStyleReady = map.onceStyleReady;
+      window.deferredStyleCallbacks = [];
+      map.onceStyleReady = callback => {
+        window.deferredStyleCallbacks.push(callback);
+        document.body.dataset.queryHeld = "yes";
+      };
+      OSM.router.route("/query?lat=1&lon=1#map=15/1/1");
+    JS
+    assert_selector "body[data-query-held='yes']"
+    page.execute_script("OSM.router.route('/export#map=15/1/1')")
+    assert_selector "#export_commit", :visible => :all
+    result = page.evaluate_script(<<~JS)
+      (() => {
+        const map = window.__map__;
+        map.onceStyleReady = window.savedStyleReady;
+        const errors = [];
+        for (const callback of window.deferredStyleCallbacks) {
+          try { callback(); } catch (error) { errors.push(error.message); }
+        }
+        return { count: window.deferredStyleCallbacks.length, errors, marker: !!map.getSource("query-marker") };
+      })()
+    JS
+    assert_operator result["count"], :>, 0
+    assert_empty result["errors"]
+    assert_not result["marker"]
+  end
+
   test "sorts enclosing features correctly" do
     visit "/#map=15/54.18315/7.88473"
 

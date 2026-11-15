@@ -9,6 +9,7 @@ class ResolveNoteTest < ApplicationSystemTestCase
     sign_in_as(user)
     visit note_path(note)
 
+    assert_selector "#map .maplibre-gl-marker use[href='#pin-exclam']", :visible => :all
     within_sidebar do
       assert_button "Resolve"
       assert_no_button "Comment & Resolve"
@@ -18,6 +19,7 @@ class ResolveNoteTest < ApplicationSystemTestCase
 
       assert_content "Resolved note ##{note.id}"
     end
+    assert_selector "#map .maplibre-gl-marker use[href='#pin-tick']", :visible => :all
   end
 
   test "can resolve an open note with a comment" do
@@ -48,6 +50,7 @@ class ResolveNoteTest < ApplicationSystemTestCase
     sign_in_as(user)
     visit note_path(note)
 
+    assert_selector "#map .maplibre-gl-marker use[href='#pin-tick']", :visible => :all
     within_sidebar do
       assert_no_button "Resolve"
       assert_no_button "Comment & Resolve"
@@ -58,6 +61,7 @@ class ResolveNoteTest < ApplicationSystemTestCase
       assert_content "Unresolved note ##{note.id}"
       assert_no_content "<iframe" # leak from share textarea
     end
+    assert_selector "#map .maplibre-gl-marker use[href='#pin-exclam']", :visible => :all
   end
 
   test "can hide an open note as moderator" do
